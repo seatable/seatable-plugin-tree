@@ -14,7 +14,7 @@ import {
   AppIsShowState,
   IAppProps,
   IPluginDataStore,
-} from 'utils/interfaces/template-interfaces/App.interface';
+} from '@/utils/template-utils/interfaces/App.interface';
 import {
   TableArray,
   TableViewArray,
@@ -23,9 +23,9 @@ import {
   TableRow,
   IActiveTableAndView,
   TableColumn,
-} from 'utils/interfaces/template-interfaces/Table.interface';
-import { PresetsArray } from 'utils/interfaces/template-interfaces/PluginPresets/Presets.interface';
-import { SelectOption } from 'utils/interfaces/template-interfaces/PluginSettings.interface';
+} from '@/utils/template-utils/interfaces/Table.interface';
+import { PresetsArray } from '@/utils/template-utils/interfaces/PluginPresets/Presets.interface';
+import { SelectOption } from '@/utils/template-utils/interfaces/PluginSettings.interface';
 // Import of CSS
 import styles from './styles/template-styles/Plugin.module.scss';
 import 'assets/css/plugin-layout.css';
@@ -36,7 +36,7 @@ import {
   PLUGIN_ID,
   PLUGIN_NAME,
   DEFAULT_PLUGIN_DATA,
-} from 'utils/constants';
+} from 'utils/template-utils/constants';
 import 'locale';
 import {
   createDefaultPluginDataStore,
@@ -46,8 +46,8 @@ import {
   getPluginDataStore,
   isMobile,
   parsePluginDataToActiveState,
-} from 'utils/utils';
-import { SettingsOption } from 'utils/types';
+} from 'utils/template-utils/utils';
+import { SettingsOption } from '@/utils/types';
 import pluginContext from './plugin-context';
 
 const App: React.FC<IAppProps> = (props) => {

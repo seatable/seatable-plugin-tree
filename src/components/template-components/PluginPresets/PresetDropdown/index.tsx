@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from 't_styles/Plugin.module.scss';
 import stylesPPresets from 't_styles/PluginPresets.module.scss';
-import { IPresetDropdownProps } from 'utils/interfaces/template-interfaces/PluginPresets/Dropdown.interface';
+import { IPresetDropdownProps } from '@/utils/template-utils/interfaces/PluginPresets/Dropdown.interface';
 import { PresetHandleAction } from 'utils/constants';
 import intl from 'react-intl-universal';
 import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';

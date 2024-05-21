@@ -10,7 +10,7 @@ import PresetInput from '../PresetInput';
 // Constants
 import { PresetHandleAction } from 'utils/constants';
 // Interfaces
-import { IPresetItemProps } from 'utils/interfaces/template-interfaces/PluginPresets/Item.interface';
+import { IPresetItemProps } from '@/utils/template-utils/interfaces/PluginPresets/Item.interface';
 // Styles
 import styles from 't_styles/Plugin.module.scss';
 import 'assets/css/plugin-layout.css';

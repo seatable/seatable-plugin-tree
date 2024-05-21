@@ -3,7 +3,7 @@ import styles from 't_styles/Plugin.module.scss';
 import stylesPPresets from 't_styles/PluginPresets.module.scss';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
-import { IHeaderProps } from 'utils/interfaces/template-interfaces/Header.interface';
+import { IHeaderProps } from '@/utils/template-utils/interfaces/Header.interface';
 import { PLUGIN_ID } from 'utils/constants';
 import { HiOutlineChevronDoubleRight } from 'react-icons/hi2';
 

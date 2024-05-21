@@ -1,4 +1,4 @@
-import { IPresetModel } from 'utils/interfaces/template-interfaces/Model.interface';
+import { IPresetModel } from '@/utils/template-utils/interfaces/Model.interface';
 
 export default class Preset {
   _id: string;

@@ -1,7 +1,7 @@
 import React from 'react';
 import stylesCustomP from 'c_style/CustomPlugin.module.scss';
-import { ICustomPluginProps } from 'utils/interfaces/template-interfaces/CustomPlugin';
-import { IPresetInfo } from 'utils/interfaces/template-interfaces/PluginPresets/Presets.interface';
+import { ICustomPluginProps } from '@/utils/template-utils/interfaces/CustomPlugin';
+import { IPresetInfo } from '@/utils/template-utils/interfaces/PluginPresets/Presets.interface';
 
 const CustomPlugin: React.FC<ICustomPluginProps> = ({
   pluginPresets,

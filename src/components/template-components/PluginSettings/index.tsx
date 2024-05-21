@@ -5,10 +5,10 @@ import stylesPresets from 't_styles/PluginPresets.module.scss';
 import {
   SelectOption,
   IPluginSettingsProps,
-} from 'utils/interfaces/template-interfaces/PluginSettings.interface';
+} from '@/utils/template-utils/interfaces/PluginSettings.interface';
 import { truncateTableName } from 'utils/utils';
 import { HiOutlineChevronDoubleRight } from 'react-icons/hi2';
-import { SettingsOption } from 'utils/types';
+import { SettingsOption } from '@/utils/types';
 import intl from 'react-intl-universal';
 import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';
 const { [DEFAULT_LOCALE]: d } = AVAILABLE_LOCALES;
