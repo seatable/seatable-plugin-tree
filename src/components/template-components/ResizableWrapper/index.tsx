@@ -8,8 +8,8 @@ const ResizableWrapper: React.FC<IResizableWrapper> = ({ children }) => {
   const modalTop = useRef<null | HTMLDivElement>(null);
 
   useEffect(() => {
-    let resizableModal = modalRef.current;
-    let pluginWrapper: null | HTMLDivElement = document.querySelector('#plugin-wrapper');
+    const resizableModal = modalRef.current;
+    const pluginWrapper: null | HTMLDivElement = document.querySelector('#plugin-wrapper');
     let style;
     let height: number;
 
@@ -19,7 +19,7 @@ const ResizableWrapper: React.FC<IResizableWrapper> = ({ children }) => {
     }
 
     let yCord = 0;
-    let topResizer = modalTop.current;
+    const topResizer = modalTop.current;
 
     const onMouseMoveTopResize = (event: MouseEvent) => {
       const dy = event.clientY - yCord;

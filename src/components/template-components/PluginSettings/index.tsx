@@ -34,25 +34,26 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     const { activeTableView } = appActiveState;
 
     // Create options for tables
-    let tableOptions = allTables.map((item) => {
-      let value = item._id;
-      let label = truncateTableName(item.name);
+    const tableOptions = allTables.map((item) => {
+      const value = item._id;
+      const label = truncateTableName(item.name);
       return { value, label };
     });
 
     // Create options for views
-    let viewOptions = activeTableViews.map((item) => {
-      let value = item._id;
-      let label = truncateTableName(item.name);
+    const viewOptions = activeTableViews.map((item) => {
+      const value = item._id;
+      const label = truncateTableName(item.name);
       return { value, label };
     });
 
     // Set selected options based on activeTable and activeTableView
-    let tableSelectedOption = {
+    const tableSelectedOption = {
+      // eslint-disable-next-line
       value: appActiveState?.activeTable?._id!,
       label: appActiveState.activeTableName,
     };
-    let viewSelectedOption = viewOptions.find((item) => item.value === activeTableView?._id);
+    const viewSelectedOption = viewOptions.find((item) => item.value === activeTableView?._id);
 
     // Update state with new options and selected values
     setTableOptions(tableOptions);
@@ -87,7 +88,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                   value={tableSelectedOption}
                   options={tableOptions}
                   onChange={(selectedOption: SelectOption) => {
-                    let type = 'table' as SettingsOption;
+                    const type = 'table' as SettingsOption;
                     onTableOrViewChange(type, selectedOption);
                   }}
                 />
@@ -100,7 +101,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                   value={viewSelectedOption}
                   options={viewOptions}
                   onChange={(selectedOption: SelectOption) => {
-                    let type = 'view' as SettingsOption;
+                    const type = 'view' as SettingsOption;
                     onTableOrViewChange(type, selectedOption);
                   }}
                 />

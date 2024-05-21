@@ -19,7 +19,7 @@ export const generatorBase64Code = (keyLength = 4) => {
 };
 
 export const generatorPresetId = (presets: Array<{ _id: string }>): string => {
-  let preset_id: string = '',
+  let preset_id = '',
     isUnique = false;
 
   const isIdUnique = (id: string): boolean => {
@@ -42,10 +42,10 @@ export const generatorPresetId = (presets: Array<{ _id: string }>): string => {
 
 export const getImageThumbnailUrl = (url: string, size?: number): string => {
   const server = pluginContext.getSetting('server');
-  let isInternalLink = url.indexOf(server) > -1;
+  const isInternalLink = url.indexOf(server) > -1;
   if (isInternalLink) {
     size = size || 256;
-    let imageThumbnailUrl = url.replace('/workspace', '/thumbnail/workspace') + '?size=' + size;
+    const imageThumbnailUrl = url.replace('/workspace', '/thumbnail/workspace') + '?size=' + size;
     return imageThumbnailUrl;
   }
   return url;
@@ -61,9 +61,9 @@ export const calculateColumns = (
   galleryColumnsName: string[],
   currentColumns: { name: string }[]
 ): { name: string }[] => {
-  let newColumns: { name: string }[] = [];
+  const newColumns: { name: string }[] = [];
   galleryColumnsName.forEach((columnName) => {
-    let column = currentColumns.find((column) => columnName === column.name);
+    const column = currentColumns.find((column) => columnName === column.name);
     if (column) {
       newColumns.push(column);
     }
@@ -80,7 +80,7 @@ export const calculateColumnsName = (
     newColumnsName.push(column.name);
   });
   if (galleryColumnsName) {
-    let columnsName: string[] = Array.from(new Set([...galleryColumnsName, ...newColumnsName]));
+    const columnsName: string[] = Array.from(new Set([...galleryColumnsName, ...newColumnsName]));
     newColumnsName = columnsName.filter((columnName) =>
       newColumnsName.some((c) => c === columnName)
     );
@@ -193,7 +193,7 @@ export const appendPresetSuffix = (name: string, nameList: string[], suffix: str
   if (!nameList.includes(name.trim())) {
     return name;
   } else {
-    let _name = `${name} ${suffix}`;
+    const _name = `${name} ${suffix}`;
     return appendPresetSuffix(_name, nameList, suffix);
   }
 };
@@ -230,13 +230,14 @@ export const parsePluginDataToActiveState = (
   allTables: TableArray
 ) => {
   // Extract relevant data from the pluginDataStore and allTables arrays
-  let idx = pluginDataStore.activePresetIdx;
-  let id = pluginDataStore.activePresetId;
-  let table =
+  const idx = pluginDataStore.activePresetIdx;
+  const id = pluginDataStore.activePresetId;
+  const table =
     allTables.find((t) => t._id === pluginPresets[idx].settings?.selectedTable?.value) ||
     allTables[0];
-  let tableName = table.name;
-  let tableView = table.views.find(
+  const tableName = table.name;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const tableView = table.views.find(
     (v) => v._id === pluginPresets[idx].settings?.selectedView?.value
   )!;
 
@@ -314,15 +315,19 @@ export const getActiveTableAndActiveView = (
     table = allTables[0];
     view = table?.views[0];
   } else if (type === PresetHandleAction.duplicate) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     table = allTables.find((i) => i.name === option?.pSettings.selectedTable?.label)!;
     views = table?.views;
+    // eslint-disable-next-line
     view = views?.find((v) => {
       return v.name === option?.pSettings.selectedView?.label;
     })!;
   } else if (pluginPresets.length > 0 && type === undefined) {
     // This needs to be changes since in this case we need to retrieve the Last Preset used from the USER
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     table = allTables.find((i) => i.name === pluginPresets[0].settings?.selectedTable?.label)!;
     views = table?.views;
+    // eslint-disable-next-line
     view = views?.find((v) => {
       return v.name === pluginPresets[0].settings?.selectedView?.label;
     })!;

@@ -122,11 +122,11 @@ const App: React.FC<IAppProps> = (props) => {
   };
 
   const resetData = () => {
-    let allTables: TableArray = window.dtableSDK.getTables(); // All the Tables of the Base
-    let activeTable: Table = window.dtableSDK.getActiveTable(); // How is the ActiveTable Set? allTables[0]?
-    let activeTableViews: TableViewArray = activeTable.views; // All the Views of the specific Active Table
-    let pluginDataStore: IPluginDataStore = getPluginDataStore(activeTable, PLUGIN_NAME);
-    let pluginPresets: PresetsArray = pluginDataStore.presets; // An array with all the Presets
+    const allTables: TableArray = window.dtableSDK.getTables(); // All the Tables of the Base
+    const activeTable: Table = window.dtableSDK.getActiveTable(); // How is the ActiveTable Set? allTables[0]?
+    const activeTableViews: TableViewArray = activeTable.views; // All the Views of the specific Active Table
+    const pluginDataStore: IPluginDataStore = getPluginDataStore(activeTable, PLUGIN_NAME);
+    const pluginPresets: PresetsArray = pluginDataStore.presets; // An array with all the Presets
 
     setActiveComponents((prevState) => ({
       ...prevState,
@@ -199,6 +199,7 @@ const App: React.FC<IAppProps> = (props) => {
       updatedActiveState = {
         ...newPresetActiveState,
       };
+      // eslint-disable-next-line
       updatedActiveTableViews = newPresetActiveState?.activeTable?.views!;
     } else {
       const activePreset = pluginPresets.find((preset) => preset._id === presetId);
@@ -244,10 +245,10 @@ const App: React.FC<IAppProps> = (props) => {
     _activePresetIdx: number,
     updatedPresets: PresetsArray,
     pluginDataStore: IPluginDataStore,
-    activePresetId: string,
-    callBack: any = null
+    activePresetId: string
+    // callBack: any = null
   ) => {
-    let _pluginDataStore = {
+    const _pluginDataStore = {
       ...pluginDataStore,
       activePresetId: activePresetId,
       activePresetIdx: _activePresetIdx,
@@ -272,17 +273,19 @@ const App: React.FC<IAppProps> = (props) => {
    * data from the available tables, and updates the active state accordingly.
    */
   const updateActiveData = () => {
-    let allTables: TableArray = window.dtableSDK.getTables();
-    let tableOfPresetOne = pluginPresets[0].settings?.selectedTable || {
+    const allTables: TableArray = window.dtableSDK.getTables();
+    const tableOfPresetOne = pluginPresets[0].settings?.selectedTable || {
       value: allTables[0]._id,
       label: allTables[0].name,
     };
-    let viewOfPresetOne = pluginPresets[0].settings?.selectedView || {
+    const viewOfPresetOne = pluginPresets[0].settings?.selectedView || {
       value: allTables[0].views[0]._id,
       label: allTables[0].views[0].name,
     };
-    let table = allTables.find((t) => t._id === tableOfPresetOne.value)!;
-    let view = table?.views.find((v) => v._id === viewOfPresetOne.value)!;
+    // eslint-disable-next-line
+    const table = allTables.find((t) => t._id === tableOfPresetOne.value)!;
+    // eslint-disable-next-line
+    const view = table?.views.find((v) => v._id === viewOfPresetOne.value)!;
 
     const newPresetActiveState: AppActiveState = {
       activePresetId: pluginPresets[0]._id,
@@ -323,6 +326,7 @@ const App: React.FC<IAppProps> = (props) => {
 
     switch (type) {
       case 'table':
+        // eslint-disable-next-line
         const _activeTable = allTables.find((s) => s._id === option.value)!;
         _activeViewRows = window.dtableSDK.getViewRows(_activeTable.views[0], _activeTable);
         setActiveTableViews(_activeTable.views);
@@ -352,7 +356,7 @@ const App: React.FC<IAppProps> = (props) => {
         break;
 
       case 'view':
-        let _activeTableView =
+        const _activeTableView =
           activeTableViews.find((s) => s._id === option.value) || activeTableViews[0];
         _activeViewRows = window.dtableSDK.getViewRows(_activeTableView, activeTable);
         setAppActiveState((prevState) => ({
@@ -385,7 +389,7 @@ const App: React.FC<IAppProps> = (props) => {
 
   // functions for add row functionality
   const onAddItem = (view: TableView, table: Table, rowID: string) => {
-    let rowData = getInsertedRowInitData(view, table, rowID);
+    const rowData = getInsertedRowInitData(view, table, rowID);
     onInsertRow(table, view, rowData);
   };
 
@@ -394,21 +398,21 @@ const App: React.FC<IAppProps> = (props) => {
       return;
     }
 
-    let rows = appActiveState.activeViewRows;
+    const rows = appActiveState.activeViewRows;
     if (rows) {
-      let row_id = rows.length > 0 ? rows[rows.length - 1]._id : '';
+      const row_id = rows.length > 0 ? rows[rows.length - 1]._id : '';
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       onAddItem(appActiveState.activeTableView!, appActiveState.activeTable!, row_id);
     }
   };
 
   const onInsertRow = (table: Table, view: TableView, rowData: any) => {
-    let columns = window.dtableSDK.getColumns(table);
-    let newRowData: { [key: string]: any } = {};
+    const columns = window.dtableSDK.getColumns(table);
+    const newRowData: { [key: string]: any } = {};
     console.log('columns', columns);
-    for (let key in rowData) {
-      console.log('key', key);
-      let column = columns.find((column: TableColumn) => column.name === key);
-      console.log('column.type', column.type);
+    for (const key in rowData) {
+      const column = columns.find((column: TableColumn) => column.name === key);
+
       if (!column) {
         continue;
       }
@@ -419,9 +423,9 @@ const App: React.FC<IAppProps> = (props) => {
           break;
         }
         case 'multiple-select': {
-          let multipleSelectNameList: any[] = [];
+          const multipleSelectNameList: any[] = [];
           rowData[key].forEach((multiItemId: any) => {
-            let multiSelectItemName = column.data.options.find(
+            const multiSelectItemName = column.data.options.find(
               (multiItem: any) => multiItem.id === multiItemId
             );
             if (multiSelectItemName) {
@@ -436,10 +440,10 @@ const App: React.FC<IAppProps> = (props) => {
       }
     }
 
-    let row_data = { ...newRowData };
+    const row_data = { ...newRowData };
     window.dtableSDK.appendRow(table, row_data, view);
-    let viewRows = window.dtableSDK.getViewRows(view, table);
-    let insertedRow = viewRows[viewRows.length - 1];
+    const viewRows = window.dtableSDK.getViewRows(view, table);
+    const insertedRow = viewRows[viewRows.length - 1];
     if (insertedRow) {
       pluginContext.expandRow(insertedRow, table);
     }

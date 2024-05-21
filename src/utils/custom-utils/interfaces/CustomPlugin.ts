@@ -9,3 +9,7 @@ export interface IPluginTLProps {
   pluginDataStore: IPluginDataStore;
   activeViewRows?: TableRow[];
 }
+
+export interface PresetCustomSettings {
+  [key: string]: any;
+}

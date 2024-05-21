@@ -17,7 +17,12 @@ import {
   getActiveTableAndActiveView,
   isUniquePresetName,
 } from 'utils/template-utils/utils';
-import { DEFAULT_PLUGIN_DATA, PLUGIN_NAME, PresetHandleAction, TABLE_NAME } from 'utils/template-utils/constants';
+import {
+  DEFAULT_PLUGIN_DATA,
+  PLUGIN_NAME,
+  PresetHandleAction,
+  TABLE_NAME,
+} from 'utils/template-utils/constants';
 import {
   IActiveTableAndView,
   TableArray,
@@ -56,7 +61,7 @@ const PluginPresets: React.FC<IPresetsProps> = ({
   }, [pluginPresets]);
 
   const getSelectedTable = (tables: TableArray, settings: any = {}) => {
-    let selectedTable = getTableByName(settings[TABLE_NAME]);
+    const selectedTable = getTableByName(settings[TABLE_NAME]);
     if (!selectedTable) {
       return tables[0];
     }
@@ -65,12 +70,14 @@ const PluginPresets: React.FC<IPresetsProps> = ({
 
   const initPresetSetting = (settings = {}) => {
     let initUpdated = {};
-    let tables = window.dtableSDK.getTables();
-    let selectedTable = getSelectedTable(tables, settings);
-    let titleColumn = selectedTable.columns.find((column: TableColumn) => column.key === '0000');
-    let imageColumn = selectedTable.columns.find((column: TableColumn) => column.type === 'image');
-    let imageName = imageColumn ? imageColumn.name : null;
-    let titleName = titleColumn ? titleColumn.name : null;
+    const tables = window.dtableSDK.getTables();
+    const selectedTable = getSelectedTable(tables, settings);
+    const titleColumn = selectedTable.columns.find((column: TableColumn) => column.key === '0000');
+    const imageColumn = selectedTable.columns.find(
+      (column: TableColumn) => column.type === 'image'
+    );
+    const imageName = imageColumn ? imageColumn.name : null;
+    const titleName = titleColumn ? titleColumn.name : null;
     initUpdated = Object.assign(
       {},
       { shown_image_name: imageName },
@@ -104,7 +111,7 @@ const PluginPresets: React.FC<IPresetsProps> = ({
       __presetName.trim() ||
       presetName.trim() ||
       DEFAULT_PLUGIN_DATA.presets[0].name + ' ' + _pluginPresets.length;
-    let _presetNames = _pluginPresets.map((p) => p.name);
+    const _presetNames = _pluginPresets.map((p) => p.name);
     const isUnique = isUniquePresetName(_presetName, _pluginPresets, activePresetIdx);
 
     if (isUnique && type === PresetHandleAction.new) {
@@ -144,7 +151,7 @@ const PluginPresets: React.FC<IPresetsProps> = ({
     presetName: string,
     option?: { pId: string; pSettings: PresetSettings }
   ) => {
-    let _presetSettings: PresetSettings =
+    const _presetSettings: PresetSettings =
       type === PresetHandleAction.new
         ? createDefaultPresetSettings(allTables)
         : type === PresetHandleAction.duplicate && option?.pSettings
@@ -152,12 +159,12 @@ const PluginPresets: React.FC<IPresetsProps> = ({
           : {};
 
     setPluginPresets(_pluginPresets || []);
-    let _activePresetIdx = _pluginPresets?.length;
-    let _id: string = generatorPresetId(pluginPresets) || '';
-    let newPreset = new Preset({ _id, name: presetName });
-    let newPresetsArray = deepCopy(_pluginPresets);
+    const _activePresetIdx = _pluginPresets?.length;
+    const _id: string = generatorPresetId(pluginPresets) || '';
+    const newPreset = new Preset({ _id, name: presetName });
+    const newPresetsArray = deepCopy(_pluginPresets);
     newPresetsArray.push(newPreset);
-    let initUpdated = initPresetSetting();
+    const initUpdated = initPresetSetting();
     newPresetsArray[_activePresetIdx].settings = Object.assign(_presetSettings, initUpdated);
     pluginDataStore.presets = newPresetsArray;
     updatePresets(_activePresetIdx, newPresetsArray, pluginDataStore, _id);
@@ -173,6 +180,7 @@ const PluginPresets: React.FC<IPresetsProps> = ({
       activePresetId: _id,
       activePresetIdx: _activePresetIdx,
       activeTable: _activeTableAndView.table,
+      // eslint-disable-next-line
       activeTableName: newPresetsArray[_activePresetIdx]?.settings?.selectedTable?.label!,
       activeTableView: _activeTableAndView.view,
     };
@@ -184,17 +192,17 @@ const PluginPresets: React.FC<IPresetsProps> = ({
   const duplicatePreset = (p: any) => {
     // anytofix
     const { name, _id, settings } = p;
-    let _presetNames = _pluginPresets.map((p) => p.name);
-    let _presetName = appendPresetSuffix(name, _presetNames, 'copy');
+    const _presetNames = _pluginPresets.map((p) => p.name);
+    const _presetName = appendPresetSuffix(name, _presetNames, 'copy');
     addPreset(PresetHandleAction.duplicate, _presetName, { pId: _id, pSettings: settings });
   };
 
   // edit preset name
   const editPreset = (presetName: string) => {
-    let newPluginPresets = deepCopy(pluginPresets);
-    let oldPreset = pluginPresets[activePresetIdx];
-    let _id: string = generatorPresetId(pluginPresets) || '';
-    let updatedPreset = new Preset({ ...oldPreset, _id, name: presetName });
+    const newPluginPresets = deepCopy(pluginPresets);
+    const oldPreset = pluginPresets[activePresetIdx];
+    const _id: string = generatorPresetId(pluginPresets) || '';
+    const updatedPreset = new Preset({ ...oldPreset, _id, name: presetName });
 
     newPluginPresets.splice(activePresetIdx, 1, updatedPreset);
     pluginDataStore.presets = newPluginPresets;
@@ -204,7 +212,7 @@ const PluginPresets: React.FC<IPresetsProps> = ({
 
   // Delete the selected Preset
   const deletePreset = () => {
-    let newPluginPresets = deepCopy(pluginPresets);
+    const newPluginPresets = deepCopy(pluginPresets);
     newPluginPresets.splice(activePresetIdx, 1);
     if (activePresetIdx >= newPluginPresets.length) {
       activePresetIdx = newPluginPresets.length - 1;
@@ -241,8 +249,8 @@ const PluginPresets: React.FC<IPresetsProps> = ({
       setPluginPresets(__pluginPresets);
       setDragItemIndex(null);
       setDragOverItemIndex(null);
-      let newIdx = __pluginPresets.findIndex((preset) => preset._id === v_id);
-      let _pluginDataStore = { ...pluginDataStore, presets: __pluginPresets };
+      const newIdx = __pluginPresets.findIndex((preset) => preset._id === v_id);
+      const _pluginDataStore = { ...pluginDataStore, presets: __pluginPresets };
 
       updatePresets(newIdx, __pluginPresets, _pluginDataStore, v_id);
     }

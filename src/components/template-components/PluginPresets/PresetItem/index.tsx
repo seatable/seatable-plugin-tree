@@ -54,7 +54,7 @@ const PresetItem: React.FC<IPresetItemProps> = ({
     };
   }, [p.name]);
 
-  let popupDomNode = useClickOut(() => {
+  const popupDomNode = useClickOut(() => {
     setShowPresetDropdown(false);
   });
 
