@@ -1,0 +1,10 @@
+{
+  "settings_headline": "Settings",
+  "table": "Table",
+  "view": "View",
+  "preset_add": "Add Preset",
+  "preset_rename": "Rename",
+  "preset_duplicate": "Duplicate",
+  "preset_delete": "Delete",
+  "preset_warn_exist": "Please enter a unique preset name"
+}

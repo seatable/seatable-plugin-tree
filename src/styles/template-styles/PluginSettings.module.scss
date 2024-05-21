@@ -1,0 +1,47 @@
+@import '../abstracts/_media.scss';
+@import '../constants.scss';
+// STYLE FOR PLUGIN SETTINGS COMPONENT
+.settings,
+.settings_hide {
+  position: fixed;
+  right: 0;
+  height: 100%;
+  width: 25%;
+  transition: 0.3s width ease-in-out;
+  border-left: 1px solid $borderColor;
+
+  &_header {
+    border-bottom: 1px solid $borderColor;
+    padding-bottom: 10px;
+    margin-bottom: 0.75rem;
+
+    h4 {
+      font-size: 16px;
+    }
+  }
+
+  @include mobile {
+    width: 60%;
+    max-width: none;
+  }
+
+  @include mini {
+    width: 100%;
+    max-width: none;
+  }
+
+  &_dropdowns {
+    padding-bottom: 20px;
+    border-bottom: 1px solid $borderColor;
+  }
+
+  p {
+    margin-bottom: 4px !important;
+    opacity: 0.75;
+    font-size: 12px;
+  }
+}
+
+.settings_hide {
+  width: 0;
+}

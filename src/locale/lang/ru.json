@@ -1,0 +1,10 @@
+{
+  "settings_headline": "Настройки",
+  "table": "Таблица",
+  "view": "Вид",
+  "preset_add": "добавить предустановку",
+  "preset_rename": "переименовать",
+  "preset_duplicate": "дубликат",
+  "preset_delete": "удалить",
+  "preset_warn_exist": "Пожалуйста, введите уникальное имя предустановки"
+}

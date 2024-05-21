@@ -1,0 +1,10 @@
+{
+  "settings_headline": "Configurações",
+  "table": "Tabela",
+  "view": "Vista",
+  "preset_add": "Adicionar predefinição",
+  "preset_rename": "Renomear",
+  "preset_duplicate": "Duplicado",
+  "preset_delete": "Excluir",
+  "preset_warn_exist": "Introduza um nome de predefinição único"
+}
