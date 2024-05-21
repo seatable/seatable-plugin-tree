@@ -1,17 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
 import React, { useEffect, useState } from 'react';
+import info from '../src/plugin-config/info.json';
 import { FaPlus } from 'react-icons/fa6';
+import intl from 'react-intl-universal';
 // Import of Component
 import Header from 'components/template-components/Header';
 import PluginSettings from 'components/template-components/PluginSettings';
 import PluginPresets from 'components/template-components/PluginPresets';
 import ResizableWrapper from 'components/template-components/ResizableWrapper';
-import CustomPlugin from 'components/custom-components/CustomPlugin';
+import PluginTL from 'components/custom-components/CustomPlugin';
+
 // Import of Interfaces
 import {
   AppActiveState,
   AppIsShowState,
+  IActiveComponents,
   IAppProps,
   IPluginDataStore,
 } from '@/utils/template-utils/interfaces/App.interface';
@@ -49,15 +53,19 @@ import {
 } from 'utils/template-utils/utils';
 import { SettingsOption } from '@/utils/types';
 import pluginContext from './plugin-context';
+import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';
 
 const App: React.FC<IAppProps> = (props) => {
   const { isDevelopment, lang } = props;
+  const { [DEFAULT_LOCALE]: d } = AVAILABLE_LOCALES;
+
   // Boolean state to show/hide the plugin's components
   const [isShowState, setIsShowState] = useState<AppIsShowState>(INITIAL_IS_SHOW_STATE);
   const { isShowPlugin, isShowSettings, isLoading, isShowPresets } = isShowState;
   // Tables, Presets, Views as dataStates. The main data of the plugin
   const [allTables, setAllTables] = useState<TableArray>([]);
   const [activeTableViews, setActiveTableViews] = useState<TableViewArray>([]);
+  const [activeComponents, setActiveComponents] = useState<IActiveComponents>({});
   const [pluginDataStore, setPluginDataStore] = useState<IPluginDataStore>(DEFAULT_PLUGIN_DATA);
   const [pluginPresets, setPluginPresets] = useState<PresetsArray>([]);
   // appActiveState: Define the app's active Preset + (Table + View) state using the useState hook
@@ -119,6 +127,12 @@ const App: React.FC<IAppProps> = (props) => {
     let activeTableViews: TableViewArray = activeTable.views; // All the Views of the specific Active Table
     let pluginDataStore: IPluginDataStore = getPluginDataStore(activeTable, PLUGIN_NAME);
     let pluginPresets: PresetsArray = pluginDataStore.presets; // An array with all the Presets
+
+    setActiveComponents((prevState) => ({
+      ...prevState,
+      settingsDropDowns: info.active_components.settings_dropdowns,
+      add_row_button: info.active_components.add_row_button,
+    }));
 
     setPluginDataStore(pluginDataStore);
     setAllTables(allTables);
@@ -466,22 +480,27 @@ const App: React.FC<IAppProps> = (props) => {
           style={{ height: '100%', width: '100%', backgroundColor: '#f5f5f5' }}>
           <div id={PLUGIN_ID} className={styles.body} style={{ padding: '10px', width: '100%' }}>
             {/* Note: The CustomPlugin component serves as a placeholder and should be replaced with your custom plugin component. */}
-            <CustomPlugin
+            <PluginTL
               pluginPresets={pluginPresets}
+              allTables={allTables}
               appActiveState={appActiveState}
+              pluginDataStore={pluginDataStore}
               activeViewRows={activeViewRows}
             />
-            <button className={styles.add_row} onClick={addRowItem}>
-              <FaPlus size={30} color="#fff" />
-              {isDevelopment && (
-                <div style={{ margin: 0 }} className={styles.add_row_toolTip}>
-                  <p>Adding a row only works in production</p>
-                </div>
-              )}
-            </button>
+            {activeComponents.add_row_button && (
+              <button className={styles.add_row} onClick={addRowItem}>
+                <FaPlus size={30} color="#fff" />
+                {isDevelopment && (
+                  <div style={{ margin: 0 }} className={styles.add_row_toolTip}>
+                    <p>{intl.get('add_row').d(`${d.add_row}`)}</p>
+                  </div>
+                )}
+              </button>
+            )}
           </div>
 
           <PluginSettings
+            activeComponents={activeComponents}
             isShowSettings={isShowSettings}
             allTables={allTables}
             appActiveState={appActiveState}

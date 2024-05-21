@@ -6,7 +6,7 @@ import {
   SelectOption,
   IPluginSettingsProps,
 } from '@/utils/template-utils/interfaces/PluginSettings.interface';
-import { truncateTableName } from 'utils/utils';
+import { truncateTableName } from 'utils/template-utils/utils';
 import { HiOutlineChevronDoubleRight } from 'react-icons/hi2';
 import { SettingsOption } from '@/utils/types';
 import intl from 'react-intl-universal';
@@ -21,6 +21,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   isShowSettings,
   onToggleSettings,
   onTableOrViewChange,
+  activeComponents,
 }) => {
   // State variables for table and view options
   const [tableOptions, setTableOptions] = useState<SelectOption[]>();
@@ -77,33 +78,35 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
           </button>
         </div>
         <div>
-          <div className={stylesPSettings.settings_dropdowns}>
-            <div>
-              <p className="d-inline-block mb-2">{intl.get('table').d(`${d.table}`)}</p>
-              {/* Toggle table view */}
-              <DtableSelect
-                value={tableSelectedOption}
-                options={tableOptions}
-                onChange={(selectedOption: SelectOption) => {
-                  let type = 'table' as SettingsOption;
-                  onTableOrViewChange(type, selectedOption);
-                }}
-              />
-            </div>
+          {activeComponents.settingsDropDowns && (
+            <div className={stylesPSettings.settings_dropdowns}>
+              <div>
+                <p className="d-inline-block mb-2">{intl.get('table').d(`${d.table}`)}</p>
+                {/* Toggle table view */}
+                <DtableSelect
+                  value={tableSelectedOption}
+                  options={tableOptions}
+                  onChange={(selectedOption: SelectOption) => {
+                    let type = 'table' as SettingsOption;
+                    onTableOrViewChange(type, selectedOption);
+                  }}
+                />
+              </div>
 
-            <div>
-              <p className="d-inline-block mb-2 mt-3">{intl.get('view').d(`${d.view}/`)}</p>
-              {/* Toggle table view */}
-              <DtableSelect
-                value={viewSelectedOption}
-                options={viewOptions}
-                onChange={(selectedOption: SelectOption) => {
-                  let type = 'view' as SettingsOption;
-                  onTableOrViewChange(type, selectedOption);
-                }}
-              />
+              <div>
+                <p className="d-inline-block mb-2 mt-3">{intl.get('view').d(`${d.view}/`)}</p>
+                {/* Toggle table view */}
+                <DtableSelect
+                  value={viewSelectedOption}
+                  options={viewOptions}
+                  onChange={(selectedOption: SelectOption) => {
+                    let type = 'view' as SettingsOption;
+                    onTableOrViewChange(type, selectedOption);
+                  }}
+                />
+              </div>
             </div>
-          </div>
+          )}
           {/* Insert custom settings */}
         </div>
       </div>

@@ -4,7 +4,7 @@ import stylesPPresets from 't_styles/PluginPresets.module.scss';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { IHeaderProps } from '@/utils/template-utils/interfaces/Header.interface';
-import { PLUGIN_ID } from 'utils/constants';
+import { PLUGIN_ID } from 'utils/template-utils/constants';
 import { HiOutlineChevronDoubleRight } from 'react-icons/hi2';
 
 const Header: React.FC<IHeaderProps> = (props) => {

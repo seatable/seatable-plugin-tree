@@ -16,8 +16,8 @@ import {
   generatorPresetId,
   getActiveTableAndActiveView,
   isUniquePresetName,
-} from 'utils/utils';
-import { DEFAULT_PLUGIN_DATA, PLUGIN_NAME, PresetHandleAction, TABLE_NAME } from 'utils/constants';
+} from 'utils/template-utils/utils';
+import { DEFAULT_PLUGIN_DATA, PLUGIN_NAME, PresetHandleAction, TABLE_NAME } from 'utils/template-utils/constants';
 import {
   IActiveTableAndView,
   TableArray,

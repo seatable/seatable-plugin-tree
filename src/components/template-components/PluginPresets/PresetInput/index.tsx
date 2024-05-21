@@ -2,8 +2,8 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import styles2 from 't_styles/PluginPresets.module.scss';
-import { IPresetInput } from '@/utils/template-utils/template-interfaces/PluginPresets/Input.interface';
-import { KeyDownActions } from 'utils/constants';
+import { IPresetInput } from '@/utils/template-utils/interfaces/PluginPresets/Input.interface';
+import { KeyDownActions } from 'utils/template-utils/constants';
 
 const PresetInput: React.FC<IPresetInput> = ({
   presetName,
