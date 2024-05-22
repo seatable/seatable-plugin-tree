@@ -36,6 +36,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   const [firstLevelSelectedOption, setFirstLevelSelectedOption] = useState<SelectOption>();
   const [secondLevelSelectedOption, setSecondLevelSelectedOption] = useState<SelectOption>();
   const [thirdLevelSelectedOption, setThirdLevelSelectedOption] = useState<SelectOption>();
+  const [thirdLevelExists, setThirdLevelExists] = useState<boolean>(true);
 
   // Change options when active table or view changes
   useEffect(() => {
@@ -72,7 +73,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   }, [appActiveState]);
 
   useEffect(() => {
-    console.log(1);
     const FIRST_LEVEL_TABLES = findFirstLevelTables(allTables);
     const firstLevelOptions = FIRST_LEVEL_TABLES.map((item) => {
       const value = item._id;
@@ -103,6 +103,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       // Finding the third level tables, using the findSecondLevelTables function
       // Using this function is correct as the third level tables are the second level tables of the second level table
       const THIRD_LEVEL_TABLES = findSecondLevelTables(allTables, secondLevelSelectedOption);
+
       thirdLevelOptions = THIRD_LEVEL_TABLES.map((item) => {
         const value = item._id;
         const label = truncateTableName(item.name);
@@ -114,6 +115,8 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
         item.value !== firstLevelSelectedOption?.value &&
         item.value !== secondLevelSelectedOption?.value
     );
+
+    setThirdLevelExists(filteredThirdLevelOptions.length === 0 ? false : true);
     setThirdLevelOptions(filteredThirdLevelOptions);
     setThirdLevelSelectedOption(filteredThirdLevelOptions[0]); // TBD: This should be set based on the value in Settings
   }, [secondLevelSelectedOption]);
@@ -194,12 +197,14 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                 }}
               />
             </div>
+
             <div>
               <p className="d-inline-block mb-2 mt-3">
                 {intl.get('customSettings.3rdLevel').d(`${d.view}/`)}
               </p>
               {/* Toggle table view */}
               <DtableSelect
+                isDisabled={!thirdLevelExists}
                 value={thirdLevelSelectedOption}
                 options={thirdLevelOptions}
                 onChange={(selectedOption: SelectOption) => {
