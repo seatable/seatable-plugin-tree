@@ -8,9 +8,10 @@ import {
 } from '@/utils/template-utils/interfaces/PluginSettings.interface';
 import { truncateTableName } from 'utils/template-utils/utils';
 import { HiOutlineChevronDoubleRight } from 'react-icons/hi2';
-import { SettingsOption } from '@/utils/types';
+import { CustomSettingsOption, SettingsOption } from '@/utils/types';
 import intl from 'react-intl-universal';
 import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';
+import { findFirstLevelTables } from '../../../utils/custom-utils/utils';
 const { [DEFAULT_LOCALE]: d } = AVAILABLE_LOCALES;
 
 // PluginSettings component for managing table and view options
@@ -28,6 +29,12 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   const [viewOptions, setViewOptions] = useState<SelectOption[]>();
   const [tableSelectedOption, setTableSelectedOption] = useState<SelectOption>();
   const [viewSelectedOption, setViewSelectedOption] = useState<SelectOption>();
+  const [firstLevelOptions, setFirstLevelOptions] = useState<SelectOption[]>();
+  const [secondLevelOptions, setSecondLevelOptions] = useState<SelectOption[]>();
+  const [thirdLevelOptions, setThirdLevelOptions] = useState<SelectOption[]>();
+  const [firstLevelSelectedOption, setFirstLevelSelectedOption] = useState<SelectOption>();
+  const [secondLevelSelectedOption, setSecondLevelSelectedOption] = useState<SelectOption>();
+  const [thirdLevelSelectedOption, setThirdLevelSelectedOption] = useState<SelectOption>();
 
   // Change options when active table or view changes
   useEffect(() => {
@@ -63,6 +70,19 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appActiveState]);
 
+  useEffect(() => {
+    console.log(1);
+    const FIRST_LEVEL_TABLES = findFirstLevelTables(allTables);
+    const firstLevelOptions = FIRST_LEVEL_TABLES.map((item) => {
+      const value = item._id;
+      const label = truncateTableName(item.name);
+      return { value, label };
+    });
+    setFirstLevelOptions(firstLevelOptions);
+    // This value should go in the first level of Settings
+    console.log('firstLevelTables', FIRST_LEVEL_TABLES);
+  }, [allTables]);
+
   return (
     <div
       className={`bg-white ${
@@ -93,7 +113,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                   }}
                 />
               </div>
-
               <div>
                 <p className="d-inline-block mb-2 mt-3">{intl.get('view').d(`${d.view}/`)}</p>
                 {/* Toggle table view */}
@@ -101,13 +120,58 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                   value={viewSelectedOption}
                   options={viewOptions}
                   onChange={(selectedOption: SelectOption) => {
-                    const type = 'view' as SettingsOption;
+                    const type = 'view' satisfies SettingsOption;
                     onTableOrViewChange(type, selectedOption);
                   }}
                 />
               </div>
             </div>
           )}
+          {/* CUSTOM SETTINGS */}
+          <div className={stylesPSettings.settings_dropdowns}>
+            <div>
+              <p className="d-inline-block mb-2">
+                {intl.get('customSettings.1stLevel').d(`${d.table}`)}
+              </p>
+              {/* Toggle table view */}
+              <DtableSelect
+                value={firstLevelSelectedOption}
+                options={firstLevelOptions}
+                onChange={(selectedOption: SelectOption) => {
+                  const type = 'first' satisfies CustomSettingsOption;
+                  // onTableOrViewChange(type, selectedOption);
+                }}
+              />
+            </div>
+            <div>
+              <p className="d-inline-block mb-2 mt-3">
+                {intl.get('customSettings.2ndLevel').d(`${d.view}/`)}
+              </p>
+              {/* Toggle table view */}
+              <DtableSelect
+                value={secondLevelSelectedOption}
+                options={secondLevelOptions}
+                onChange={(selectedOption: SelectOption) => {
+                  const type = 'second' satisfies CustomSettingsOption;
+                  // onTableOrViewChange(type, selectedOption);
+                }}
+              />
+            </div>
+            <div>
+              <p className="d-inline-block mb-2 mt-3">
+                {intl.get('customSettings.3rdLevel').d(`${d.view}/`)}
+              </p>
+              {/* Toggle table view */}
+              <DtableSelect
+                value={thirdLevelSelectedOption}
+                options={thirdLevelOptions}
+                onChange={(selectedOption: SelectOption) => {
+                  const type = 'third' satisfies CustomSettingsOption;
+                  // onTableOrViewChange(type, selectedOption);
+                }}
+              />
+            </div>
+          </div>
           {/* Insert custom settings */}
         </div>
       </div>

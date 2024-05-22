@@ -5,7 +5,7 @@
   "display_name": "Plugin template",
   "description": "Design your own SeaTable plugin.",
   "active_components": {
-    "settings_dropdowns": true,
+    "settings_dropdowns": false,
     "add_row_button": false
   }
 }

@@ -1,5 +1,4 @@
 import { IPluginTLProps } from '@/utils/custom-utils/interfaces/CustomPlugin';
-import { hasLinkColumn } from '../../../utils/custom-utils/utils';
 import { TableArray } from '@/utils/template-utils/interfaces/Table.interface';
 import React, { useEffect, useState } from 'react';
 
@@ -13,14 +12,6 @@ const PluginTL: React.FC<IPluginTLProps> = ({ appActiveState, allTables, pluginD
     // console.log('allTables', allTables);
     // console.log('pluginDataStore', pluginDataStore);
   }, []);
-
-  useEffect(() => {
-    console.log(1);
-    _allTables.map((t) => {
-      const what = hasLinkColumn(allTables);
-      console.log('what', what);
-    });
-  }, [_allTables]);
 
   return (
     <>
