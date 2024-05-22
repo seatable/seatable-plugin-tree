@@ -97,6 +97,27 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     setSecondLevelSelectedOption(secondLevelOptions[0]); // TBD: This should be set based on the value in Settings
   }, [firstLevelSelectedOption]);
 
+  useEffect(() => {
+    let thirdLevelOptions: SelectOption[] = [];
+    if (secondLevelSelectedOption) {
+      // Finding the third level tables, using the findSecondLevelTables function
+      // Using this function is correct as the third level tables are the second level tables of the second level table
+      const THIRD_LEVEL_TABLES = findSecondLevelTables(allTables, secondLevelSelectedOption);
+      thirdLevelOptions = THIRD_LEVEL_TABLES.map((item) => {
+        const value = item._id;
+        const label = truncateTableName(item.name);
+        return { value, label };
+      });
+    }
+    const filteredThirdLevelOptions = thirdLevelOptions.filter(
+      (item) =>
+        item.value !== firstLevelSelectedOption?.value &&
+        item.value !== secondLevelSelectedOption?.value
+    );
+    setThirdLevelOptions(filteredThirdLevelOptions);
+    setThirdLevelSelectedOption(filteredThirdLevelOptions[0]); // TBD: This should be set based on the value in Settings
+  }, [secondLevelSelectedOption]);
+
   return (
     <div
       className={`bg-white ${
@@ -168,6 +189,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                 options={secondLevelOptions}
                 onChange={(selectedOption: SelectOption) => {
                   const type = 'second' satisfies CustomSettingsOption;
+                  setSecondLevelSelectedOption(selectedOption);
                   // onTableOrViewChange(type, selectedOption);
                 }}
               />
@@ -182,6 +204,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                 options={thirdLevelOptions}
                 onChange={(selectedOption: SelectOption) => {
                   const type = 'third' satisfies CustomSettingsOption;
+                  setThirdLevelSelectedOption(selectedOption);
                   // onTableOrViewChange(type, selectedOption);
                 }}
               />
