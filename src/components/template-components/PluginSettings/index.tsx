@@ -79,8 +79,8 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       return { value, label };
     });
     setFirstLevelOptions(firstLevelOptions);
-    // This value should go in the first level of Settings
-    console.log('firstLevelTables', FIRST_LEVEL_TABLES);
+    setFirstLevelSelectedOption(firstLevelOptions[0]); // TBD: This should be set based on the value in Settings
+    console.log('firstLevelOptions', firstLevelOptions);
   }, [allTables]);
 
   return (
@@ -139,6 +139,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                 options={firstLevelOptions}
                 onChange={(selectedOption: SelectOption) => {
                   const type = 'first' satisfies CustomSettingsOption;
+                  setFirstLevelSelectedOption(selectedOption);
                   // onTableOrViewChange(type, selectedOption);
                 }}
               />
