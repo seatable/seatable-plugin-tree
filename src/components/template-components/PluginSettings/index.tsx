@@ -13,6 +13,7 @@ import intl from 'react-intl-universal';
 import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';
 import { findFirstLevelTables, findSecondLevelTables } from '../../../utils/custom-utils/utils';
 import { ILevelSelections } from '@/utils/custom-utils/interfaces/CustomPlugin';
+import { createLogicalAnd } from 'typescript';
 
 const { [DEFAULT_LOCALE]: d } = AVAILABLE_LOCALES;
 
@@ -27,6 +28,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   activeComponents,
   levelSelectionsDatabase,
   onLevelSelectionChange,
+  pluginPresets,
 }) => {
   // State variables for table and view options
   const [tableOptions, setTableOptions] = useState<SelectOption[]>();
@@ -43,7 +45,13 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   const [levelSelections, setLevelSelections] = useState<ILevelSelections>(levelSelectionsDatabase);
 
   useEffect(() => {
-    // SETTING THE FIRST/SECOND/THIRD LEVEL SELECTIONS VALUE FROM THE PLUGINDATASTORE or FROM A DEFAULT VALUE
+    console.log({ pluginPresets });
+    const activeLevelSelections = pluginPresets.find((p) => p._id === appActiveState.activePresetId)
+      ?.customSettings;
+    setFirstLevelSelectedOption(activeLevelSelections?.first?.selected);
+    setSecondLevelSelectedOption(activeLevelSelections?.second?.selected);
+    setThirdLevelSelectedOption(activeLevelSelections?.third?.selected);
+    // PLEASE CONTINUE HERE AND FIX HERE - WE SHOULD ALREADY SE THE DEFAULT VALUES
   }, []);
 
   useEffect(() => {
@@ -94,7 +102,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       return { value, label };
     });
     setFirstLevelOptions(firstLevelOptions);
-    setFirstLevelSelectedOption(firstLevelOptions[0]); // TBD: This should be retrieved from the PLUGIN DATA STORE
+    // setFirstLevelSelectedOption(firstLevelOptions[0]); // TBD: This should be retrieved from the PLUGIN DATA STORE
   }, [allTables]);
 
   useEffect(() => {
@@ -108,7 +116,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       });
     }
     setSecondLevelOptions(secondLevelOptions);
-    setSecondLevelSelectedOption(secondLevelOptions[0]); // TBD: This should be set based on the value in Settings
+    // setSecondLevelSelectedOption(secondLevelOptions[0]); // TBD: This should be set based on the value in Settings
   }, [firstLevelSelectedOption]);
 
   useEffect(() => {
@@ -132,7 +140,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
 
     setThirdLevelExists(filteredThirdLevelOptions.length === 0 ? false : true);
     setThirdLevelOptions(filteredThirdLevelOptions);
-    setThirdLevelSelectedOption(filteredThirdLevelOptions[0] ?? {}); // TBD: This should be set based on the value in Settings
+    // setThirdLevelSelectedOption(filteredThirdLevelOptions[0] ?? {}); // TBD: This should be set based on the value in Settings
   }, [secondLevelSelectedOption]);
 
   useEffect(() => {
