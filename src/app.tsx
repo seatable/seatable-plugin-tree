@@ -9,7 +9,7 @@ import Header from 'components/template-components/Header';
 import PluginSettings from 'components/template-components/PluginSettings';
 import PluginPresets from 'components/template-components/PluginPresets';
 import ResizableWrapper from 'components/template-components/ResizableWrapper';
-import PluginTL from 'components/custom-components/CustomPlugin';
+import PluginTL from './components/custom-components';
 
 // Import of Interfaces
 import {
@@ -54,6 +54,7 @@ import {
 import { SettingsOption } from '@/utils/types';
 import pluginContext from './plugin-context';
 import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';
+import { ILevelSelections } from './utils/custom-utils/interfaces/CustomPlugin';
 
 const App: React.FC<IAppProps> = (props) => {
   const { isDevelopment, lang } = props;
@@ -72,9 +73,9 @@ const App: React.FC<IAppProps> = (props) => {
   // For better understanding read the comments in the AppActiveState interface
   const [appActiveState, setAppActiveState] = useState<AppActiveState>(INITIAL_CURRENT_STATE);
   // Destructure properties from the app's active state for easier access
-  const { activeTable, activePresetId, activePresetIdx, activeViewRows, activeTableView } =
-    appActiveState;
-  const { collaborators } = window.app.state;
+  const { activeTable, activePresetId, activePresetIdx, activeViewRows } = appActiveState;
+  // Custom component state
+  const [levelSelections, setLevelSelections] = useState<ILevelSelections>();
 
   useEffect(() => {
     initPluginDTableData();
@@ -452,6 +453,32 @@ const App: React.FC<IAppProps> = (props) => {
   if (!isShowPlugin) {
     return null;
   }
+
+  // HANDLERS FOR CUSTOM COMPONENTS
+  const handleLevelSelection = (levelSelections: ILevelSelections) => {
+    console.log('has changed', levelSelections);
+
+    setLevelSelections(levelSelections);
+  };
+
+  const levelSelectionsDatabase = {
+    first: {
+      selected: { value: '', label: '' },
+      rows: [],
+      columns: [],
+    },
+    second: {
+      selected: { value: '', label: '' },
+      rows: [],
+      columns: [],
+    },
+    third: {
+      selected: { value: '', label: '' },
+      rows: [],
+      columns: [],
+    },
+  };
+
   return isLoading ? (
     <div></div>
   ) : (
@@ -490,6 +517,7 @@ const App: React.FC<IAppProps> = (props) => {
               appActiveState={appActiveState}
               pluginDataStore={pluginDataStore}
               activeViewRows={activeViewRows}
+              levelSelections={levelSelections!}
             />
             {activeComponents.add_row_button && (
               <button className={styles.add_row} onClick={addRowItem}>
@@ -512,6 +540,8 @@ const App: React.FC<IAppProps> = (props) => {
             pluginPresets={pluginPresets}
             onTableOrViewChange={onTableOrViewChange}
             onToggleSettings={toggleSettings}
+            onLevelSelectionChange={handleLevelSelection}
+            levelSelectionsDatabase={levelSelectionsDatabase}
           />
         </div>
       </div>

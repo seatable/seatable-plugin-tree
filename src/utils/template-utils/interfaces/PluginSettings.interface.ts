@@ -1,3 +1,4 @@
+import { ILevelSelections } from '@/utils/custom-utils/interfaces/CustomPlugin';
 import { SettingsOption } from '../../types';
 import { AppActiveState, IActiveComponents } from './App.interface';
 import { PresetSettings, PresetsArray } from './PluginPresets/Presets.interface';
@@ -12,6 +13,8 @@ interface IPluginSettingsProps {
   onToggleSettings: () => void;
   isShowSettings: boolean;
   activeComponents: IActiveComponents;
+  levelSelectionsDatabase: ILevelSelections;
+  onLevelSelectionChange: (levelSelections: ILevelSelections) => void;
 }
 
 interface SelectOption {
