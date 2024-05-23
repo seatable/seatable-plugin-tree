@@ -48,97 +48,51 @@ export function getColumnsByTableId(tId: string, allTables: TableArray) {
   return table?.columns;
 }
 
+const getLinkColumns = (columns: TableColumn[]) => {
+  return columns.filter((column) => column.type === 'link');
+};
+
 // // linkCol is the selected column that links to another table e.g PROJECTS or MILESTONES
 export const temporaryFunctionName = (
   tableId: string,
   rows: TableRow[],
-  linkCol: string,
-  allTables: TableArray
+  allTables: TableArray,
+  secondLevelId: string,
+  thirdLevelId?: string,
+  keyName?: string
 ) => {
-  const finalResult = [
-    {
-      firstLevelRows: [
-        {
-          rowId: 'AAA1',
-          rowColInfo: { col1: 'colName1' },
-          secondLevelRows: [
-            {
-              rowId: 'BBB4',
-              rowColInfo: { col1: 'colName1' },
-              thirdLevelRows: [{ rowId: 'CCC', rowColInfo: { col1: 'colName1' } }],
-            },
-            {
-              rowId: 'BBB5',
-              rowColInfo: { col1: 'colName1' },
-              thirdLevelRows: [{ rowId: 'CCC', rowColInfo: { col1: 'colName1' } }],
-            },
-            {
-              rowId: 'BBB6',
-              rowColInfo: { col1: 'colName1' },
-              thirdLevelRows: [{ rowId: 'CCC', rowColInfo: { col1: 'colName1' } }],
-            },
-          ],
-        },
-        {
-          rowId: 'AAA2',
-          rowColInfo: { col1: 'colName1' },
-          secondLevelRows: [
-            {
-              rowId: 'BBB1',
-              rowColInfo: { col1: 'colName1' },
-              thirdLevelRows: [{ rowId: 'CCC', rowColInfo: { col1: 'colName1' } }],
-            },
-            {
-              rowId: 'BBB34',
-              rowColInfo: { col1: 'colName1' },
-              thirdLevelRows: [{ rowId: 'CCC', rowColInfo: { col1: 'colName1' } }],
-            },
-            {
-              rowId: 'BBB6',
-              rowColInfo: { col1: 'colName1' },
-              thirdLevelRows: [{ rowId: 'CCC', rowColInfo: { col1: 'colName1' } }],
-            },
-          ],
-        },
-        {
-          rowId: 'AAA3',
-          rowColInfo: { col1: 'colName1' },
-          secondLevelRows: [
-            {
-              rowId: 'BBB4',
-              rowColInfo: { col1: 'colName1' },
-              thirdLevelRows: [{ rowId: 'CCC', rowColInfo: { col1: 'colName1' } }],
-            },
-          ],
-        },
-      ],
-    },
-  ];
-
   const table = allTables.find((t) => t._id === tableId);
-
   const linkedRows = window.dtableSDK.getTableLinkRows(rows, table);
-  console.log({ linkedRows });
   let allRowsInAllTables: any[] = [];
   allTables.map((t: Table) => {
     allRowsInAllTables.push(t.rows);
   });
-
   allRowsInAllTables = allRowsInAllTables.flat();
-  console.log({ allRowsInAllTables });
+  const linkedColumns = getLinkColumns(table?.columns || []);
+  const secondLevelKey = linkedColumns.find((c) => c.data.other_table_id === secondLevelId)?.key;
 
-  const arr2: any[] = [];
+  const finalResult: any[] = [];
 
   rows.map((r: any) => {
-    const _ids = linkedRows[r._id][linkCol];
-    const linked_rows = [];
+    const _ids = linkedRows[r._id][secondLevelKey!];
+    let secondLevelRows = [];
     for (const i in _ids) {
       const linked_row = allRowsInAllTables.find((r: any) => r._id === _ids[i]);
-      linked_rows.push(linked_row);
+      secondLevelRows.push(linked_row);
+    }
+    if (thirdLevelId) {
+      secondLevelRows = temporaryFunctionName(
+        secondLevelId,
+        secondLevelRows,
+        allTables,
+        thirdLevelId,
+        undefined,
+        'thirdLevelRows'
+      );
     }
 
-    arr2.push({ ...r, linked_rows });
+    finalResult.push({ ...r, [keyName ? keyName : 'secondLevelRows']: secondLevelRows });
   });
-
-  console.log({ arr2 }); // final data is an array of each rows with their linked rows
+  console.log({ finalResult });
+  return finalResult;
 };

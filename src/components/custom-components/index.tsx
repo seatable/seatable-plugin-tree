@@ -4,24 +4,29 @@ import React, { useState } from 'react';
 import { getRowsByTableId, temporaryFunctionName } from '../../utils/custom-utils/utils';
 
 const PluginTL: React.FC<IPluginTLProps> = ({ allTables, pluginDataStore, levelSelections }) => {
-  console.log({ levelSelections });
-  console.log({ pluginDataStore });
+  let dataToDisplay: any[] = [];
+
   if (levelSelections !== undefined) {
+    console.log(0);
+    console.log({ levelSelections });
     const firstRows = getRowsByTableId(levelSelections.first.selected.value, allTables);
+
     if (firstRows !== undefined) {
+      console.log(1);
       const firstTableId = levelSelections.first.selected.value;
-      temporaryFunctionName(
+      dataToDisplay = temporaryFunctionName(
         firstTableId,
         firstRows,
+        allTables,
         levelSelections.second.selected.value,
-        allTables
+        levelSelections?.third?.selected.value // Added nullish coalescing operator
       );
     }
   }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-      {/* {levelSelections && levelSelections.first.rows.map((i) => <ExpandableItem item={i} />)} */}
+      {dataToDisplay && dataToDisplay.map((i: any) => <ExpandableItem item={i} />)}
     </div>
   );
 };
