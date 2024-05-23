@@ -48,7 +48,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   const [levelSelections, setLevelSelections] = useState<ILevelSelections>(levelSelectionsDatabase);
 
   useEffect(() => {
-    console.log('allTables', allTables);
     if (levelSelections) {
       onLevelSelectionChange(levelSelections);
     }
@@ -197,18 +196,13 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                 options={firstLevelOptions}
                 onChange={(selectedOption: SelectOption) => {
                   setFirstLevelSelectedOption(selectedOption);
-                  const rows = getRowsByTableId(selectedOption.value, allTables);
-                  const columns = getColumnsByTableId(selectedOption.value, allTables);
-                  console.log('rows', rows);
-                  if (rows) {
-                    setLevelSelections(
-                      (prevState) =>
-                        ({
-                          ...prevState,
-                          first: { selected: selectedOption, rows, columns },
-                        }) as ILevelSelections
-                    );
-                  }
+                  setLevelSelections(
+                    (prevState) =>
+                      ({
+                        ...prevState,
+                        first: { selected: selectedOption },
+                      }) satisfies ILevelSelections
+                  );
                 }}
               />
             </div>
@@ -223,18 +217,13 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                 onChange={(selectedOption: SelectOption) => {
                   const type = 'second' satisfies CustomSettingsOption;
                   setSecondLevelSelectedOption(selectedOption);
-                  const rows = getRowsByTableId(selectedOption.value, allTables);
-                  const columns = getColumnsByTableId(selectedOption.value, allTables);
-                  console.log('rows', rows);
-                  if (rows) {
-                    setLevelSelections(
-                      (prevState) =>
-                        ({
-                          ...prevState,
-                          second: { selected: selectedOption, rows, columns },
-                        }) as ILevelSelections
-                    );
-                  }
+                  setLevelSelections(
+                    (prevState) =>
+                      ({
+                        ...prevState,
+                        second: { selected: selectedOption },
+                      }) satisfies ILevelSelections
+                  );
                 }}
               />
             </div>
@@ -251,18 +240,13 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                 onChange={(selectedOption: SelectOption) => {
                   const type = 'third' satisfies CustomSettingsOption;
                   setThirdLevelSelectedOption(selectedOption);
-                  const rows = getRowsByTableId(selectedOption.value, allTables);
-                  const columns = getColumnsByTableId(selectedOption.value, allTables);
-                  console.log('rows', rows);
-                  if (rows) {
-                    setLevelSelections(
-                      (prevState) =>
-                        ({
-                          ...prevState,
-                          third: { selected: selectedOption, rows, columns },
-                        }) as ILevelSelections
-                    );
-                  }
+                  setLevelSelections(
+                    (prevState) =>
+                      ({
+                        ...prevState,
+                        third: { selected: selectedOption },
+                      }) satisfies ILevelSelections
+                  );
                 }}
               />
             </div>

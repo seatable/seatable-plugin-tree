@@ -55,6 +55,66 @@ export const temporaryFunctionName = (
   linkCol: string,
   allTables: TableArray
 ) => {
+  const finalResult = [
+    {
+      firstLevelRows: [
+        {
+          rowId: 'AAA1',
+          rowColInfo: { col1: 'colName1' },
+          secondLevelRows: [
+            {
+              rowId: 'BBB4',
+              rowColInfo: { col1: 'colName1' },
+              thirdLevelRows: [{ rowId: 'CCC', rowColInfo: { col1: 'colName1' } }],
+            },
+            {
+              rowId: 'BBB5',
+              rowColInfo: { col1: 'colName1' },
+              thirdLevelRows: [{ rowId: 'CCC', rowColInfo: { col1: 'colName1' } }],
+            },
+            {
+              rowId: 'BBB6',
+              rowColInfo: { col1: 'colName1' },
+              thirdLevelRows: [{ rowId: 'CCC', rowColInfo: { col1: 'colName1' } }],
+            },
+          ],
+        },
+        {
+          rowId: 'AAA2',
+          rowColInfo: { col1: 'colName1' },
+          secondLevelRows: [
+            {
+              rowId: 'BBB1',
+              rowColInfo: { col1: 'colName1' },
+              thirdLevelRows: [{ rowId: 'CCC', rowColInfo: { col1: 'colName1' } }],
+            },
+            {
+              rowId: 'BBB34',
+              rowColInfo: { col1: 'colName1' },
+              thirdLevelRows: [{ rowId: 'CCC', rowColInfo: { col1: 'colName1' } }],
+            },
+            {
+              rowId: 'BBB6',
+              rowColInfo: { col1: 'colName1' },
+              thirdLevelRows: [{ rowId: 'CCC', rowColInfo: { col1: 'colName1' } }],
+            },
+          ],
+        },
+        {
+          rowId: 'AAA3',
+          rowColInfo: { col1: 'colName1' },
+          secondLevelRows: [
+            {
+              rowId: 'BBB4',
+              rowColInfo: { col1: 'colName1' },
+              thirdLevelRows: [{ rowId: 'CCC', rowColInfo: { col1: 'colName1' } }],
+            },
+          ],
+        },
+      ],
+    },
+  ];
+
   const table = allTables.find((t) => t._id === tableId);
 
   const linkedRows = window.dtableSDK.getTableLinkRows(rows, table);

@@ -457,25 +457,33 @@ const App: React.FC<IAppProps> = (props) => {
   // HANDLERS FOR CUSTOM COMPONENTS
   const handleLevelSelection = (levelSelections: ILevelSelections) => {
     console.log('has changed', levelSelections);
-
+    window.dtableSDK.updatePluginSettings(PLUGIN_NAME, {
+      ...pluginDataStore,
+      presets: pluginDataStore.presets.map((preset) => {
+        if (preset._id === activePresetId) {
+          return {
+            ...preset,
+            customSettings: {
+              ...preset.customSettings,
+              levelSelections: levelSelections,
+            },
+          };
+        }
+        return preset;
+      }),
+    });
     setLevelSelections(levelSelections);
   };
 
   const levelSelectionsDatabase = {
     first: {
       selected: { value: '', label: '' },
-      rows: [],
-      columns: [],
     },
     second: {
       selected: { value: '', label: '' },
-      rows: [],
-      columns: [],
     },
     third: {
       selected: { value: '', label: '' },
-      rows: [],
-      columns: [],
     },
   };
 
@@ -512,11 +520,8 @@ const App: React.FC<IAppProps> = (props) => {
           <div id={PLUGIN_ID} className={styles.body} style={{ padding: '10px', width: '100%' }}>
             {/* Note: The CustomPlugin component serves as a placeholder and should be replaced with your custom plugin component. */}
             <PluginTL
-              pluginPresets={pluginPresets}
               allTables={allTables}
-              appActiveState={appActiveState}
               pluginDataStore={pluginDataStore}
-              activeViewRows={activeViewRows}
               levelSelections={levelSelections!}
             />
             {activeComponents.add_row_button && (
