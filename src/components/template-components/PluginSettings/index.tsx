@@ -11,12 +11,7 @@ import { HiOutlineChevronDoubleRight } from 'react-icons/hi2';
 import { CustomSettingsOption, SettingsOption } from '@/utils/types';
 import intl from 'react-intl-universal';
 import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';
-import {
-  findFirstLevelTables,
-  findSecondLevelTables,
-  getColumnsByTableId,
-  getRowsByTableId,
-} from '../../../utils/custom-utils/utils';
+import { findFirstLevelTables, findSecondLevelTables } from '../../../utils/custom-utils/utils';
 import { ILevelSelections } from '@/utils/custom-utils/interfaces/CustomPlugin';
 
 const { [DEFAULT_LOCALE]: d } = AVAILABLE_LOCALES;
@@ -46,6 +41,10 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   const [thirdLevelSelectedOption, setThirdLevelSelectedOption] = useState<SelectOption>();
   const [thirdLevelExists, setThirdLevelExists] = useState<boolean>(true);
   const [levelSelections, setLevelSelections] = useState<ILevelSelections>(levelSelectionsDatabase);
+
+  useEffect(() => {
+    // SETTING THE FIRST/SECOND/THIRD LEVEL SELECTIONS VALUE FROM THE PLUGINDATASTORE or FROM A DEFAULT VALUE
+  }, []);
 
   useEffect(() => {
     if (levelSelections) {
