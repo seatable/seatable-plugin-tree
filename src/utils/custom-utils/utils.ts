@@ -1,5 +1,6 @@
 // MAKE HERE YOUR CUSTOM UTILS
 
+import { PresetsArray } from '../template-utils/interfaces/PluginPresets/Presets.interface';
 import { SelectOption } from '../template-utils/interfaces/PluginSettings.interface';
 import {
   Table,
@@ -8,7 +9,34 @@ import {
   TableRow,
 } from '../template-utils/interfaces/Table.interface';
 import { LINK_TYPE } from './constants';
-import { getTableById } from 'dtable-utils';
+
+export function levelSelectionDefaultFallback(
+  pluginPresets: PresetsArray,
+  activePresetId: string,
+  allTables: TableArray
+) {
+  const dataStoreLevelSelections = pluginPresets.find((p) => p._id === activePresetId)
+    ?.customSettings;
+
+  // Check if dataStoreLevelSelections is undefined or its first.selected.value is empty
+  if (
+    dataStoreLevelSelections === undefined ||
+    dataStoreLevelSelections.first.selected.value === ''
+  ) {
+    const { _id: fstId, name: fstName } = findFirstLevelTables(allTables)[0];
+    const { _id: sndId, name: sndName } = findSecondLevelTables(allTables, {
+      value: fstId,
+      label: fstName,
+    })[0];
+    return {
+      first: { selected: { value: fstId, label: fstName } },
+      second: { selected: { value: sndId, label: sndName } },
+    };
+  }
+
+  // If dataStoreLevelSelections is valid, return it as is or with modifications if necessary
+  return dataStoreLevelSelections;
+}
 
 export function findFirstLevelTables(tables: TableArray): TableArray {
   return tables.filter((table) => {

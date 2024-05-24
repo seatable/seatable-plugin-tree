@@ -55,6 +55,8 @@ import { SettingsOption } from '@/utils/types';
 import pluginContext from './plugin-context';
 import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';
 import { ILevelSelections } from './utils/custom-utils/interfaces/CustomPlugin';
+import { LEVEL_SEL_DEFAULT } from './utils/custom-utils/constants';
+import { levelSelectionDefaultFallback } from './utils/custom-utils/utils';
 
 const App: React.FC<IAppProps> = (props) => {
   const { isDevelopment, lang } = props;
@@ -75,7 +77,8 @@ const App: React.FC<IAppProps> = (props) => {
   // Destructure properties from the app's active state for easier access
   const { activeTable, activePresetId, activePresetIdx, activeViewRows } = appActiveState;
   // Custom component state
-  const [levelSelections, setLevelSelections] = useState<ILevelSelections>();
+  const [activeLevelSelections, setActiveLevelSelections] =
+    useState<ILevelSelections>(LEVEL_SEL_DEFAULT);
 
   useEffect(() => {
     initPluginDTableData();
@@ -146,6 +149,14 @@ const App: React.FC<IAppProps> = (props) => {
         pluginPresets,
         allTables
       );
+
+      const levelSelectionsDatabase = levelSelectionDefaultFallback(
+        pluginPresets,
+        pluginDataStore.activePresetId,
+        allTables
+      );
+
+      setActiveLevelSelections(levelSelectionsDatabase);
 
       onSelectPreset(pluginDataStore.activePresetId, appActiveState);
       return;
@@ -410,7 +421,7 @@ const App: React.FC<IAppProps> = (props) => {
   const onInsertRow = (table: Table, view: TableView, rowData: any) => {
     const columns = window.dtableSDK.getColumns(table);
     const newRowData: { [key: string]: any } = {};
-    console.log('columns', columns);
+
     for (const key in rowData) {
       const column = columns.find((column: TableColumn) => column.name === key);
 
@@ -456,35 +467,19 @@ const App: React.FC<IAppProps> = (props) => {
 
   // HANDLERS FOR CUSTOM COMPONENTS
   const handleLevelSelection = (levelSelections: ILevelSelections) => {
-    console.log('has changed', levelSelections);
     window.dtableSDK.updatePluginSettings(PLUGIN_NAME, {
       ...pluginDataStore,
       presets: pluginDataStore.presets.map((preset) => {
         if (preset._id === activePresetId) {
           return {
             ...preset,
-            customSettings: {
-              ...preset.customSettings,
-              levelSelections: levelSelections,
-            },
+            customSettings: levelSelections,
           };
         }
         return preset;
       }),
     });
-    setLevelSelections(levelSelections);
-  };
-
-  const levelSelectionsDatabase = {
-    first: {
-      selected: { value: '', label: '' },
-    },
-    second: {
-      selected: { value: '', label: '' },
-    },
-    third: {
-      selected: { value: '', label: '' },
-    },
+    setActiveLevelSelections(levelSelections);
   };
 
   return isLoading ? (
@@ -522,7 +517,7 @@ const App: React.FC<IAppProps> = (props) => {
             <PluginTL
               allTables={allTables}
               pluginDataStore={pluginDataStore}
-              levelSelections={levelSelections!}
+              levelSelections={activeLevelSelections}
             />
             {activeComponents.add_row_button && (
               <button className={styles.add_row} onClick={addRowItem}>
@@ -546,7 +541,7 @@ const App: React.FC<IAppProps> = (props) => {
             onTableOrViewChange={onTableOrViewChange}
             onToggleSettings={toggleSettings}
             onLevelSelectionChange={handleLevelSelection}
-            levelSelectionsDatabase={levelSelectionsDatabase}
+            activeLevelSelections={activeLevelSelections}
           />
         </div>
       </div>

@@ -7,12 +7,10 @@ const PluginTL: React.FC<IPluginTLProps> = ({ allTables, pluginDataStore, levelS
   let dataToDisplay: any[] = [];
 
   if (levelSelections !== undefined) {
-    console.log(0);
     console.log({ levelSelections });
     const firstRows = getRowsByTableId(levelSelections.first.selected.value, allTables);
 
     if (firstRows !== undefined) {
-      console.log(1);
       const firstTableId = levelSelections.first.selected.value;
       dataToDisplay = temporaryFunctionName(
         firstTableId,

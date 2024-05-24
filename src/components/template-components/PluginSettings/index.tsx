@@ -13,7 +13,6 @@ import intl from 'react-intl-universal';
 import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';
 import { findFirstLevelTables, findSecondLevelTables } from '../../../utils/custom-utils/utils';
 import { ILevelSelections } from '@/utils/custom-utils/interfaces/CustomPlugin';
-import { createLogicalAnd } from 'typescript';
 
 const { [DEFAULT_LOCALE]: d } = AVAILABLE_LOCALES;
 
@@ -26,7 +25,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   onToggleSettings,
   onTableOrViewChange,
   activeComponents,
-  levelSelectionsDatabase,
+  activeLevelSelections,
   onLevelSelectionChange,
   pluginPresets,
 }) => {
@@ -42,15 +41,19 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   const [secondLevelSelectedOption, setSecondLevelSelectedOption] = useState<SelectOption>();
   const [thirdLevelSelectedOption, setThirdLevelSelectedOption] = useState<SelectOption>();
   const [thirdLevelExists, setThirdLevelExists] = useState<boolean>(true);
-  const [levelSelections, setLevelSelections] = useState<ILevelSelections>(levelSelectionsDatabase);
+  const [levelSelections, setLevelSelections] = useState<ILevelSelections>(activeLevelSelections);
 
   useEffect(() => {
     console.log({ pluginPresets });
     const activeLevelSelections = pluginPresets.find((p) => p._id === appActiveState.activePresetId)
       ?.customSettings;
-    setFirstLevelSelectedOption(activeLevelSelections?.first?.selected);
-    setSecondLevelSelectedOption(activeLevelSelections?.second?.selected);
-    setThirdLevelSelectedOption(activeLevelSelections?.third?.selected);
+
+    if (activeLevelSelections) {
+      setFirstLevelSelectedOption(activeLevelSelections?.first?.selected);
+      setSecondLevelSelectedOption(activeLevelSelections?.second?.selected);
+      setThirdLevelSelectedOption(activeLevelSelections?.third?.selected);
+      onLevelSelectionChange(activeLevelSelections);
+    }
     // PLEASE CONTINUE HERE AND FIX HERE - WE SHOULD ALREADY SE THE DEFAULT VALUES
   }, []);
 

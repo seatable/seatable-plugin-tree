@@ -13,8 +13,8 @@ interface IPluginSettingsProps {
   onToggleSettings: () => void;
   isShowSettings: boolean;
   activeComponents: IActiveComponents;
-  levelSelectionsDatabase: ILevelSelections;
   onLevelSelectionChange: (levelSelections: ILevelSelections) => void;
+  activeLevelSelections: ILevelSelections;
 }
 
 interface SelectOption {
