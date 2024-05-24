@@ -128,7 +128,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       // Finding the third level tables, using the findSecondLevelTables function
       // Using this function is correct as the third level tables are the second level tables of the second level table
       const THIRD_LEVEL_TABLES = findSecondLevelTables(allTables, secondLevelSelectedOption);
-
       thirdLevelOptions = THIRD_LEVEL_TABLES.map((item) => {
         const value = item._id;
         const label = truncateTableName(item.name);
@@ -237,7 +236,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                 }}
               />
             </div>
-
             <div>
               <p className="d-inline-block mb-2 mt-3">
                 {intl.get('customSettings.3rdLevel').d(`${d.view}/`)}
