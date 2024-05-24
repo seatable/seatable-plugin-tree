@@ -81,7 +81,7 @@ const getLinkColumns = (columns: TableColumn[]) => {
 };
 
 // // linkCol is the selected column that links to another table e.g PROJECTS or MILESTONES
-export const temporaryFunctionName = (
+export const outputLevelsInfo = (
   tableId: string,
   rows: TableRow[],
   allTables: TableArray,
@@ -109,7 +109,7 @@ export const temporaryFunctionName = (
       secondLevelRows.push(linked_row);
     }
     if (thirdLevelId) {
-      secondLevelRows = temporaryFunctionName(
+      secondLevelRows = outputLevelsInfo(
         secondLevelId,
         secondLevelRows,
         allTables,
@@ -121,6 +121,6 @@ export const temporaryFunctionName = (
 
     finalResult.push({ ...r, [keyName ? keyName : 'secondLevelRows']: secondLevelRows });
   });
-  console.log({ finalResult });
+
   return finalResult;
 };

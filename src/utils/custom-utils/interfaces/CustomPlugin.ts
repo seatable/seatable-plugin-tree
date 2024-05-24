@@ -22,84 +22,15 @@ export interface LevelSelection {
   selected: SelectOption;
 }
 
-interface FirstLevelRow {
-  rowId: string;
-  rowColInfo: { col1: string };
-  secondLevelRows: SecondLevelRow[];
-}
-interface SecondLevelRow {
-  rowId: string;
-  rowColInfo: { col1: string };
-  thirdLevelRows: ThirdLevelRow[];
-}
-
-interface ThirdLevelRow {
-  rowId: string;
-  rowColInfo: { col1: string };
+export interface levelRowInfo {
+  _id: string;
+  _participants: any[];
+  _creator: string;
+  _ctime: string;
+  _last_modifier: string;
+  _mtime: string;
+  '0000': string;
+  secondLevelRows?: levelRowInfo[]; // TBD this name has to change ==> nextLevelRows
 }
 
-interface FinalResultItem {
-  firstLevelRows: FirstLevelRow[];
-}
-
-type FinalResult = FinalResultItem[];
-
-const finalResult = [
-  {
-    firstLevelRows: [
-      {
-        rowId: 'AAA1',
-        rowColInfo: { col1: 'colName1' },
-        secondLevelRows: [
-          {
-            rowId: 'BBB4',
-            rowColInfo: { col1: 'colName1' },
-            thirdLevelRows: [{ rowId: 'CCC', rowColInfo: { col1: 'colName1' } }],
-          },
-          {
-            rowId: 'BBB5',
-            rowColInfo: { col1: 'colName1' },
-            thirdLevelRows: [{ rowId: 'CCC', rowColInfo: { col1: 'colName1' } }],
-          },
-          {
-            rowId: 'BBB6',
-            rowColInfo: { col1: 'colName1' },
-            thirdLevelRows: [{ rowId: 'CCC', rowColInfo: { col1: 'colName1' } }],
-          },
-        ],
-      },
-      {
-        rowId: 'AAA2',
-        rowColInfo: { col1: 'colName1' },
-        secondLevelRows: [
-          {
-            rowId: 'BBB1',
-            rowColInfo: { col1: 'colName1' },
-            thirdLevelRows: [{ rowId: 'CCC', rowColInfo: { col1: 'colName1' } }],
-          },
-          {
-            rowId: 'BBB34',
-            rowColInfo: { col1: 'colName1' },
-            thirdLevelRows: [{ rowId: 'CCC', rowColInfo: { col1: 'colName1' } }],
-          },
-          {
-            rowId: 'BBB6',
-            rowColInfo: { col1: 'colName1' },
-            thirdLevelRows: [{ rowId: 'CCC', rowColInfo: { col1: 'colName1' } }],
-          },
-        ],
-      },
-      {
-        rowId: 'AAA3',
-        rowColInfo: { col1: 'colName1' },
-        secondLevelRows: [
-          {
-            rowId: 'BBB4',
-            rowColInfo: { col1: 'colName1' },
-            thirdLevelRows: [{ rowId: 'CCC', rowColInfo: { col1: 'colName1' } }],
-          },
-        ],
-      },
-    ],
-  },
-];
+export type levelsStructureInfo = levelRowInfo[];

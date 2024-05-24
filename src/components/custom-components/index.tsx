@@ -1,18 +1,21 @@
-import { IPluginTLProps } from '@/utils/custom-utils/interfaces/CustomPlugin';
+import {
+  IPluginTLProps,
+  levelRowInfo,
+  levelsStructureInfo,
+} from '@/utils/custom-utils/interfaces/CustomPlugin';
 import { TableRow } from '@/utils/template-utils/interfaces/Table.interface';
 import React, { useState } from 'react';
-import { getRowsByTableId, temporaryFunctionName } from '../../utils/custom-utils/utils';
+import { getRowsByTableId, outputLevelsInfo } from '../../utils/custom-utils/utils';
 
 const PluginTL: React.FC<IPluginTLProps> = ({ allTables, pluginDataStore, levelSelections }) => {
   let dataToDisplay: any[] = [];
 
   if (levelSelections !== undefined) {
-    console.log({ levelSelections });
     const firstRows = getRowsByTableId(levelSelections.first.selected.value, allTables);
 
     if (firstRows !== undefined) {
       const firstTableId = levelSelections.first.selected.value;
-      dataToDisplay = temporaryFunctionName(
+      dataToDisplay = outputLevelsInfo(
         firstTableId,
         firstRows,
         allTables,
@@ -21,17 +24,18 @@ const PluginTL: React.FC<IPluginTLProps> = ({ allTables, pluginDataStore, levelS
       );
     }
   }
-
+  console.log({ dataToDisplay });
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-      {dataToDisplay && dataToDisplay.map((i: any) => <ExpandableItem item={i} />)}
+      {dataToDisplay &&
+        dataToDisplay.map((i: levelRowInfo) => <ExpandableItem key={i._id} item={i} />)}
     </div>
   );
 };
 
 export default PluginTL;
 
-const ExpandableItem: React.FC<{ item: TableRow }> = ({ item }) => {
+const ExpandableItem: React.FC<{ item: levelRowInfo }> = ({ item }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   // console.log('item', item);
 
@@ -49,21 +53,16 @@ const ExpandableItem: React.FC<{ item: TableRow }> = ({ item }) => {
         onClick={() => setIsExpanded(!isExpanded)}>
         {item['0000']}
       </div>
-      {/* {isExpanded && (
+      {isExpanded && (
         <div style={{ paddingLeft: '20px' }}>
-          <div>
-            <strong>Selected:</strong> {item['0000']}
-          </div>
-          <div>
-            <strong>Options:</strong>
-            <ul>
-              {item.options.map((option) => (
-                <li key={option.value}>{option.label}</li>
+          <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+            {item &&
+              item.secondLevelRows?.map((i: levelRowInfo) => (
+                <ExpandableItem key={i._id} item={i} />
               ))}
-            </ul>
           </div>
         </div>
-      )} */}
+      )}
     </div>
   );
 };
