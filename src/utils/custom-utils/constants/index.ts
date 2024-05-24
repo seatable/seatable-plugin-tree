@@ -1,3 +1,5 @@
+import { ILevelSelections } from '../interfaces/CustomPlugin';
+
 export function customUtils() {
   console.log('custom utils');
 }
@@ -8,4 +10,14 @@ const LINK_TYPE = {
   formula2nd: 'link-formula-2nd',
 };
 
-export { LINK_TYPE };
+const defaultSelectOption = {
+  value: '',
+  label: '',
+};
+const LEVEL_SEL_DEFAULT: ILevelSelections = {
+  first: { selected: defaultSelectOption },
+  second: { selected: defaultSelectOption },
+  third: { selected: defaultSelectOption },
+};
+
+export { LINK_TYPE, LEVEL_SEL_DEFAULT };

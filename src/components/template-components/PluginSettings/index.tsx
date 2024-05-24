@@ -12,6 +12,7 @@ import { CustomSettingsOption, SettingsOption } from '@/utils/types';
 import intl from 'react-intl-universal';
 import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';
 import { findFirstLevelTables, findSecondLevelTables } from '../../../utils/custom-utils/utils';
+import { ILevelSelections } from '@/utils/custom-utils/interfaces/CustomPlugin';
 
 const { [DEFAULT_LOCALE]: d } = AVAILABLE_LOCALES;
 
@@ -24,6 +25,9 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   onToggleSettings,
   onTableOrViewChange,
   activeComponents,
+  activeLevelSelections,
+  onLevelSelectionChange,
+  pluginPresets,
 }) => {
   // State variables for table and view options
   const [tableOptions, setTableOptions] = useState<SelectOption[]>();
@@ -36,6 +40,28 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   const [firstLevelSelectedOption, setFirstLevelSelectedOption] = useState<SelectOption>();
   const [secondLevelSelectedOption, setSecondLevelSelectedOption] = useState<SelectOption>();
   const [thirdLevelSelectedOption, setThirdLevelSelectedOption] = useState<SelectOption>();
+  const [thirdLevelExists, setThirdLevelExists] = useState<boolean>(true);
+  const [levelSelections, setLevelSelections] = useState<ILevelSelections>(activeLevelSelections);
+
+  useEffect(() => {
+    console.log({ pluginPresets });
+    const activeLevelSelections = pluginPresets.find((p) => p._id === appActiveState.activePresetId)
+      ?.customSettings;
+
+    if (activeLevelSelections) {
+      setFirstLevelSelectedOption(activeLevelSelections?.first?.selected);
+      setSecondLevelSelectedOption(activeLevelSelections?.second?.selected);
+      setThirdLevelSelectedOption(activeLevelSelections?.third?.selected);
+      onLevelSelectionChange(activeLevelSelections);
+    }
+    // PLEASE CONTINUE HERE AND FIX HERE - WE SHOULD ALREADY SE THE DEFAULT VALUES
+  }, []);
+
+  useEffect(() => {
+    if (levelSelections) {
+      onLevelSelectionChange(levelSelections);
+    }
+  }, [levelSelections]);
 
   // Change options when active table or view changes
   useEffect(() => {
@@ -72,7 +98,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   }, [appActiveState]);
 
   useEffect(() => {
-    console.log(1);
     const FIRST_LEVEL_TABLES = findFirstLevelTables(allTables);
     const firstLevelOptions = FIRST_LEVEL_TABLES.map((item) => {
       const value = item._id;
@@ -80,7 +105,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       return { value, label };
     });
     setFirstLevelOptions(firstLevelOptions);
-    setFirstLevelSelectedOption(firstLevelOptions[0]); // TBD: This should be set based on the value in Settings
+    // setFirstLevelSelectedOption(firstLevelOptions[0]); // TBD: This should be retrieved from the PLUGIN DATA STORE
   }, [allTables]);
 
   useEffect(() => {
@@ -94,7 +119,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       });
     }
     setSecondLevelOptions(secondLevelOptions);
-    setSecondLevelSelectedOption(secondLevelOptions[0]); // TBD: This should be set based on the value in Settings
+    // setSecondLevelSelectedOption(secondLevelOptions[0]); // TBD: This should be set based on the value in Settings
   }, [firstLevelSelectedOption]);
 
   useEffect(() => {
@@ -114,10 +139,15 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
         item.value !== firstLevelSelectedOption?.value &&
         item.value !== secondLevelSelectedOption?.value
     );
+
+    setThirdLevelExists(filteredThirdLevelOptions.length === 0 ? false : true);
     setThirdLevelOptions(filteredThirdLevelOptions);
-    setThirdLevelSelectedOption(filteredThirdLevelOptions[0]); // TBD: This should be set based on the value in Settings
+    // setThirdLevelSelectedOption(filteredThirdLevelOptions[0] ?? {}); // TBD: This should be set based on the value in Settings
   }, [secondLevelSelectedOption]);
 
+  useEffect(() => {
+    console.log('levelSelections', levelSelections);
+  }, [levelSelections]);
 
   return (
     <div
@@ -174,9 +204,14 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                 value={firstLevelSelectedOption}
                 options={firstLevelOptions}
                 onChange={(selectedOption: SelectOption) => {
-                  const type = 'first' satisfies CustomSettingsOption;
                   setFirstLevelSelectedOption(selectedOption);
-                  // onTableOrViewChange(type, selectedOption);
+                  setLevelSelections(
+                    (prevState) =>
+                      ({
+                        ...prevState,
+                        first: { selected: selectedOption },
+                      }) satisfies ILevelSelections
+                  );
                 }}
               />
             </div>
@@ -190,10 +225,14 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                 options={secondLevelOptions}
                 onChange={(selectedOption: SelectOption) => {
                   const type = 'second' satisfies CustomSettingsOption;
-
                   setSecondLevelSelectedOption(selectedOption);
-
-                  // onTableOrViewChange(type, selectedOption);
+                  setLevelSelections(
+                    (prevState) =>
+                      ({
+                        ...prevState,
+                        second: { selected: selectedOption },
+                      }) satisfies ILevelSelections
+                  );
                 }}
               />
             </div>
@@ -203,13 +242,19 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
               </p>
               {/* Toggle table view */}
               <DtableSelect
+                isDisabled={!thirdLevelExists}
                 value={thirdLevelSelectedOption}
                 options={thirdLevelOptions}
                 onChange={(selectedOption: SelectOption) => {
                   const type = 'third' satisfies CustomSettingsOption;
                   setThirdLevelSelectedOption(selectedOption);
-
-                  // onTableOrViewChange(type, selectedOption);
+                  setLevelSelections(
+                    (prevState) =>
+                      ({
+                        ...prevState,
+                        third: { selected: selectedOption },
+                      }) satisfies ILevelSelections
+                  );
                 }}
               />
             </div>

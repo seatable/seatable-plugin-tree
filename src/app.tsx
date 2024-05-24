@@ -9,7 +9,7 @@ import Header from 'components/template-components/Header';
 import PluginSettings from 'components/template-components/PluginSettings';
 import PluginPresets from 'components/template-components/PluginPresets';
 import ResizableWrapper from 'components/template-components/ResizableWrapper';
-import PluginTL from 'components/custom-components/CustomPlugin';
+import PluginTL from './components/custom-components';
 
 // Import of Interfaces
 import {
@@ -54,6 +54,9 @@ import {
 import { SettingsOption } from '@/utils/types';
 import pluginContext from './plugin-context';
 import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';
+import { ILevelSelections } from './utils/custom-utils/interfaces/CustomPlugin';
+import { LEVEL_SEL_DEFAULT } from './utils/custom-utils/constants';
+import { levelSelectionDefaultFallback } from './utils/custom-utils/utils';
 
 const App: React.FC<IAppProps> = (props) => {
   const { isDevelopment, lang } = props;
@@ -72,9 +75,10 @@ const App: React.FC<IAppProps> = (props) => {
   // For better understanding read the comments in the AppActiveState interface
   const [appActiveState, setAppActiveState] = useState<AppActiveState>(INITIAL_CURRENT_STATE);
   // Destructure properties from the app's active state for easier access
-  const { activeTable, activePresetId, activePresetIdx, activeViewRows, activeTableView } =
-    appActiveState;
-  const { collaborators } = window.app.state;
+  const { activeTable, activePresetId, activePresetIdx, activeViewRows } = appActiveState;
+  // Custom component state
+  const [activeLevelSelections, setActiveLevelSelections] =
+    useState<ILevelSelections>(LEVEL_SEL_DEFAULT);
 
   useEffect(() => {
     initPluginDTableData();
@@ -145,6 +149,14 @@ const App: React.FC<IAppProps> = (props) => {
         pluginPresets,
         allTables
       );
+
+      const levelSelectionsDatabase = levelSelectionDefaultFallback(
+        pluginPresets,
+        pluginDataStore.activePresetId,
+        allTables
+      );
+
+      setActiveLevelSelections(levelSelectionsDatabase);
 
       onSelectPreset(pluginDataStore.activePresetId, appActiveState);
       return;
@@ -409,7 +421,7 @@ const App: React.FC<IAppProps> = (props) => {
   const onInsertRow = (table: Table, view: TableView, rowData: any) => {
     const columns = window.dtableSDK.getColumns(table);
     const newRowData: { [key: string]: any } = {};
-    console.log('columns', columns);
+
     for (const key in rowData) {
       const column = columns.find((column: TableColumn) => column.name === key);
 
@@ -452,6 +464,24 @@ const App: React.FC<IAppProps> = (props) => {
   if (!isShowPlugin) {
     return null;
   }
+
+  // HANDLERS FOR CUSTOM COMPONENTS
+  const handleLevelSelection = (levelSelections: ILevelSelections) => {
+    window.dtableSDK.updatePluginSettings(PLUGIN_NAME, {
+      ...pluginDataStore,
+      presets: pluginDataStore.presets.map((preset) => {
+        if (preset._id === activePresetId) {
+          return {
+            ...preset,
+            customSettings: levelSelections,
+          };
+        }
+        return preset;
+      }),
+    });
+    setActiveLevelSelections(levelSelections);
+  };
+
   return isLoading ? (
     <div></div>
   ) : (
@@ -485,11 +515,9 @@ const App: React.FC<IAppProps> = (props) => {
           <div id={PLUGIN_ID} className={styles.body} style={{ padding: '10px', width: '100%' }}>
             {/* Note: The CustomPlugin component serves as a placeholder and should be replaced with your custom plugin component. */}
             <PluginTL
-              pluginPresets={pluginPresets}
               allTables={allTables}
-              appActiveState={appActiveState}
               pluginDataStore={pluginDataStore}
-              activeViewRows={activeViewRows}
+              levelSelections={activeLevelSelections}
             />
             {activeComponents.add_row_button && (
               <button className={styles.add_row} onClick={addRowItem}>
@@ -512,6 +540,8 @@ const App: React.FC<IAppProps> = (props) => {
             pluginPresets={pluginPresets}
             onTableOrViewChange={onTableOrViewChange}
             onToggleSettings={toggleSettings}
+            onLevelSelectionChange={handleLevelSelection}
+            activeLevelSelections={activeLevelSelections}
           />
         </div>
       </div>
