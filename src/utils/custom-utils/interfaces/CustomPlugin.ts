@@ -30,7 +30,7 @@ export interface levelRowInfo {
   _last_modifier: string;
   _mtime: string;
   '0000': string;
-  secondLevelRows?: levelRowInfo[]; // TBD this name has to change ==> nextLevelRows
+  nextLevelRows?: levelRowInfo[]; // TBD this name has to change ==> nextLevelRows
 }
 
 export type levelsStructureInfo = levelRowInfo[];

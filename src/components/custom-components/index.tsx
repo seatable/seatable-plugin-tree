@@ -1,13 +1,8 @@
-import {
-  IPluginTLProps,
-  levelRowInfo,
-  levelsStructureInfo,
-} from '@/utils/custom-utils/interfaces/CustomPlugin';
-import { TableRow } from '@/utils/template-utils/interfaces/Table.interface';
+import { IPluginTLProps, levelRowInfo } from '@/utils/custom-utils/interfaces/CustomPlugin';
 import React, { useState } from 'react';
 import { getRowsByTableId, outputLevelsInfo } from '../../utils/custom-utils/utils';
 
-const PluginTL: React.FC<IPluginTLProps> = ({ allTables, pluginDataStore, levelSelections }) => {
+const PluginTL: React.FC<IPluginTLProps> = ({ allTables, levelSelections }) => {
   let dataToDisplay: any[] = [];
 
   if (levelSelections !== undefined) {
@@ -15,13 +10,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({ allTables, pluginDataStore, levelS
 
     if (firstRows !== undefined) {
       const firstTableId = levelSelections.first.selected.value;
-      dataToDisplay = outputLevelsInfo(
-        firstTableId,
-        firstRows,
-        allTables,
-        levelSelections.second.selected.value,
-        levelSelections?.third?.selected.value // Added nullish coalescing operator
-      );
+      dataToDisplay = outputLevelsInfo(firstTableId, firstRows, allTables, levelSelections);
     }
   }
   console.log({ dataToDisplay });
@@ -37,7 +26,6 @@ export default PluginTL;
 
 const ExpandableItem: React.FC<{ item: levelRowInfo }> = ({ item }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  // console.log('item', item);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
@@ -57,9 +45,7 @@ const ExpandableItem: React.FC<{ item: levelRowInfo }> = ({ item }) => {
         <div style={{ paddingLeft: '20px' }}>
           <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
             {item &&
-              item.secondLevelRows?.map((i: levelRowInfo) => (
-                <ExpandableItem key={i._id} item={i} />
-              ))}
+              item.nextLevelRows?.map((i: levelRowInfo) => <ExpandableItem key={i._id} item={i} />)}
           </div>
         </div>
       )}

@@ -9,6 +9,7 @@ import {
   TableRow,
 } from '../template-utils/interfaces/Table.interface';
 import { LINK_TYPE } from './constants';
+import { ILevelSelections } from './interfaces/CustomPlugin';
 
 export function levelSelectionDefaultFallback(
   pluginPresets: PresetsArray,
@@ -85,42 +86,41 @@ export const outputLevelsInfo = (
   tableId: string,
   rows: TableRow[],
   allTables: TableArray,
-  secondLevelId: string,
-  thirdLevelId?: string,
+  levelSelections: ILevelSelections,
   keyName?: string
 ) => {
+  const secondLevelId = levelSelections.second.selected.value;
+  const thirdLevelId = levelSelections.third?.selected.value;
   const table = allTables.find((t) => t._id === tableId);
   const linkedRows = window.dtableSDK.getTableLinkRows(rows, table);
-  let allRowsInAllTables: any[] = [];
-  allTables.map((t: Table) => {
-    allRowsInAllTables.push(t.rows);
-  });
-  allRowsInAllTables = allRowsInAllTables.flat();
+  const allRowsInAllTables: TableRow[] = allTables.flatMap((t: Table) => t.rows);
   const linkedColumns = getLinkColumns(table?.columns || []);
   const secondLevelKey = linkedColumns.find((c) => c.data.other_table_id === secondLevelId)?.key;
-
+  if (secondLevelKey === undefined) return [];
   const finalResult: any[] = [];
 
-  rows.map((r: any) => {
-    const _ids = linkedRows[r._id][secondLevelKey!];
+  rows.forEach((r: TableRow) => {
+    const _ids = linkedRows[r._id][secondLevelKey];
     let secondLevelRows = [];
     for (const i in _ids) {
-      const linked_row = allRowsInAllTables.find((r: any) => r._id === _ids[i]);
-      secondLevelRows.push(linked_row);
+      const linked_row = allRowsInAllTables.find((r: TableRow) => r._id === _ids[i]);
+      if (linked_row) {
+        // Check if linkedRow is not undefined
+        secondLevelRows.push(linked_row);
+      }
     }
     if (thirdLevelId) {
       secondLevelRows = outputLevelsInfo(
         secondLevelId,
         secondLevelRows,
         allTables,
-        thirdLevelId,
-        undefined,
-        'thirdLevelRows'
+        levelSelections,
+        'nextLevelRows'
       );
     }
 
-    finalResult.push({ ...r, [keyName ? keyName : 'secondLevelRows']: secondLevelRows });
+    finalResult.push({ ...r, [keyName ? keyName : 'nextLevelRows']: secondLevelRows });
   });
-
+  console.log({ finalResult });
   return finalResult;
 };
