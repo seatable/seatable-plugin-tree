@@ -97,6 +97,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     setSecondLevelSelectedOption(secondLevelOptions[0]); // TBD: This should be set based on the value in Settings
   }, [firstLevelSelectedOption]);
 
+
   return (
     <div
       className={`bg-white ${
