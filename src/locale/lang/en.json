@@ -6,5 +6,10 @@
   "preset_rename": "Rename",
   "preset_duplicate": "Duplicate",
   "preset_delete": "Delete",
-  "preset_warn_exist": "Please enter a unique preset name"
+  "preset_warn_exist": "Please enter a unique preset name",
+  "customSettings": {
+    "1stLevel": "Select Level 1",
+    "2ndLevel": "Select Level 2",
+    "3rdLevel": "Select Level 3"
+  }
 }

@@ -1,17 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
 import React, { useEffect, useState } from 'react';
+import info from '../src/plugin-config/info.json';
 import { FaPlus } from 'react-icons/fa6';
+import intl from 'react-intl-universal';
 // Import of Component
 import Header from 'components/template-components/Header';
 import PluginSettings from 'components/template-components/PluginSettings';
 import PluginPresets from 'components/template-components/PluginPresets';
 import ResizableWrapper from 'components/template-components/ResizableWrapper';
-import CustomPlugin from 'components/custom-components/CustomPlugin';
+import PluginTL from 'components/custom-components/CustomPlugin';
+
 // Import of Interfaces
 import {
   AppActiveState,
   AppIsShowState,
+  IActiveComponents,
   IAppProps,
   IPluginDataStore,
 } from '@/utils/template-utils/interfaces/App.interface';
@@ -49,15 +53,19 @@ import {
 } from 'utils/template-utils/utils';
 import { SettingsOption } from '@/utils/types';
 import pluginContext from './plugin-context';
+import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';
 
 const App: React.FC<IAppProps> = (props) => {
   const { isDevelopment, lang } = props;
+  const { [DEFAULT_LOCALE]: d } = AVAILABLE_LOCALES;
+
   // Boolean state to show/hide the plugin's components
   const [isShowState, setIsShowState] = useState<AppIsShowState>(INITIAL_IS_SHOW_STATE);
   const { isShowPlugin, isShowSettings, isLoading, isShowPresets } = isShowState;
   // Tables, Presets, Views as dataStates. The main data of the plugin
   const [allTables, setAllTables] = useState<TableArray>([]);
   const [activeTableViews, setActiveTableViews] = useState<TableViewArray>([]);
+  const [activeComponents, setActiveComponents] = useState<IActiveComponents>({});
   const [pluginDataStore, setPluginDataStore] = useState<IPluginDataStore>(DEFAULT_PLUGIN_DATA);
   const [pluginPresets, setPluginPresets] = useState<PresetsArray>([]);
   // appActiveState: Define the app's active Preset + (Table + View) state using the useState hook
@@ -114,11 +122,17 @@ const App: React.FC<IAppProps> = (props) => {
   };
 
   const resetData = () => {
-    let allTables: TableArray = window.dtableSDK.getTables(); // All the Tables of the Base
-    let activeTable: Table = window.dtableSDK.getActiveTable(); // How is the ActiveTable Set? allTables[0]?
-    let activeTableViews: TableViewArray = activeTable.views; // All the Views of the specific Active Table
-    let pluginDataStore: IPluginDataStore = getPluginDataStore(activeTable, PLUGIN_NAME);
-    let pluginPresets: PresetsArray = pluginDataStore.presets; // An array with all the Presets
+    const allTables: TableArray = window.dtableSDK.getTables(); // All the Tables of the Base
+    const activeTable: Table = window.dtableSDK.getActiveTable(); // How is the ActiveTable Set? allTables[0]?
+    const activeTableViews: TableViewArray = activeTable.views; // All the Views of the specific Active Table
+    const pluginDataStore: IPluginDataStore = getPluginDataStore(activeTable, PLUGIN_NAME);
+    const pluginPresets: PresetsArray = pluginDataStore.presets; // An array with all the Presets
+
+    setActiveComponents((prevState) => ({
+      ...prevState,
+      settingsDropDowns: info.active_components.settings_dropdowns,
+      add_row_button: info.active_components.add_row_button,
+    }));
 
     setPluginDataStore(pluginDataStore);
     setAllTables(allTables);
@@ -185,6 +199,7 @@ const App: React.FC<IAppProps> = (props) => {
       updatedActiveState = {
         ...newPresetActiveState,
       };
+      // eslint-disable-next-line
       updatedActiveTableViews = newPresetActiveState?.activeTable?.views!;
     } else {
       const activePreset = pluginPresets.find((preset) => preset._id === presetId);
@@ -230,10 +245,10 @@ const App: React.FC<IAppProps> = (props) => {
     _activePresetIdx: number,
     updatedPresets: PresetsArray,
     pluginDataStore: IPluginDataStore,
-    activePresetId: string,
-    callBack: any = null
+    activePresetId: string
+    // callBack: any = null
   ) => {
-    let _pluginDataStore = {
+    const _pluginDataStore = {
       ...pluginDataStore,
       activePresetId: activePresetId,
       activePresetIdx: _activePresetIdx,
@@ -258,17 +273,19 @@ const App: React.FC<IAppProps> = (props) => {
    * data from the available tables, and updates the active state accordingly.
    */
   const updateActiveData = () => {
-    let allTables: TableArray = window.dtableSDK.getTables();
-    let tableOfPresetOne = pluginPresets[0].settings?.selectedTable || {
+    const allTables: TableArray = window.dtableSDK.getTables();
+    const tableOfPresetOne = pluginPresets[0].settings?.selectedTable || {
       value: allTables[0]._id,
       label: allTables[0].name,
     };
-    let viewOfPresetOne = pluginPresets[0].settings?.selectedView || {
+    const viewOfPresetOne = pluginPresets[0].settings?.selectedView || {
       value: allTables[0].views[0]._id,
       label: allTables[0].views[0].name,
     };
-    let table = allTables.find((t) => t._id === tableOfPresetOne.value)!;
-    let view = table?.views.find((v) => v._id === viewOfPresetOne.value)!;
+    // eslint-disable-next-line
+    const table = allTables.find((t) => t._id === tableOfPresetOne.value)!;
+    // eslint-disable-next-line
+    const view = table?.views.find((v) => v._id === viewOfPresetOne.value)!;
 
     const newPresetActiveState: AppActiveState = {
       activePresetId: pluginPresets[0]._id,
@@ -309,6 +326,7 @@ const App: React.FC<IAppProps> = (props) => {
 
     switch (type) {
       case 'table':
+        // eslint-disable-next-line
         const _activeTable = allTables.find((s) => s._id === option.value)!;
         _activeViewRows = window.dtableSDK.getViewRows(_activeTable.views[0], _activeTable);
         setActiveTableViews(_activeTable.views);
@@ -338,7 +356,7 @@ const App: React.FC<IAppProps> = (props) => {
         break;
 
       case 'view':
-        let _activeTableView =
+        const _activeTableView =
           activeTableViews.find((s) => s._id === option.value) || activeTableViews[0];
         _activeViewRows = window.dtableSDK.getViewRows(_activeTableView, activeTable);
         setAppActiveState((prevState) => ({
@@ -371,7 +389,7 @@ const App: React.FC<IAppProps> = (props) => {
 
   // functions for add row functionality
   const onAddItem = (view: TableView, table: Table, rowID: string) => {
-    let rowData = getInsertedRowInitData(view, table, rowID);
+    const rowData = getInsertedRowInitData(view, table, rowID);
     onInsertRow(table, view, rowData);
   };
 
@@ -380,21 +398,21 @@ const App: React.FC<IAppProps> = (props) => {
       return;
     }
 
-    let rows = appActiveState.activeViewRows;
+    const rows = appActiveState.activeViewRows;
     if (rows) {
-      let row_id = rows.length > 0 ? rows[rows.length - 1]._id : '';
+      const row_id = rows.length > 0 ? rows[rows.length - 1]._id : '';
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       onAddItem(appActiveState.activeTableView!, appActiveState.activeTable!, row_id);
     }
   };
 
   const onInsertRow = (table: Table, view: TableView, rowData: any) => {
-    let columns = window.dtableSDK.getColumns(table);
-    let newRowData: { [key: string]: any } = {};
+    const columns = window.dtableSDK.getColumns(table);
+    const newRowData: { [key: string]: any } = {};
     console.log('columns', columns);
-    for (let key in rowData) {
-      console.log('key', key);
-      let column = columns.find((column: TableColumn) => column.name === key);
-      console.log('column.type', column.type);
+    for (const key in rowData) {
+      const column = columns.find((column: TableColumn) => column.name === key);
+
       if (!column) {
         continue;
       }
@@ -405,9 +423,9 @@ const App: React.FC<IAppProps> = (props) => {
           break;
         }
         case 'multiple-select': {
-          let multipleSelectNameList: any[] = [];
+          const multipleSelectNameList: any[] = [];
           rowData[key].forEach((multiItemId: any) => {
-            let multiSelectItemName = column.data.options.find(
+            const multiSelectItemName = column.data.options.find(
               (multiItem: any) => multiItem.id === multiItemId
             );
             if (multiSelectItemName) {
@@ -422,10 +440,10 @@ const App: React.FC<IAppProps> = (props) => {
       }
     }
 
-    let row_data = { ...newRowData };
+    const row_data = { ...newRowData };
     window.dtableSDK.appendRow(table, row_data, view);
-    let viewRows = window.dtableSDK.getViewRows(view, table);
-    let insertedRow = viewRows[viewRows.length - 1];
+    const viewRows = window.dtableSDK.getViewRows(view, table);
+    const insertedRow = viewRows[viewRows.length - 1];
     if (insertedRow) {
       pluginContext.expandRow(insertedRow, table);
     }
@@ -466,22 +484,27 @@ const App: React.FC<IAppProps> = (props) => {
           style={{ height: '100%', width: '100%', backgroundColor: '#f5f5f5' }}>
           <div id={PLUGIN_ID} className={styles.body} style={{ padding: '10px', width: '100%' }}>
             {/* Note: The CustomPlugin component serves as a placeholder and should be replaced with your custom plugin component. */}
-            <CustomPlugin
+            <PluginTL
               pluginPresets={pluginPresets}
+              allTables={allTables}
               appActiveState={appActiveState}
+              pluginDataStore={pluginDataStore}
               activeViewRows={activeViewRows}
             />
-            <button className={styles.add_row} onClick={addRowItem}>
-              <FaPlus size={30} color="#fff" />
-              {isDevelopment && (
-                <div style={{ margin: 0 }} className={styles.add_row_toolTip}>
-                  <p>Adding a row only works in production</p>
-                </div>
-              )}
-            </button>
+            {activeComponents.add_row_button && (
+              <button className={styles.add_row} onClick={addRowItem}>
+                <FaPlus size={30} color="#fff" />
+                {isDevelopment && (
+                  <div style={{ margin: 0 }} className={styles.add_row_toolTip}>
+                    <p>{intl.get('add_row').d(`${d.add_row}`)}</p>
+                  </div>
+                )}
+              </button>
+            )}
           </div>
 
           <PluginSettings
+            activeComponents={activeComponents}
             isShowSettings={isShowSettings}
             allTables={allTables}
             appActiveState={appActiveState}

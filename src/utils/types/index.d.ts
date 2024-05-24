@@ -11,3 +11,4 @@ declare global {
 }
 
 export type SettingsOption = 'table' | 'view';
+export type CustomSettingsOption = 'first' | 'second' | 'third';

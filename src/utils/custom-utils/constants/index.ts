@@ -1,4 +1,11 @@
-// External imports
-import info from '../../../plugin-config/info.json';
+export function customUtils() {
+  console.log('custom utils');
+}
 
-const INFO = info;
+const LINK_TYPE = {
+  link: 'link',
+  formula: 'link-formula',
+  formula2nd: 'link-formula-2nd',
+};
+
+export { LINK_TYPE };

@@ -3,11 +3,16 @@
     "browser": true,
     "es6": true
   },
-  "extends": ["react-app", "react-app/jest", "eslint:recommended", "prettier"],
-  "parser": "@babel/eslint-parser",
+  "extends": [
+    "react-app",
+    "react-app/jest",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
-      "experimentalObjectRestSpread": true,
       "jsx": true
     },
     "sourceType": "module",
@@ -15,7 +20,7 @@
       "presets": [["babel-preset-react-app", false], "babel-preset-react-app/prod"]
     }
   },
-  "plugins": ["react", "jsx-a11y"],
+  "plugins": ["react", "jsx-a11y", "@typescript-eslint"],
   "rules": {
     "linebreak-style": ["warn", "unix"],
     "quotes": ["warn", "single"],
@@ -26,7 +31,6 @@
         "omitLastInOneLineClassBody": true
       }
     ],
-
     "no-case-declarations": "off",
     "no-cond-assign": "warn",
     "no-redeclare": "warn",
@@ -36,13 +40,12 @@
     "no-irregular-whitespace": "warn",
     "no-console": "off",
     "no-useless-escape": "warn",
-
     "react/jsx-indent": ["warn", 2],
-    "react/prop-types": "warn",
+    "react/prop-types": "off",
     "react/display-name": "warn",
-
     "jsx-a11y/anchor-has-content": "off",
     "jsx-a11y/href-no-hash": "off",
-    "@typescript-eslint/no-unused-vars": ["off"]
+    "@typescript-eslint/no-unused-vars": ["warn"],
+    "@typescript-eslint/no-empty-function": "off"
   }
 }
