@@ -118,6 +118,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     setThirdLevelSelectedOption(filteredThirdLevelOptions[0]); // TBD: This should be set based on the value in Settings
   }, [secondLevelSelectedOption]);
 
+
   return (
     <div
       className={`bg-white ${
@@ -189,7 +190,9 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                 options={secondLevelOptions}
                 onChange={(selectedOption: SelectOption) => {
                   const type = 'second' satisfies CustomSettingsOption;
+
                   setSecondLevelSelectedOption(selectedOption);
+
                   // onTableOrViewChange(type, selectedOption);
                 }}
               />
@@ -205,6 +208,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                 onChange={(selectedOption: SelectOption) => {
                   const type = 'third' satisfies CustomSettingsOption;
                   setThirdLevelSelectedOption(selectedOption);
+
                   // onTableOrViewChange(type, selectedOption);
                 }}
               />
