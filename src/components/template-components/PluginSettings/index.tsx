@@ -11,7 +11,8 @@ import { HiOutlineChevronDoubleRight } from 'react-icons/hi2';
 import { CustomSettingsOption, SettingsOption } from '@/utils/types';
 import intl from 'react-intl-universal';
 import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';
-import { findFirstLevelTables } from '../../../utils/custom-utils/utils';
+import { findFirstLevelTables, findSecondLevelTables } from '../../../utils/custom-utils/utils';
+
 const { [DEFAULT_LOCALE]: d } = AVAILABLE_LOCALES;
 
 // PluginSettings component for managing table and view options
@@ -80,8 +81,22 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     });
     setFirstLevelOptions(firstLevelOptions);
     setFirstLevelSelectedOption(firstLevelOptions[0]); // TBD: This should be set based on the value in Settings
-    console.log('firstLevelOptions', firstLevelOptions);
   }, [allTables]);
+
+  useEffect(() => {
+    let secondLevelOptions: SelectOption[] = [];
+    if (firstLevelSelectedOption) {
+      const SECOND_LEVEL_TABLES = findSecondLevelTables(allTables, firstLevelSelectedOption);
+      secondLevelOptions = SECOND_LEVEL_TABLES.map((item) => {
+        const value = item._id;
+        const label = truncateTableName(item.name);
+        return { value, label };
+      });
+    }
+    setSecondLevelOptions(secondLevelOptions);
+    setSecondLevelSelectedOption(secondLevelOptions[0]); // TBD: This should be set based on the value in Settings
+  }, [firstLevelSelectedOption]);
+
 
   return (
     <div
