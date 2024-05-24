@@ -32,4 +32,3 @@ export function findSecondLevelTables(
   // Returning the second level tables
   return allTables.filter((t) => columnsWithLinkTypeIds.includes(t._id));
 }
-
