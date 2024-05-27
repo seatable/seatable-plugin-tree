@@ -303,7 +303,6 @@ export const getActiveTableAndActiveView = (
   type?: string,
   option?: { pId: string; pSettings: PresetSettings }
 ) => {
-  let tableViewObj;
   let table;
   let views;
   let view;
@@ -333,10 +332,10 @@ export const getActiveTableAndActiveView = (
     })!;
   }
 
-  return (tableViewObj = {
+  return {
     table: table,
     view: view,
-  } as IActiveTableAndView);
+  } as IActiveTableAndView;
 };
 
 /**

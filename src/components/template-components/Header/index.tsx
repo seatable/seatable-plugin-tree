@@ -9,6 +9,7 @@ import { HiOutlineChevronDoubleRight } from 'react-icons/hi2';
 
 const Header: React.FC<IHeaderProps> = (props) => {
   const { presetName, isShowPresets, onTogglePresets, togglePlugin } = props;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [customComponentContent, setCustomComponentContent] = useState<string | null>(null);
 
   useEffect(() => {
@@ -17,13 +18,6 @@ const Header: React.FC<IHeaderProps> = (props) => {
       setCustomComponentContent(input.innerHTML);
     }
   }, []);
-
-  const printPdfDocument = () => {
-    const originalContents = document.body.innerHTML;
-    // document.body.innerHTML = customComponentContent || '';
-    window.print();
-    // document.body.innerHTML = originalContents;
-  };
 
   const downloadPdfDocument = () => {
     const input = document.getElementById(PLUGIN_ID);
@@ -59,9 +53,6 @@ const Header: React.FC<IHeaderProps> = (props) => {
         className={`d-flex align-items-center justify-content-end ${styles.plugin_header_settings}`}>
         <span className={styles.plugin_header_icon_btn} onClick={downloadPdfDocument}>
           <span className="dtable-font dtable-icon-download"></span>
-        </span>
-        <span className={styles.plugin_header_icon_btn} onClick={printPdfDocument}>
-          <span className="dtable-font dtable-icon-print"></span>
         </span>
         <span className={styles.plugin_header_icon_btn} onClick={togglePlugin}>
           <span className="dtable-font dtable-icon-x btn-close"></span>

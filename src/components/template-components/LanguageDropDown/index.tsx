@@ -2,7 +2,12 @@ import React, { useEffect, useState } from 'react';
 import styles from 't_styles/Plugin.module.scss';
 import { AVAILABLE_LOCALES } from 'locale';
 
-const LanguageDropdown: React.FC<any> = (props) => {
+type LanguageDropdownProps = {
+  lang: string;
+  updateLanguageAndIntl: (lang: string) => void;
+};
+
+const LanguageDropdown: React.FC<LanguageDropdownProps> = (props) => {
   const { lang, updateLanguageAndIntl } = props;
   const [selectedLanguage, setSelectedLanguage] = useState<string>('en');
 

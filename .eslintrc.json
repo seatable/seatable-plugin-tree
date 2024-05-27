@@ -20,7 +20,7 @@
       "presets": [["babel-preset-react-app", false], "babel-preset-react-app/prod"]
     }
   },
-  "plugins": ["react", "jsx-a11y", "@typescript-eslint"],
+  "plugins": ["react", "jsx-a11y", "@typescript-eslint", "react-hooks"],
   "rules": {
     "linebreak-style": ["warn", "unix"],
     "quotes": ["warn", "single"],
@@ -43,6 +43,7 @@
     "react/jsx-indent": ["warn", 2],
     "react/prop-types": "off",
     "react/display-name": "warn",
+    "react-hooks/exhaustive-deps": "off",
     "jsx-a11y/anchor-has-content": "off",
     "jsx-a11y/href-no-hash": "off",
     "@typescript-eslint/no-unused-vars": ["warn"],

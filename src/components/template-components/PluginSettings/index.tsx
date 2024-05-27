@@ -119,7 +119,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       });
     }
     setSecondLevelOptions(secondLevelOptions);
-    // setSecondLevelSelectedOption(secondLevelOptions[0]); // TBD: This should be set based on the value in Settings
   }, [firstLevelSelectedOption]);
 
   useEffect(() => {

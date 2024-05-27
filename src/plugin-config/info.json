@@ -6,6 +6,6 @@
   "description": "Table relationships plugin",
   "active_components": {
     "settings_dropdowns": false,
-    "add_row_button": false
+    "add_row_button": true
   }
 }

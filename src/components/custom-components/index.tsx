@@ -1,9 +1,9 @@
-import { IPluginTLProps, levelRowInfo } from '@/utils/custom-utils/interfaces/CustomPlugin';
+import { IPluginTLProps, levelRowInfo, levelsStructureInfo } from '@/utils/custom-utils/interfaces/CustomPlugin';
 import React, { useState } from 'react';
 import { getRowsByTableId, outputLevelsInfo } from '../../utils/custom-utils/utils';
 
 const PluginTL: React.FC<IPluginTLProps> = ({ allTables, levelSelections }) => {
-  let dataToDisplay: any[] = [];
+  let dataToDisplay: levelsStructureInfo = [];
 
   if (levelSelections !== undefined) {
     const firstRows = getRowsByTableId(levelSelections.first.selected.value, allTables);
