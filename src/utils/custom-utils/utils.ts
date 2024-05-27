@@ -9,7 +9,7 @@ import {
   TableRow,
 } from '../template-utils/interfaces/Table.interface';
 import { LINK_TYPE } from './constants';
-import { ILevelSelections } from './interfaces/CustomPlugin';
+import { ILevelSelections, levelRowInfo, levelsStructureInfo } from './interfaces/CustomPlugin';
 
 export function levelSelectionDefaultFallback(
   pluginPresets: PresetsArray,
@@ -97,7 +97,7 @@ export const outputLevelsInfo = (
   const linkedColumns = getLinkColumns(table?.columns || []);
   const secondLevelKey = linkedColumns.find((c) => c.data.other_table_id === secondLevelId)?.key;
   if (secondLevelKey === undefined) return [];
-  const finalResult: any[] = [];
+  const finalResult: levelsStructureInfo = [];
 
   rows.forEach((r: TableRow) => {
     const _ids = linkedRows[r._id][secondLevelKey];
@@ -119,8 +119,12 @@ export const outputLevelsInfo = (
       );
     }
 
-    finalResult.push({ ...r, [keyName ? keyName : 'nextLevelRows']: secondLevelRows });
+    finalResult.push({
+      ...r,
+      '0000': r['0000'].toString(), // Ensure the '0000' property is included and convert it to a string
+      [keyName ? keyName : 'nextLevelRows']: secondLevelRows,
+    } satisfies levelRowInfo);
   });
-  console.log({ finalResult });
+
   return finalResult;
 };

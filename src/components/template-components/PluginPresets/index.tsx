@@ -6,6 +6,7 @@ import deepCopy from 'deep-copy';
 import icon from 'plugin-config/icon.png';
 import Preset from 'model/preset';
 import {
+  IPresetInfo,
   IPresetsProps,
   PresetSettings,
   PresetsArray,
@@ -60,6 +61,7 @@ const PluginPresets: React.FC<IPresetsProps> = ({
     setPluginPresets(pluginPresets);
   }, [pluginPresets]);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getSelectedTable = (tables: TableArray, settings: any = {}) => {
     const selectedTable = getTableByName(settings[TABLE_NAME]);
     if (!selectedTable) {
@@ -189,12 +191,13 @@ const PluginPresets: React.FC<IPresetsProps> = ({
   };
 
   // Duplicate a preset
-  const duplicatePreset = (p: any) => {
-    // anytofix
+  const duplicatePreset = (p: IPresetInfo) => {
     const { name, _id, settings } = p;
-    const _presetNames = _pluginPresets.map((p) => p.name);
-    const _presetName = appendPresetSuffix(name, _presetNames, 'copy');
-    addPreset(PresetHandleAction.duplicate, _presetName, { pId: _id, pSettings: settings });
+    if (settings) {
+      const _presetNames = _pluginPresets.map((p) => p.name);
+      const _presetName = appendPresetSuffix(name, _presetNames, 'copy');
+      addPreset(PresetHandleAction.duplicate, _presetName, { pId: _id, pSettings: settings });
+    }
   };
 
   // edit preset name
