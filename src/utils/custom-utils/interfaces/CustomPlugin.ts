@@ -1,6 +1,6 @@
 import { IPluginDataStore } from '@/utils/template-utils/interfaces/App.interface';
 import { SelectOption } from '@/utils/template-utils/interfaces/PluginSettings.interface';
-import { TableArray } from '@/utils/template-utils/interfaces/Table.interface';
+import { TableArray, TableColumn } from '@/utils/template-utils/interfaces/Table.interface';
 
 export interface IPluginTLProps {
   allTables: TableArray;
@@ -31,7 +31,14 @@ export interface levelRowInfo {
   _last_modifier: string;
   _mtime: string;
   '0000': string;
-  nextLevelRows?: levelRowInfo[]; // TBD this name has to change ==> nextLevelRows
+  columns: TableColumn[];
+  nextLevelRows?: levelRowInfo[];
+  secondLevelRows?: levelRowInfo[];
+  thirdLevelRows?: levelRowInfo[];
+}
+export interface HeaderRowProps {
+  columns: TableColumn[] | undefined;
+  tableName?: string;
 }
 
 export type levelsStructureInfo = levelRowInfo[];

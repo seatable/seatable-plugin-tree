@@ -9,7 +9,12 @@ import {
   TableRow,
 } from '../template-utils/interfaces/Table.interface';
 import { LINK_TYPE } from './constants';
-import { ILevelSelections, levelRowInfo, levelsStructureInfo } from './interfaces/CustomPlugin';
+import {
+  ILevelSelections,
+  LevelSelection,
+  levelRowInfo,
+  levelsStructureInfo,
+} from './interfaces/CustomPlugin';
 
 export function levelSelectionDefaultFallback(
   pluginPresets: PresetsArray,
@@ -85,12 +90,11 @@ const getLinkColumns = (columns: TableColumn[]) => {
 export const outputLevelsInfo = (
   tableId: string,
   rows: TableRow[],
+  secondLevelId: string,
   allTables: TableArray,
-  levelSelections: ILevelSelections,
+  thirdLevelId?: string,
   keyName?: string
 ) => {
-  const secondLevelId = levelSelections.second.selected.value;
-  const thirdLevelId = levelSelections.third?.selected.value;
   const table = allTables.find((t) => t._id === tableId);
   const linkedRows = window.dtableSDK.getTableLinkRows(rows, table);
   const allRowsInAllTables: TableRow[] = allTables.flatMap((t: Table) => t.rows);
@@ -98,6 +102,7 @@ export const outputLevelsInfo = (
   const secondLevelKey = linkedColumns.find((c) => c.data.other_table_id === secondLevelId)?.key;
   if (secondLevelKey === undefined) return [];
   const finalResult: levelsStructureInfo = [];
+  console.log({ linkedColumns });
 
   rows.forEach((r: TableRow) => {
     const _ids = linkedRows[r._id][secondLevelKey];
@@ -105,27 +110,66 @@ export const outputLevelsInfo = (
     for (const i in _ids) {
       const linked_row = allRowsInAllTables.find((r: TableRow) => r._id === _ids[i]);
       if (linked_row) {
-        // Check if linkedRow is not undefined
         secondLevelRows.push(linked_row);
       }
     }
+
     if (thirdLevelId) {
       secondLevelRows = outputLevelsInfo(
         secondLevelId,
         secondLevelRows,
+        thirdLevelId,
         allTables,
-        levelSelections,
-        'nextLevelRows'
+        undefined,
+        'thirdLevelRows'
       );
     }
 
     finalResult.push({
       _name: table?.name || '',
       ...r,
-      '0000': r['0000'].toString(), // Ensure the '0000' property is included and convert it to a string
-      [keyName ? keyName : 'nextLevelRows']: secondLevelRows,
+      columns: linkedColumns,
+      '0000': r['0000'].toString(),
+      [keyName ? keyName : 'secondLevelRows']: secondLevelRows,
     } satisfies levelRowInfo);
   });
 
   return finalResult;
 };
+
+export function getLevelSelectionAndTable(
+  level: number,
+  allTables: TableArray,
+  levelSelections: ILevelSelections
+) {
+  let levelSelectionIdx: keyof ILevelSelections | undefined;
+  type LevelRowKeys = 'nextLevelRows' | 'secondLevelRows' | 'thirdLevelRows';
+  let levelRows: LevelRowKeys;
+
+  switch (level) {
+    case 0:
+      levelSelectionIdx = 'first';
+      levelRows = 'nextLevelRows';
+      break;
+    case 1:
+      levelSelectionIdx = 'second';
+      levelRows = 'secondLevelRows';
+      break;
+    case 2:
+      levelSelectionIdx = 'third';
+      levelRows = 'thirdLevelRows';
+      break;
+    default:
+      levelRows = 'nextLevelRows';
+      break;
+  }
+
+  let levelSelection: LevelSelection | undefined;
+  if (levelSelectionIdx !== undefined) {
+    levelSelection = levelSelections[levelSelectionIdx];
+  }
+
+  const levelTable = allTables.find((t) => t._id === levelSelection?.selected?.value);
+
+  return { levelTable, levelRows };
+}
