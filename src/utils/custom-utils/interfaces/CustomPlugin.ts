@@ -23,6 +23,7 @@ export interface LevelSelection {
 }
 
 export interface levelRowInfo {
+  _name: string;
   _id: string;
   _participants: any[];
   _creator: string;

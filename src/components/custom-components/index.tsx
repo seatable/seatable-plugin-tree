@@ -1,6 +1,11 @@
-import { IPluginTLProps, levelRowInfo, levelsStructureInfo } from '@/utils/custom-utils/interfaces/CustomPlugin';
-import React, { useState } from 'react';
+import {
+  IPluginTLProps,
+  levelRowInfo,
+  levelsStructureInfo,
+} from '@/utils/custom-utils/interfaces/CustomPlugin';
+import React from 'react';
 import { getRowsByTableId, outputLevelsInfo } from '../../utils/custom-utils/utils';
+import ExpandableItem from './ExpandableItem';
 
 const PluginTL: React.FC<IPluginTLProps> = ({ allTables, levelSelections }) => {
   let dataToDisplay: levelsStructureInfo = [];
@@ -13,9 +18,10 @@ const PluginTL: React.FC<IPluginTLProps> = ({ allTables, levelSelections }) => {
       dataToDisplay = outputLevelsInfo(firstTableId, firstRows, allTables, levelSelections);
     }
   }
-  console.log({ dataToDisplay });
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+      {dataToDisplay && dataToDisplay.length > 0 && <p>{dataToDisplay[0]._name}</p>}
       {dataToDisplay &&
         dataToDisplay.map((i: levelRowInfo) => <ExpandableItem key={i._id} item={i} />)}
     </div>
@@ -23,32 +29,3 @@ const PluginTL: React.FC<IPluginTLProps> = ({ allTables, levelSelections }) => {
 };
 
 export default PluginTL;
-
-const ExpandableItem: React.FC<{ item: levelRowInfo }> = ({ item }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: '10px',
-          border: '1px solid #ccc',
-          cursor: 'pointer',
-        }}
-        onClick={() => setIsExpanded(!isExpanded)}>
-        {item['0000']}
-      </div>
-      {isExpanded && (
-        <div style={{ paddingLeft: '20px' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-            {item &&
-              item.nextLevelRows?.map((i: levelRowInfo) => <ExpandableItem key={i._id} item={i} />)}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};

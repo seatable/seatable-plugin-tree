@@ -1,9 +1,5 @@
 import { ILevelSelections } from '../interfaces/CustomPlugin';
 
-export function customUtils() {
-  console.log('custom utils');
-}
-
 const LINK_TYPE = {
   link: 'link',
   formula: 'link-formula',

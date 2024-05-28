@@ -131,7 +131,7 @@ const App: React.FC<IAppProps> = (props) => {
     const activeTableViews: TableViewArray = activeTable.views; // All the Views of the specific Active Table
     const pluginDataStore: IPluginDataStore = getPluginDataStore(activeTable, PLUGIN_NAME);
     const pluginPresets: PresetsArray = pluginDataStore.presets; // An array with all the Presets
-    console.log({ t: allTables[0] });
+
     setActiveComponents((prevState) => ({
       ...prevState,
       settingsDropDowns: info.active_components.settings_dropdowns,
@@ -419,7 +419,6 @@ const App: React.FC<IAppProps> = (props) => {
   };
 
   const onInsertRow = (table: Table, view: TableView, rowData: any) => {
-    console.log({ rowData });
     const columns = window.dtableSDK.getColumns(table);
     const newRowData: { [key: string]: any } = {};
 

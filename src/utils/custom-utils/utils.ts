@@ -120,6 +120,7 @@ export const outputLevelsInfo = (
     }
 
     finalResult.push({
+      _name: table?.name || '',
       ...r,
       '0000': r['0000'].toString(), // Ensure the '0000' property is included and convert it to a string
       [keyName ? keyName : 'nextLevelRows']: secondLevelRows,
