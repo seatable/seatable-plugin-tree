@@ -60,6 +60,11 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   useEffect(() => {
     if (levelSelections) {
       onLevelSelectionChange(levelSelections);
+
+      if(levelSelections.first.selected.value === levelSelections.second.selected.value) {
+        // setSecondLevelSelectedOption(secondLevelOptions![0]);
+        // setThirdLevelSelectedOption(thirdLevelOptions![0])
+      }
     }
   }, [levelSelections]);
 
@@ -119,6 +124,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       });
     }
     setSecondLevelOptions(secondLevelOptions);
+    setSecondLevelSelectedOption(secondLevelOptions[0]);
   }, [firstLevelSelectedOption]);
 
   useEffect(() => {
@@ -141,12 +147,9 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
 
     setThirdLevelExists(filteredThirdLevelOptions.length === 0 ? false : true);
     setThirdLevelOptions(filteredThirdLevelOptions);
+    setThirdLevelSelectedOption(filteredThirdLevelOptions[0]);
     // setThirdLevelSelectedOption(filteredThirdLevelOptions[0] ?? {}); // TBD: This should be set based on the value in Settings
   }, [secondLevelSelectedOption]);
-
-  useEffect(() => {
-    console.log('levelSelections', levelSelections);
-  }, [levelSelections]);
 
   return (
     <div
