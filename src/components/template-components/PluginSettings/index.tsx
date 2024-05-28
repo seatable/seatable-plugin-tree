@@ -42,6 +42,10 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   const [thirdLevelSelectedOption, setThirdLevelSelectedOption] = useState<SelectOption>();
   const [thirdLevelExists, setThirdLevelExists] = useState<boolean>(true);
   const [levelSelections, setLevelSelections] = useState<ILevelSelections>(activeLevelSelections);
+  const defaultEmptyThirdLevel = {
+    value: '',
+    label: '',
+  };
 
   useEffect(() => {
     const activeLevelSelections = pluginPresets.find((p) => p._id === appActiveState.activePresetId)
@@ -53,17 +57,11 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       setThirdLevelSelectedOption(activeLevelSelections?.third?.selected);
       onLevelSelectionChange(activeLevelSelections);
     }
-    // PLEASE CONTINUE HERE AND FIX HERE - WE SHOULD ALREADY SE THE DEFAULT VALUES
   }, []);
 
   useEffect(() => {
     if (levelSelections) {
       onLevelSelectionChange(levelSelections);
-
-      if(levelSelections.first.selected.value === levelSelections.second.selected.value) {
-        // setSecondLevelSelectedOption(secondLevelOptions![0]);
-        // setThirdLevelSelectedOption(thirdLevelOptions![0])
-      }
     }
   }, [levelSelections]);
 
@@ -85,7 +83,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       return { value, label };
     });
 
-    // Set selected options based on activeTable and activeTableView
     const tableSelectedOption = {
       // eslint-disable-next-line
       value: appActiveState?.activeTable?._id!,
@@ -109,7 +106,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       return { value, label };
     });
     setFirstLevelOptions(firstLevelOptions);
-    // setFirstLevelSelectedOption(firstLevelOptions[0]); // TBD: This should be retrieved from the PLUGIN DATA STORE
   }, [allTables]);
 
   useEffect(() => {
@@ -146,8 +142,25 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
 
     setThirdLevelExists(filteredThirdLevelOptions.length === 0 ? false : true);
     setThirdLevelOptions(filteredThirdLevelOptions);
-    setThirdLevelSelectedOption(filteredThirdLevelOptions[0]);
-    // setThirdLevelSelectedOption(filteredThirdLevelOptions[0] ?? {}); // TBD: This should be set based on the value in Settings
+    setThirdLevelSelectedOption(
+      filteredThirdLevelOptions.length === 0 ? defaultEmptyThirdLevel : filteredThirdLevelOptions[0]
+    );
+    if (firstLevelSelectedOption && secondLevelSelectedOption) {
+      setLevelSelections(
+        (prevState) =>
+          ({
+            ...prevState,
+            first: { selected: firstLevelSelectedOption },
+            second: { selected: secondLevelSelectedOption },
+            third: {
+              selected:
+                filteredThirdLevelOptions.length === 0
+                  ? defaultEmptyThirdLevel
+                  : filteredThirdLevelOptions[0],
+            },
+          }) satisfies ILevelSelections
+      );
+    }
   }, [secondLevelSelectedOption]);
 
   return (
