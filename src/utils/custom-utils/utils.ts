@@ -97,15 +97,20 @@ export const outputLevelsInfo = (
 ) => {
   const table = allTables.find((t) => t._id === tableId);
   const linkedRows = window.dtableSDK.getTableLinkRows(rows, table);
+  // console.log({ linkedRows });
   const allRowsInAllTables: TableRow[] = allTables.flatMap((t: Table) => t.rows);
+  // console.log({ allRowsInAllTables });
   const linkedColumns = getLinkColumns(table?.columns || []);
-  const secondLevelKey = linkedColumns.find((c) => c.data.other_table_id === secondLevelId)?.key;
-  if (secondLevelKey === undefined) return [];
+  // console.log({ linkedColumns });
+  let secondLevelKey = linkedColumns.find((c) => c.data.other_table_id === secondLevelId)?.key;
+  // console.log({ secondLevelKey });
+  if (secondLevelKey === undefined) {
+    secondLevelKey = linkedColumns.find((c) => c.data.table_id === secondLevelId)?.key;
+  }
   const finalResult: levelsStructureInfo = [];
-  console.log({ linkedColumns });
 
   rows.forEach((r: TableRow) => {
-    const _ids = linkedRows[r._id][secondLevelKey];
+    const _ids = linkedRows[r._id][secondLevelKey as string];
     let secondLevelRows = [];
     for (const i in _ids) {
       const linked_row = allRowsInAllTables.find((r: TableRow) => r._id === _ids[i]);
@@ -133,7 +138,7 @@ export const outputLevelsInfo = (
       [keyName ? keyName : 'secondLevelRows']: secondLevelRows,
     } satisfies levelRowInfo);
   });
-
+  // console.log({ finalResult });
   return finalResult;
 };
 

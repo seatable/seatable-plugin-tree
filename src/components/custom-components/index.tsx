@@ -21,7 +21,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({ allTables, levelSelections }) => {
 
   if (levelSelections !== undefined) {
     const firstRows = getRowsByTableId(levelSelections.first.selected.value, allTables);
-
+    console.log({ levelSelections });
     if (firstRows !== undefined) {
       const firstTableId = levelSelections.first.selected.value;
       dataToDisplay = outputLevelsInfo(
@@ -33,7 +33,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({ allTables, levelSelections }) => {
       );
     }
   }
-  console.log({ dataToDisplay });
+  // console.log({ dataToDisplay });
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
       <HeaderRow columns={c} tableName={n} />
