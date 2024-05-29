@@ -50,9 +50,13 @@ export interface ExpandableItemProps {
 }
 
 export interface RowExpandedInfo {
-  n: string | number | any[];
-  i: string;
-  e: boolean;
+  name: string | number | any[];
+  id: string;
+  exp: boolean;
 }
 
 export type levelsStructureInfo = levelRowInfo[];
+
+export interface LevelExpandedInfo extends RowExpandedInfo {
+  rows: LevelExpandedInfo[];
+}

@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import HeaderRow from '../HeaderRow';
 import { getLevelSelectionAndTable } from '../../../utils/custom-utils/utils';
 import styles from '../../../styles/custom-styles/CustomPlugin.module.scss';
-import { BsXLg } from 'react-icons/bs';
 
 const ExpandableItem: React.FC<ExpandableItemProps> = ({
   item,
@@ -15,14 +14,14 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   expandedRowsInfo,
 }) => {
   const [isExpanded, setIsExpanded] = useState(
-    expandedRowsInfo.find((e) => item._id === e.i)?.e || false
+    expandedRowsInfo.find((e) => item._id === e.id)?.exp || false
   );
   const { levelTable, levelRows } = getLevelSelectionAndTable(level, allTables, levelSelections);
   const rows = item[levelRows];
   const isClickable = level !== 3 && rows?.length !== 0 && item[levelRows] !== undefined;
 
   useEffect(() => {
-    const e = expandedRowsInfo.find((e) => item._id === e.i)?.e || false;
+    const e = expandedRowsInfo.find((e) => item._id === e.id)?.exp || false;
     setIsExpanded(e);
   }, [expandedRowsInfo]);
 
@@ -34,8 +33,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
         onClick={
           isClickable
             ? () => {
-                // setIsExpanded(!isExpanded);
-                handleItemClick({ n: item['0000'], i: item._id, e: !isExpanded });
+                handleItemClick({ name: item['0000'], id: item._id, exp: !isExpanded });
               }
             : undefined
         }>

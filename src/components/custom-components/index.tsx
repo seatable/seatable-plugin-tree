@@ -45,14 +45,14 @@ const PluginTL: React.FC<IPluginTLProps> = ({
           levelSelections?.third?.selected.value
         );
         setFinalResult(r.finalResult);
+
         if (
           isArraysEqual(
-            expandedRowsInfo.map((r) => ({ n: r.n, i: r.i, e: false })),
-            r.expandedRowsObj.map((r) => ({ n: r.n, i: r.i, e: false }))
+            expandedRowsInfo.map((r) => ({ name: r.name, id: r.id, exp: false })),
+            r.expandedRowsObj.map((r) => ({ name: r.name, id: r.id, exp: false }))
           )
         )
           return;
-        console.log('called');
         setExpandedRowsInfo(r.expandedRowsObj);
         updatedExpandedRowsObj = r.expandedRowsObj;
       }
@@ -66,7 +66,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   const handleItemClick = (updatedRow: RowExpandedInfo) => {
     console.log({ updatedRow }, 'plugindatastore updated');
     const updatedExpandedRows = expandedRowsInfo.map((row) => {
-      if (row.i === updatedRow.i) {
+      if (row.id === updatedRow.id) {
         return updatedRow;
       }
       return row;
@@ -96,7 +96,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
           <ExpandableItem
             key={i._id}
             item={i}
-            expanded={updatedExpandedRowsObj.find((e) => i._id === e.i)?.e || false}
+            expanded={updatedExpandedRowsObj.find((e) => i._id === e.id)?.exp || false}
             expandedRowsInfo={expandedRowsInfo}
             handleItemClick={handleItemClick}
             allTables={allTables}

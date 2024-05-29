@@ -111,10 +111,16 @@ export const outputLevelsInfo = (
   }
   const finalResult: levelsStructureInfo = [];
 
+  // const expandedRowsObj: RowExpandedInfo[] = allRowsInAllTables.map((r) => ({
+  //   name: r['0000'],
+  //   id: r._id,
+  //   exp: false,
+  // }));
+
   const expandedRowsObj: RowExpandedInfo[] = allRowsInAllTables.map((r) => ({
-    n: r['0000'],
-    i: r._id,
-    e: false,
+    name: r['0000'],
+    id: r._id,
+    exp: false,
   }));
 
   rows.forEach((r: TableRow) => {
@@ -144,8 +150,7 @@ export const outputLevelsInfo = (
       ...r,
       columns: linkedColumns,
       '0000': r['0000'].toString(),
-      expanded: expandedRowsInfo.find((obj) => obj.i === r._id)?.e || false,
-      // expanded: expandedRowsObj.find((obj) => obj.i === r._id)?.e || false,
+      expanded: expandedRowsInfo.find((obj) => obj.id === r._id)?.exp || false,
       [keyName ? keyName : 'secondLevelRows']: secondLevelRows,
     } satisfies levelRowInfo);
   });
@@ -195,4 +200,3 @@ export function getLevelSelectionAndTable(
 export const isArraysEqual = (a: RowExpandedInfo[], b: RowExpandedInfo[]) => {
   return JSON.stringify(a) === JSON.stringify(b);
 };
-
