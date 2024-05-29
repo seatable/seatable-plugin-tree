@@ -298,15 +298,30 @@ const updateNestedExpanded = (row: RowExpandedInfo, expandedValue: boolean): voi
   }
 };
 
-export const expandTheItem = (expandedRowsInfo: any[], itemId: string): any | undefined => {
+export const expandTheItem = (
+  expandedRowsInfo: RowExpandedInfo[],
+  itemId: string,
+  isFirstLevel = true
+): boolean | undefined => {
   for (const row of expandedRowsInfo) {
     if (row._id === itemId) {
       return row.expanded;
-    } else if (!row.expanded && row.secondLevelRows) {
-      const result = expandTheItem(row.secondLevelRows, itemId);
-      if (result !== undefined) return result;
-    } else if (!row.expanded && row.thirdLevelRows) {
-      const result = expandTheItem(row.thirdLevelRows, itemId);
+    } else if (!row.expanded && isFirstLevel && row.secondLevelRows) {
+      row.secondLevelRows.forEach((secondLevelRow: RowExpandedInfo) => {
+        secondLevelRow.expanded = false;
+        if (secondLevelRow.thirdLevelRows) {
+          secondLevelRow.thirdLevelRows.forEach((thirdLevelRow: RowExpandedInfo) => {
+            thirdLevelRow.expanded = false;
+          });
+        }
+      });
+    } else if (!row.expanded && !isFirstLevel && row.thirdLevelRows) {
+      row.thirdLevelRows.forEach((thirdLevelRow: RowExpandedInfo) => {
+        thirdLevelRow.expanded = false;
+      });
+    }
+    if (row.secondLevelRows) {
+      const result = expandTheItem(row.secondLevelRows, itemId, false);
       if (result !== undefined) return result;
     }
   }
