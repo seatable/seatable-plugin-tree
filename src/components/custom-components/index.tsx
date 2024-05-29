@@ -26,9 +26,9 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   const [columns, setColumns] = useState<TableColumn[]>([]);
   const [tableName, setTableName] = useState<string>('');
   const [expandedRowsInfo, setExpandedRowsInfo] = useState<RowExpandedInfo[]>([]);
+  const [expandedHasChanged, setExpandedHasChanged] = useState<boolean>(false);
 
   let updatedExpandedRowsObj: RowExpandedInfo[] = [];
-
   useEffect(() => {
     const firstLevelTable = allTables.find((t) => t._id === levelSelections.first.selected.value);
     if (firstLevelTable !== undefined) {
@@ -64,11 +64,8 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   // }, [expandedRowsInfo]);
 
   const handleItemClick = (updatedRow: RowExpandedInfo): void => {
-    console.log({ updatedRow }, 'plugindatastore updated');
-    console.log({ expandedRowsInfo });
-
-    updateExpandedState(updatedRow, expandedRowsInfo);
-    setExpandedRowsInfo(expandedRowsInfo);
+    setExpandedRowsInfo(updateExpandedState(updatedRow, expandedRowsInfo));
+    setExpandedHasChanged(!expandedHasChanged);
   };
 
   // console.log({ updatedExpandedRows });
@@ -93,12 +90,12 @@ const PluginTL: React.FC<IPluginTLProps> = ({
           <ExpandableItem
             key={i._id}
             item={i}
-            expanded={updatedExpandedRowsObj.find((e) => i._id === e.id)?.exp || false}
-            expandedRowsInfo={expandedRowsInfo}
-            handleItemClick={handleItemClick}
+            level={1}
+            expandedHasChanged={expandedHasChanged}
             allTables={allTables}
             levelSelections={levelSelections}
-            level={1}
+            handleItemClick={handleItemClick}
+            expandedRowsInfo={expandedRowsInfo}
           />
         ))}
     </div>

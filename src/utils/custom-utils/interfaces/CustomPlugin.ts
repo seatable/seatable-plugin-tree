@@ -41,12 +41,12 @@ export interface HeaderRowProps {
 
 export interface ExpandableItemProps {
   item: levelRowInfo;
-  expanded: boolean;
   allTables: TableArray;
   levelSelections: ILevelSelections;
   expandedRowsInfo: RowExpandedInfo[];
   level: number;
   handleItemClick: (updatedRow: RowExpandedInfo) => void;
+  expandedHasChanged: boolean;
 }
 
 export type levelsStructureInfo = levelRowInfo[];

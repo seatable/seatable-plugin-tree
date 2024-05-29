@@ -1,5 +1,6 @@
 // MAKE HERE YOUR CUSTOM UTILS
 
+import exp from 'constants';
 import { PresetsArray } from '../template-utils/interfaces/PluginPresets/Presets.interface';
 import { SelectOption } from '../template-utils/interfaces/PluginSettings.interface';
 import {
@@ -259,7 +260,11 @@ function cleanObjects(a: levelsStructureInfo, propertiesToKeep: string[] | undef
   });
   return newCleanedExpandedRowsInfo as RowExpandedInfo[];
 }
-export const updateExpandedState = (updatedRow: RowExpandedInfo, rows: RowExpandedInfo[]): void => {
+
+export const updateExpandedState = (
+  updatedRow: RowExpandedInfo,
+  rows: RowExpandedInfo[]
+): RowExpandedInfo[] => {
   const targetId = updatedRow._id;
   const expandedValue = updatedRow.expanded;
 
@@ -269,15 +274,17 @@ export const updateExpandedState = (updatedRow: RowExpandedInfo, rows: RowExpand
       if (!expandedValue) {
         updateNestedExpanded(row, expandedValue);
       }
-      return;
+      break;
     }
     if (row.secondLevelRows) {
-      updateExpandedState(updatedRow, row.secondLevelRows);
+      row.secondLevelRows = updateExpandedState(updatedRow, row.secondLevelRows);
     }
     if (row.thirdLevelRows) {
-      updateExpandedState(updatedRow, row.thirdLevelRows);
+      row.thirdLevelRows = updateExpandedState(updatedRow, row.thirdLevelRows);
     }
   }
+
+  return rows;
 };
 
 const updateNestedExpanded = (row: RowExpandedInfo, expandedValue: boolean): void => {
@@ -289,4 +296,19 @@ const updateNestedExpanded = (row: RowExpandedInfo, expandedValue: boolean): voi
       }
     }
   }
+};
+
+export const expandTheItem = (expandedRowsInfo: any[], itemId: string): any | undefined => {
+  for (const row of expandedRowsInfo) {
+    if (row._id === itemId) {
+      return row.expanded;
+    } else if (!row.expanded && row.secondLevelRows) {
+      const result = expandTheItem(row.secondLevelRows, itemId);
+      if (result !== undefined) return result;
+    } else if (!row.expanded && row.thirdLevelRows) {
+      const result = expandTheItem(row.thirdLevelRows, itemId);
+      if (result !== undefined) return result;
+    }
+  }
+  return undefined;
 };

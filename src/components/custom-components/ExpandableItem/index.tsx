@@ -1,28 +1,27 @@
 import { ExpandableItemProps, levelRowInfo } from '@/utils/custom-utils/interfaces/CustomPlugin';
 import React, { useEffect, useState } from 'react';
 import HeaderRow from '../HeaderRow';
-import { getLevelSelectionAndTable } from '../../../utils/custom-utils/utils';
+import { expandTheItem, getLevelSelectionAndTable } from '../../../utils/custom-utils/utils';
 import styles from '../../../styles/custom-styles/CustomPlugin.module.scss';
 
 const ExpandableItem: React.FC<ExpandableItemProps> = ({
   item,
+  level,
   allTables,
   levelSelections,
-  level,
   handleItemClick,
   expandedRowsInfo,
+  expandedHasChanged,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(
-    expandedRowsInfo.find((e) => item._id === e.id)?.exp || false
-  );
+  const [isExpanded, setIsExpanded] = useState<boolean>();
   const { levelTable, levelRows } = getLevelSelectionAndTable(level, allTables, levelSelections);
   const rows = item[levelRows];
   const isClickable = level !== 3 && rows?.length !== 0 && item[levelRows] !== undefined;
 
   useEffect(() => {
-    const e = expandedRowsInfo.find((e) => item._id === e.id)?.exp || false;
-    setIsExpanded(e);
-  }, [expandedRowsInfo]);
+    const t = expandTheItem(expandedRowsInfo, item._id);
+    setIsExpanded(t);
+  }, [expandedHasChanged]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
@@ -46,12 +45,12 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
               <ExpandableItem
                 key={i._id}
                 item={i}
-                expanded={isExpanded}
                 expandedRowsInfo={expandedRowsInfo}
                 handleItemClick={handleItemClick}
                 allTables={allTables}
                 levelSelections={levelSelections}
                 level={level + 1}
+                expandedHasChanged={expandedHasChanged}
               />
             ))}
           </div>
