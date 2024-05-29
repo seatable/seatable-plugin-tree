@@ -32,6 +32,10 @@ const PluginTL: React.FC<IPluginTLProps> = ({ allTables, levelSelections }) => {
       );
     }
   }
+
+  const handleItemClick = (i: any) => {
+    console.log('Item clicked', i);
+  };
   // console.log({ dataToDisplay });
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
@@ -41,6 +45,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({ allTables, levelSelections }) => {
           <ExpandableItem
             key={i._id}
             item={i}
+            handleItemClick={handleItemClick}
             allTables={allTables}
             levelSelections={levelSelections}
             level={1}

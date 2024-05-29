@@ -9,6 +9,7 @@ interface ExpandableItemProps {
   allTables: TableArray;
   levelSelections: ILevelSelections;
   level: number;
+  handleItemClick: (item: any) => void;
 }
 
 const ExpandableItem: React.FC<ExpandableItemProps> = ({
@@ -16,6 +17,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   allTables,
   levelSelections,
   level,
+  handleItemClick,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const { levelTable, levelRows } = getLevelSelectionAndTable(level, allTables, levelSelections);
@@ -27,7 +29,14 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
       <div
         className={styles.custom_expandableItem}
         style={{ cursor: isClickable ? 'pointer' : 'default' }}
-        onClick={isClickable ? () => setIsExpanded(!isExpanded) : undefined}>
+        onClick={
+          isClickable
+            ? () => {
+                setIsExpanded(!isExpanded);
+                handleItemClick(item['0000']);
+              }
+            : undefined
+        }>
         {item['0000']}
       </div>{' '}
       {isExpanded && (
@@ -38,6 +47,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
               <ExpandableItem
                 key={i._id}
                 item={i}
+                handleItemClick={handleItemClick}
                 allTables={allTables}
                 levelSelections={levelSelections}
                 level={level + 1}

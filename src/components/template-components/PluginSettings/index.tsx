@@ -57,7 +57,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       setThirdLevelSelectedOption(activeLevelSelections?.third?.selected);
       onLevelSelectionChange(activeLevelSelections);
     }
-  }, []);
+  }, [appActiveState.activePresetId]);
 
   useEffect(() => {
     if (levelSelections) {
