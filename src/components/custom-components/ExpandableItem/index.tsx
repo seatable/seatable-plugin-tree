@@ -1,16 +1,9 @@
-import { ILevelSelections, levelRowInfo } from '@/utils/custom-utils/interfaces/CustomPlugin';
-import React, { useState } from 'react';
+import { ExpandableItemProps, levelRowInfo } from '@/utils/custom-utils/interfaces/CustomPlugin';
+import React, { useEffect, useState } from 'react';
 import HeaderRow from '../HeaderRow';
-import { TableArray } from '@/utils/template-utils/interfaces/Table.interface';
 import { getLevelSelectionAndTable } from '../../../utils/custom-utils/utils';
 import styles from '../../../styles/custom-styles/CustomPlugin.module.scss';
-interface ExpandableItemProps {
-  item: levelRowInfo;
-  allTables: TableArray;
-  levelSelections: ILevelSelections;
-  level: number;
-  handleItemClick: (item: any) => void;
-}
+import { BsXLg } from 'react-icons/bs';
 
 const ExpandableItem: React.FC<ExpandableItemProps> = ({
   item,
@@ -18,11 +11,20 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   levelSelections,
   level,
   handleItemClick,
+  expanded,
+  expandedRowsInfo,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(
+    expandedRowsInfo.find((e) => item._id === e.i)?.e || false
+  );
   const { levelTable, levelRows } = getLevelSelectionAndTable(level, allTables, levelSelections);
   const rows = item[levelRows];
   const isClickable = level !== 3 && rows?.length !== 0 && item[levelRows] !== undefined;
+
+  useEffect(() => {
+    const e = expandedRowsInfo.find((e) => item._id === e.i)?.e || false;
+    setIsExpanded(e);
+  }, [expandedRowsInfo]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
@@ -32,8 +34,8 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
         onClick={
           isClickable
             ? () => {
-                setIsExpanded(!isExpanded);
-                handleItemClick(item['0000']);
+                // setIsExpanded(!isExpanded);
+                handleItemClick({ n: item['0000'], i: item._id, e: !isExpanded });
               }
             : undefined
         }>
@@ -47,6 +49,8 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
               <ExpandableItem
                 key={i._id}
                 item={i}
+                expanded={isExpanded}
+                expandedRowsInfo={expandedRowsInfo}
                 handleItemClick={handleItemClick}
                 allTables={allTables}
                 levelSelections={levelSelections}

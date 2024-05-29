@@ -12,6 +12,7 @@ import { LINK_TYPE } from './constants';
 import {
   ILevelSelections,
   LevelSelection,
+  RowExpandedInfo,
   levelRowInfo,
   levelsStructureInfo,
 } from './interfaces/CustomPlugin';
@@ -90,6 +91,7 @@ const getLinkColumns = (columns: TableColumn[]) => {
 export const outputLevelsInfo = (
   tableId: string,
   rows: TableRow[],
+  expandedRowsInfo: RowExpandedInfo[],
   secondLevelId: string,
   allTables: TableArray,
   thirdLevelId?: string,
@@ -109,6 +111,12 @@ export const outputLevelsInfo = (
   }
   const finalResult: levelsStructureInfo = [];
 
+  const expandedRowsObj: RowExpandedInfo[] = allRowsInAllTables.map((r) => ({
+    n: r['0000'],
+    i: r._id,
+    e: false,
+  }));
+
   rows.forEach((r: TableRow) => {
     const _ids = linkedRows[r._id][secondLevelKey as string];
     let secondLevelRows = [];
@@ -123,11 +131,12 @@ export const outputLevelsInfo = (
       secondLevelRows = outputLevelsInfo(
         secondLevelId,
         secondLevelRows,
+        expandedRowsInfo,
         thirdLevelId,
         allTables,
         undefined,
         'thirdLevelRows'
-      );
+      ).finalResult;
     }
 
     finalResult.push({
@@ -135,11 +144,15 @@ export const outputLevelsInfo = (
       ...r,
       columns: linkedColumns,
       '0000': r['0000'].toString(),
+      expanded: expandedRowsInfo.find((obj) => obj.i === r._id)?.e || false,
+      // expanded: expandedRowsObj.find((obj) => obj.i === r._id)?.e || false,
       [keyName ? keyName : 'secondLevelRows']: secondLevelRows,
     } satisfies levelRowInfo);
   });
 
-  return finalResult;
+  const r = { finalResult, expandedRowsObj };
+
+  return r;
 };
 
 export function getLevelSelectionAndTable(

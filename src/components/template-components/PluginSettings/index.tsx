@@ -10,7 +10,7 @@ import {
   SelectOption,
   IPluginSettingsProps,
 } from '@/utils/template-utils/interfaces/PluginSettings.interface';
-import { CustomSettingsOption, SettingsOption } from '@/utils/types';
+import { SettingsOption } from '@/utils/types';
 import { ILevelSelections } from '@/utils/custom-utils/interfaces/CustomPlugin';
 // Utilities
 import { truncateTableName } from 'utils/template-utils/utils';
@@ -51,7 +51,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   const [levelSelections, setLevelSelections] = useState<ILevelSelections>(activeLevelSelections);
 
   useEffect(() => {
-    console.log(0);
     const activeLevelSelections = pluginPresets.find((p) => p._id === appActiveState.activePresetId)
       ?.customSettings;
 

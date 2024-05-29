@@ -4,12 +4,9 @@ import { TableArray, TableColumn } from '@/utils/template-utils/interfaces/Table
 
 export interface IPluginTLProps {
   allTables: TableArray;
-  pluginDataStore: IPluginDataStore;
   levelSelections: ILevelSelections;
-}
-
-export interface PresetCustomSettings {
-  [key: string]: any;
+  pluginDataStore: IPluginDataStore;
+  activePresetId: string;
 }
 
 export interface ILevelSelections {
@@ -31,6 +28,7 @@ export interface levelRowInfo {
   _last_modifier: string;
   _mtime: string;
   '0000': string;
+  expanded: boolean;
   columns: TableColumn[];
   nextLevelRows?: levelRowInfo[];
   secondLevelRows?: levelRowInfo[];
@@ -39,6 +37,22 @@ export interface levelRowInfo {
 export interface HeaderRowProps {
   columns: TableColumn[] | undefined;
   tableName?: string;
+}
+
+export interface ExpandableItemProps {
+  item: levelRowInfo;
+  expanded: boolean;
+  allTables: TableArray;
+  levelSelections: ILevelSelections;
+  expandedRowsInfo: RowExpandedInfo[];
+  level: number;
+  handleItemClick: (item: RowExpandedInfo) => void;
+}
+
+export interface RowExpandedInfo {
+  n: string | number | any[];
+  i: string;
+  e: boolean;
 }
 
 export type levelsStructureInfo = levelRowInfo[];

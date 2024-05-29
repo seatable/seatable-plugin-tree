@@ -10,7 +10,6 @@ import PluginSettings from 'components/template-components/PluginSettings';
 import PluginPresets from 'components/template-components/PluginPresets';
 import ResizableWrapper from 'components/template-components/ResizableWrapper';
 import PluginTL from './components/custom-components';
-
 // Import of Interfaces
 import {
   AppActiveState,
@@ -54,7 +53,7 @@ import {
 import { SettingsOption } from '@/utils/types';
 import pluginContext from './plugin-context';
 import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';
-import { ILevelSelections } from './utils/custom-utils/interfaces/CustomPlugin';
+import { ILevelSelections, RowExpandedInfo } from './utils/custom-utils/interfaces/CustomPlugin';
 import { LEVEL_SEL_DEFAULT } from './utils/custom-utils/constants';
 import { levelSelectionDefaultFallback } from './utils/custom-utils/utils';
 
@@ -516,8 +515,9 @@ const App: React.FC<IAppProps> = (props) => {
             {/* Note: The CustomPlugin component serves as a placeholder and should be replaced with your custom plugin component. */}
             <PluginTL
               allTables={allTables}
-              pluginDataStore={pluginDataStore}
               levelSelections={activeLevelSelections}
+              pluginDataStore={pluginDataStore}
+              activePresetId={appActiveState.activePresetId}
             />
             {activeComponents.add_row_button && (
               <button className={styles.add_row} onClick={addRowItem}>
