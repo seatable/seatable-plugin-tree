@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { getRowsByTableId, isArraysEqual, outputLevelsInfo } from '../../utils/custom-utils/utils';
+import {
+  getRowsByTableId,
+  isArraysEqual,
+  outputLevelsInfo,
+  updateExpandedState,
+} from '../../utils/custom-utils/utils';
 import ExpandableItem from './ExpandableItem';
 import HeaderRow from './HeaderRow';
 import { TableColumn } from '../../utils/template-utils/interfaces/Table.interface';
@@ -46,47 +51,39 @@ const PluginTL: React.FC<IPluginTLProps> = ({
         );
         setFinalResult(r.finalResult);
 
-        if (
-          isArraysEqual(
-            expandedRowsInfo.map((r) => ({ name: r.name, id: r.id, exp: false })),
-            r.expandedRowsObj.map((r) => ({ name: r.name, id: r.id, exp: false }))
-          )
-        )
-          return;
-        setExpandedRowsInfo(r.expandedRowsObj);
-        updatedExpandedRowsObj = r.expandedRowsObj;
+        if (isArraysEqual(expandedRowsInfo, r.cleanExpandedRowsObj)) return;
+        console.log('not equal');
+        setExpandedRowsInfo(r.cleanExpandedRowsObj);
+        updatedExpandedRowsObj = r.cleanExpandedRowsObj;
       }
     }
   }, [allTables, levelSelections]);
 
-  useEffect(() => {
-    console.log(0, expandedRowsInfo);
-  }, [expandedRowsInfo]);
+  // useEffect(() => {
+  //   console.log(0, expandedRowsInfo);
+  // }, [expandedRowsInfo]);
 
-  const handleItemClick = (updatedRow: RowExpandedInfo) => {
+  const handleItemClick = (updatedRow: RowExpandedInfo): void => {
     console.log({ updatedRow }, 'plugindatastore updated');
-    const updatedExpandedRows = expandedRowsInfo.map((row) => {
-      if (row.id === updatedRow.id) {
-        return updatedRow;
-      }
-      return row;
-    });
-    // console.log({ updatedExpandedRows });
-    window.dtableSDK.updatePluginSettings(PLUGIN_NAME, {
-      ...pluginDataStore,
-      presets: pluginDataStore.presets.map((preset) => {
-        if (preset._id === activePresetId) {
-          return {
-            ...preset,
-            expandedRows: updatedExpandedRows,
-          };
-        }
-        return preset;
-      }),
-    });
+    console.log({ expandedRowsInfo });
 
-    setExpandedRowsInfo(updatedExpandedRows);
+    updateExpandedState(updatedRow, expandedRowsInfo);
+    setExpandedRowsInfo(expandedRowsInfo);
   };
+
+  // console.log({ updatedExpandedRows });
+  // window.dtableSDK.updatePluginSettings(PLUGIN_NAME, {
+  //   ...pluginDataStore,
+  //   presets: pluginDataStore.presets.map((preset) => {
+  //     if (preset._id === activePresetId) {
+  //       return {
+  //         ...preset,
+  //         expandedRows: updatedExpandedRows,
+  //       };
+  //     }
+  //     return preset;
+  //   }),
+  // });
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>

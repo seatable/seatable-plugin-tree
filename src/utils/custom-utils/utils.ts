@@ -99,13 +99,10 @@ export const outputLevelsInfo = (
 ) => {
   const table = allTables.find((t) => t._id === tableId);
   const linkedRows = window.dtableSDK.getTableLinkRows(rows, table);
-  // console.log({ linkedRows });
   const allRowsInAllTables: TableRow[] = allTables.flatMap((t: Table) => t.rows);
-  // console.log({ allRowsInAllTables });
   const linkedColumns = getLinkColumns(table?.columns || []);
-  // console.log({ linkedColumns });
+
   let secondLevelKey = linkedColumns.find((c) => c.data.other_table_id === secondLevelId)?.key;
-  // console.log({ secondLevelKey });
   if (secondLevelKey === undefined) {
     secondLevelKey = linkedColumns.find((c) => c.data.table_id === secondLevelId)?.key;
   }
@@ -117,11 +114,11 @@ export const outputLevelsInfo = (
   //   exp: false,
   // }));
 
-  const expandedRowsObj: RowExpandedInfo[] = allRowsInAllTables.map((r) => ({
-    name: r['0000'],
-    id: r._id,
-    exp: false,
-  }));
+  // const expandedRowsObj: RowExpandedInfo[] = allRowsInAllTables.map((r) => ({
+  //   name: r['0000'],
+  //   _id: r._id,
+  //   expanded: false,
+  // }));
 
   rows.forEach((r: TableRow) => {
     const _ids = linkedRows[r._id][secondLevelKey as string];
@@ -155,9 +152,9 @@ export const outputLevelsInfo = (
     } satisfies levelRowInfo);
   });
 
-  const r = { finalResult, expandedRowsObj };
+  const cleanExpandedRowsObj = cleanObjects(finalResult, undefined);
 
-  return r;
+  return { finalResult, cleanExpandedRowsObj };
 };
 
 export function getLevelSelectionAndTable(
@@ -197,6 +194,99 @@ export function getLevelSelectionAndTable(
   return { levelTable, levelRows };
 }
 
-export const isArraysEqual = (a: RowExpandedInfo[], b: RowExpandedInfo[]) => {
-  return JSON.stringify(a) === JSON.stringify(b);
+export function isArraysEqual(arr1: RowExpandedInfo[], arr2: RowExpandedInfo[]): boolean {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+
+  for (let i = 0; i < arr1.length; i++) {
+    if (!areObjectsEqual(arr1[i], arr2[i])) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function areObjectsEqual(obj1: RowExpandedInfo, obj2: RowExpandedInfo): boolean {
+  const keys1 = Object.keys(obj1).sort();
+  const keys2 = Object.keys(obj2).sort();
+
+  if (keys1.length !== keys2.length) {
+    return false;
+  }
+
+  for (const key of keys1) {
+    if (Array.isArray(obj1[key]) && Array.isArray(obj2[key])) {
+      if (!isArraysEqual(obj1[key], obj2[key])) {
+        return false;
+      }
+    } else if (typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
+      if (!areObjectsEqual(obj1[key], obj2[key])) {
+        return false;
+      }
+    } else if (obj1[key] !== obj2[key]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function cleanObjects(a: levelsStructureInfo, propertiesToKeep: string[] | undefined) {
+  const propertiesToKeeps =
+    propertiesToKeep === undefined
+      ? ['0000', '_id', 'expanded', 'secondLevelRows']
+      : propertiesToKeep;
+  const newCleanedExpandedRowsInfo = a.map((obj) => {
+    const cleanObj: { [key: string]: any } = {};
+    propertiesToKeeps.forEach((prop: string) => {
+      if (prop in obj) {
+        cleanObj[prop as keyof RowExpandedInfo] = obj[prop as keyof levelRowInfo];
+      }
+    });
+
+    if (obj.secondLevelRows) {
+      const propertiesToKeep = ['0000', '_id', 'expanded', 'thirdLevelRows'];
+      cleanObj.secondLevelRows = cleanObjects(obj.secondLevelRows, propertiesToKeep);
+    }
+    if (obj.thirdLevelRows) {
+      const propertiesToKeep = ['0000', '_id', 'expanded'];
+      cleanObj.thirdLevelRows = cleanObjects(obj.thirdLevelRows, propertiesToKeep);
+    }
+
+    return cleanObj;
+  });
+  return newCleanedExpandedRowsInfo as RowExpandedInfo[];
+}
+export const updateExpandedState = (updatedRow: RowExpandedInfo, rows: RowExpandedInfo[]): void => {
+  const targetId = updatedRow._id;
+  const expandedValue = updatedRow.expanded;
+
+  for (const row of rows) {
+    if (row._id === targetId) {
+      row.expanded = expandedValue;
+      if (!expandedValue) {
+        updateNestedExpanded(row, expandedValue);
+      }
+      return;
+    }
+    if (row.secondLevelRows) {
+      updateExpandedState(updatedRow, row.secondLevelRows);
+    }
+    if (row.thirdLevelRows) {
+      updateExpandedState(updatedRow, row.thirdLevelRows);
+    }
+  }
+};
+
+const updateNestedExpanded = (row: RowExpandedInfo, expandedValue: boolean): void => {
+  if (row.secondLevelRows) {
+    for (const secondLevelRow of row.secondLevelRows) {
+      secondLevelRow.expanded = expandedValue;
+      if (secondLevelRow.thirdLevelRows) {
+        updateNestedExpanded(secondLevelRow, expandedValue);
+      }
+    }
+  }
 };

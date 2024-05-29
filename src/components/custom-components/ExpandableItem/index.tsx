@@ -10,7 +10,6 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   levelSelections,
   level,
   handleItemClick,
-  expanded,
   expandedRowsInfo,
 }) => {
   const [isExpanded, setIsExpanded] = useState(
@@ -33,7 +32,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
         onClick={
           isClickable
             ? () => {
-                handleItemClick({ name: item['0000'], id: item._id, exp: !isExpanded });
+                handleItemClick({ '0000': item['0000'], _id: item._id, expanded: !isExpanded });
               }
             : undefined
         }>

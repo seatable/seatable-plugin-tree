@@ -46,17 +46,16 @@ export interface ExpandableItemProps {
   levelSelections: ILevelSelections;
   expandedRowsInfo: RowExpandedInfo[];
   level: number;
-  handleItemClick: (item: RowExpandedInfo) => void;
-}
-
-export interface RowExpandedInfo {
-  name: string | number | any[];
-  id: string;
-  exp: boolean;
+  handleItemClick: (updatedRow: RowExpandedInfo) => void;
 }
 
 export type levelsStructureInfo = levelRowInfo[];
 
-export interface LevelExpandedInfo extends RowExpandedInfo {
-  rows: LevelExpandedInfo[];
+export interface RowExpandedInfo {
+  ['0000']: string | number | any[];
+  _id: string;
+  expanded: boolean;
+  secondLevelRows?: RowExpandedInfo[];
+  thirdLevelRows?: RowExpandedInfo[];
+  [key: string]: any;
 }
