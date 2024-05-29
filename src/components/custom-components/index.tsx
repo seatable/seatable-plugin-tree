@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getRowsByTableId, outputLevelsInfo } from '../../utils/custom-utils/utils';
+import { getRowsByTableId, isArraysEqual, outputLevelsInfo } from '../../utils/custom-utils/utils';
 import ExpandableItem from './ExpandableItem';
 import HeaderRow from './HeaderRow';
 import { TableColumn } from '../../utils/template-utils/interfaces/Table.interface';
@@ -17,7 +17,6 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   pluginDataStore,
   activePresetId,
 }) => {
-  console.log('Plugin called');
   const [finalResult, setFinalResult] = useState<levelsStructureInfo>([]);
   const [columns, setColumns] = useState<TableColumn[]>([]);
   const [tableName, setTableName] = useState<string>('');
@@ -46,6 +45,14 @@ const PluginTL: React.FC<IPluginTLProps> = ({
           levelSelections?.third?.selected.value
         );
         setFinalResult(r.finalResult);
+        if (
+          isArraysEqual(
+            expandedRowsInfo.map((r) => ({ n: r.n, i: r.i, e: false })),
+            r.expandedRowsObj.map((r) => ({ n: r.n, i: r.i, e: false }))
+          )
+        )
+          return;
+        console.log('called');
         setExpandedRowsInfo(r.expandedRowsObj);
         updatedExpandedRowsObj = r.expandedRowsObj;
       }
@@ -57,7 +64,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   }, [expandedRowsInfo]);
 
   const handleItemClick = (updatedRow: RowExpandedInfo) => {
-    console.log({ updatedRow });
+    console.log({ updatedRow }, 'plugindatastore updated');
     const updatedExpandedRows = expandedRowsInfo.map((row) => {
       if (row.i === updatedRow.i) {
         return updatedRow;
