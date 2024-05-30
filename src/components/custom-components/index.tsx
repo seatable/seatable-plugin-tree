@@ -51,7 +51,15 @@ const PluginTL: React.FC<IPluginTLProps> = ({
         );
         setFinalResult(r.finalResult);
 
-        if (isArraysEqual(expandedRowsInfo, r.cleanExpandedRowsObj)) return;
+        if (
+          isArraysEqual(
+            expandedRowsInfo.map((r) => ({ '0000': r['0000'], _id: r._id, expanded: false })),
+            r.cleanExpandedRowsObj.map((r) => ({ '0000': r['0000'], _id: r._id, expanded: false }))
+          )
+        )
+          return;
+        console.log('called');
+
         console.log('not equal');
         setExpandedRowsInfo(r.cleanExpandedRowsObj);
         updatedExpandedRowsObj = r.cleanExpandedRowsObj;
@@ -64,23 +72,25 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   // }, [expandedRowsInfo]);
 
   const handleItemClick = (updatedRow: RowExpandedInfo): void => {
-    setExpandedRowsInfo(updateExpandedState(updatedRow, expandedRowsInfo));
+    const updatedRows = updateExpandedState(updatedRow, expandedRowsInfo);
+
+    console.log({ updatedRows });
+    setExpandedRowsInfo(updatedRows);
+    // console.log({ updatedExpandedRows });
+    window.dtableSDK.updatePluginSettings(PLUGIN_NAME, {
+      ...pluginDataStore,
+      presets: pluginDataStore.presets.map((preset) => {
+        if (preset._id === activePresetId) {
+          return {
+            ...preset,
+            expandedRows: updatedRows,
+          };
+        }
+        return preset;
+      }),
+    });
     setExpandedHasChanged(!expandedHasChanged);
   };
-
-  // console.log({ updatedExpandedRows });
-  // window.dtableSDK.updatePluginSettings(PLUGIN_NAME, {
-  //   ...pluginDataStore,
-  //   presets: pluginDataStore.presets.map((preset) => {
-  //     if (preset._id === activePresetId) {
-  //       return {
-  //         ...preset,
-  //         expandedRows: updatedExpandedRows,
-  //       };
-  //     }
-  //     return preset;
-  //   }),
-  // });
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
