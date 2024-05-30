@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
+import ExpandableItem from './ExpandableItem';
+import HeaderRow from './HeaderRow';
+import { TableColumn } from '../../utils/template-utils/interfaces/Table.interface';
+import { PLUGIN_NAME } from '../../utils/template-utils/constants';
 import {
   getRowsByTableId,
   isArraysEqual,
   outputLevelsInfo,
   updateExpandedState,
 } from '../../utils/custom-utils/utils';
-import ExpandableItem from './ExpandableItem';
-import HeaderRow from './HeaderRow';
-import { TableColumn } from '../../utils/template-utils/interfaces/Table.interface';
 import {
   IPluginTLProps,
   RowExpandedInfo,
   levelRowInfo,
   levelsStructureInfo,
 } from '../../utils/custom-utils/interfaces/CustomPlugin';
-import { PLUGIN_NAME } from '../../utils/template-utils/constants';
 
 const PluginTL: React.FC<IPluginTLProps> = ({
   allTables,
@@ -25,11 +25,26 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   const [finalResult, setFinalResult] = useState<levelsStructureInfo>([]);
   const [columns, setColumns] = useState<TableColumn[]>([]);
   const [tableName, setTableName] = useState<string>('');
-  const [expandedRowsInfo, setExpandedRowsInfo] = useState<RowExpandedInfo[]>([]);
+  const [expandedRowsInfo, setExpandedRowsInfo] = useState<RowExpandedInfo[]>(
+    pluginDataStore.presets.find((preset) => preset._id === activePresetId)?.expandedRows || []
+  );
   const [expandedHasChanged, setExpandedHasChanged] = useState<boolean>(false);
 
-  let updatedExpandedRowsObj: RowExpandedInfo[] = [];
   useEffect(() => {
+    console.log({ activePresetId });
+    const newRowsExpandedInfo = pluginDataStore.presets.find(
+      (preset) => preset._id === activePresetId
+    )?.expandedRows;
+    if (newRowsExpandedInfo === undefined) return;
+    console.log({ comp: newRowsExpandedInfo[0].expanded });
+    // setExpandedRowsInfo(newRowsExpandedInfo);
+    // setExpandedHasChanged(!expandedHasChanged);
+    return;
+  }, [activePresetId]);
+
+  useEffect(() => {
+    console.log(0);
+
     const firstLevelTable = allTables.find((t) => t._id === levelSelections.first.selected.value);
     if (firstLevelTable !== undefined) {
       setColumns(firstLevelTable.columns);
@@ -40,6 +55,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
       const firstRows = getRowsByTableId(levelSelections.first.selected.value, allTables);
       if (firstRows !== undefined) {
         const firstTableId = levelSelections.first.selected.value;
+        console.log({ useEff00: expandedRowsInfo[0].expanded });
 
         const r = outputLevelsInfo(
           firstTableId,
@@ -58,25 +74,24 @@ const PluginTL: React.FC<IPluginTLProps> = ({
           )
         )
           return;
-        console.log('called');
+        console.log({ useEff01: expandedRowsInfo[0].expanded });
 
-        console.log('not equal');
         setExpandedRowsInfo(r.cleanExpandedRowsObj);
-        updatedExpandedRowsObj = r.cleanExpandedRowsObj;
       }
     }
+    console.log({ useEff02: expandedRowsInfo[0].expanded });
   }, [allTables, levelSelections]);
 
-  // useEffect(() => {
-  //   console.log(0, expandedRowsInfo);
-  // }, [expandedRowsInfo]);
-
   const handleItemClick = (updatedRow: RowExpandedInfo): void => {
-    const updatedRows = updateExpandedState(updatedRow, expandedRowsInfo);
+    console.log(1);
+    console.log({ useEff10: expandedRowsInfo[0].expanded });
 
-    console.log({ updatedRows });
+    const updatedRows = updateExpandedState(updatedRow, expandedRowsInfo);
+    console.log({ useEff11: expandedRowsInfo[0].expanded });
+
     setExpandedRowsInfo(updatedRows);
-    // console.log({ updatedExpandedRows });
+    console.log({ useEff12: expandedRowsInfo[0].expanded });
+
     window.dtableSDK.updatePluginSettings(PLUGIN_NAME, {
       ...pluginDataStore,
       presets: pluginDataStore.presets.map((preset) => {
@@ -89,7 +104,10 @@ const PluginTL: React.FC<IPluginTLProps> = ({
         return preset;
       }),
     });
+    console.log({ useEff13: expandedRowsInfo[0].expanded });
+
     setExpandedHasChanged(!expandedHasChanged);
+    console.log({ useEff14: expandedRowsInfo[0].expanded });
   };
 
   return (

@@ -53,7 +53,7 @@ import {
 import { SettingsOption } from '@/utils/types';
 import pluginContext from './plugin-context';
 import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';
-import { ILevelSelections, RowExpandedInfo } from './utils/custom-utils/interfaces/CustomPlugin';
+import { ILevelSelections } from './utils/custom-utils/interfaces/CustomPlugin';
 import { LEVEL_SEL_DEFAULT } from './utils/custom-utils/constants';
 import { levelSelectionDefaultFallback } from './utils/custom-utils/utils';
 
