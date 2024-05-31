@@ -19,7 +19,6 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   const isClickable = level !== 3 && rows?.length !== 0 && item[levelRows] !== undefined;
 
   useEffect(() => {
-    console.log({ item00: expandedRowsInfo[0].expanded });
     const t = expandTheItem(expandedRowsInfo, item._id);
     setIsExpanded(t);
   }, [expandedHasChanged, expandedRowsInfo]);
