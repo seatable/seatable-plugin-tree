@@ -195,8 +195,46 @@ export function getLevelSelectionAndTable(
   return { levelTable, levelRows };
 }
 
+// export const isArraysEqual = (a: RowExpandedInfo[], b: RowExpandedInfo[]) => {
+//   return JSON.stringify(a) === JSON.stringify(b);
+// };
+
 export const isArraysEqual = (a: RowExpandedInfo[], b: RowExpandedInfo[]) => {
-  return JSON.stringify(a) === JSON.stringify(b);
+  const firstLevel =
+    JSON.stringify(a.map((r) => ({ '0000': r['0000'], _id: r._id, expanded: false }))) ===
+    JSON.stringify(b.map((r) => ({ '0000': r['0000'], _id: r._id, expanded: false })));
+  console.log({ firstLevel });
+  if (!firstLevel) return false;
+  const secondLevel = a.every((r) => {
+    const bRow = b.find((br) => br._id === r._id);
+    if (!bRow) return false;
+    return (
+      JSON.stringify(
+        r.secondLevelRows?.map((r) => ({ '0000': r['0000'], _id: r._id, expanded: false })) || []
+      ) ===
+      JSON.stringify(
+        bRow.secondLevelRows?.map((r) => ({ '0000': r['0000'], _id: r._id, expanded: false })) || []
+      )
+    );
+  });
+  console.log({ secondLevel });
+
+  if (!secondLevel) return false;
+  const thirdLevel = a.every((r) => {
+    const bRow = b.find((br) => br._id === r._id);
+    if (!bRow) return false;
+    return (
+      JSON.stringify(
+        r.thirdLevelRows?.map((r) => ({ '0000': r['0000'], _id: r._id, expanded: false })) || []
+      ) ===
+      JSON.stringify(
+        bRow.thirdLevelRows?.map((r) => ({ '0000': r['0000'], _id: r._id, expanded: false })) || []
+      )
+    );
+  });
+  console.log({ thirdLevel });
+
+  return thirdLevel;
 };
 
 function cleanObjects(a: levelsStructureInfo, propertiesToKeep: string[] | undefined) {

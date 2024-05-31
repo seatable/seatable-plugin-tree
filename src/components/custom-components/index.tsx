@@ -61,12 +61,13 @@ const PluginTL: React.FC<IPluginTLProps> = ({
         );
         setFinalResult(r.finalResult);
 
-        if (
-          isArraysEqual(
-            expandedRowsInfo.map((r) => ({ '0000': r['0000'], _id: r._id, expanded: false })),
-            r.cleanExpandedRowsObj.map((r) => ({ '0000': r['0000'], _id: r._id, expanded: false }))
-          )
-        ) {
+        if (isArraysEqual(expandedRowsInfo, r.cleanExpandedRowsObj)) {
+          // if (
+          //   isArraysEqual(
+          //     expandedRowsInfo],
+          //     r.cleanExpandedRowsObj.map((r) => ({ '0000': r['0000'], _id: r._id, expanded: false }))
+          //   )
+          // ) {
           setExpandedRowsInfo(
             pluginDataStore.presets.find((preset) => preset._id === activePresetId)?.expandedRows ||
               []
@@ -78,7 +79,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
         setExpandedRowsInfo(r.cleanExpandedRowsObj);
       }
     }
-  }, [allTables, levelSelections]);
+  }, [JSON.stringify(allTables), levelSelections]);
 
   const handleItemClick = (updatedRow: RowExpandedInfo): void => {
     const updatedRows = updateExpandedState(updatedRow, expandedRowsInfo);
