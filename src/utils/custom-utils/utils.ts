@@ -195,10 +195,6 @@ export function getLevelSelectionAndTable(
   return { levelTable, levelRows };
 }
 
-// export const isArraysEqual = (a: RowExpandedInfo[], b: RowExpandedInfo[]) => {
-//   return JSON.stringify(a) === JSON.stringify(b);
-// };
-
 export const isArraysEqual = (a: RowExpandedInfo[], b: RowExpandedInfo[]) => {
   const firstLevel =
     JSON.stringify(a.map((r) => ({ '0000': r['0000'], _id: r._id, expanded: false }))) ===

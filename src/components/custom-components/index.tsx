@@ -62,12 +62,6 @@ const PluginTL: React.FC<IPluginTLProps> = ({
         setFinalResult(r.finalResult);
 
         if (isArraysEqual(expandedRowsInfo, r.cleanExpandedRowsObj)) {
-          // if (
-          //   isArraysEqual(
-          //     expandedRowsInfo],
-          //     r.cleanExpandedRowsObj.map((r) => ({ '0000': r['0000'], _id: r._id, expanded: false }))
-          //   )
-          // ) {
           setExpandedRowsInfo(
             pluginDataStore.presets.find((preset) => preset._id === activePresetId)?.expandedRows ||
               []
