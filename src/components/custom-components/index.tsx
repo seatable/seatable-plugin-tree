@@ -56,34 +56,36 @@ const PluginTL: React.FC<IPluginTLProps> = ({
 
   useEffect(() => {
     const firstLevelTable = allTables.find((t) => t._id === levelSelections.first.selected.value);
-    if (firstLevelTable !== undefined && resetDataValue.t === 'TChanged') {
+    if (
+      firstLevelTable !== undefined &&
+      resetDataValue.t === 'TChanged' &&
+      levelSelections !== undefined
+    ) {
       setColumns(firstLevelTable.columns);
       setTableName(firstLevelTable.name);
     }
 
-    if (levelSelections !== undefined) {
-      const firstRows = getRowsByTableId(levelSelections.first.selected.value, allTables);
-      if (firstRows !== undefined) {
-        const firstTableId = levelSelections.first.selected.value;
+    const firstRows = getRowsByTableId(levelSelections.first.selected.value, allTables);
+    if (firstRows !== undefined) {
+      const firstTableId = levelSelections.first.selected.value;
 
-        const r = outputLevelsInfo(
-          firstTableId,
-          firstRows,
-          expandedRowsInfo,
-          levelSelections.second.selected.value,
-          allTables,
-          levelSelections?.third?.selected.value
+      const r = outputLevelsInfo(
+        firstTableId,
+        firstRows,
+        expandedRowsInfo,
+        levelSelections.second.selected.value,
+        allTables,
+        levelSelections?.third?.selected.value
+      );
+      setFinalResult(r.finalResult);
+      console.log(0);
+      if (isArraysEqual(expandedRowsInfo, r.cleanExpandedRowsObj)) {
+        setExpandedRowsInfo(
+          pluginDataStore.presets.find((preset) => preset._id === activePresetId)?.expandedRows ||
+            []
         );
-        setFinalResult(r.finalResult);
-        console.log(0);
-        if (isArraysEqual(expandedRowsInfo, r.cleanExpandedRowsObj)) {
-          setExpandedRowsInfo(
-            pluginDataStore.presets.find((preset) => preset._id === activePresetId)?.expandedRows ||
-              []
-          );
 
-          return;
-        }
+        return;
 
         setExpandedRowsInfo(r.cleanExpandedRowsObj);
       }
