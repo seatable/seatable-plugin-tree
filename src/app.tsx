@@ -60,6 +60,7 @@ import { levelSelectionDefaultFallback } from './utils/custom-utils/utils';
 const App: React.FC<IAppProps> = (props) => {
   const { isDevelopment, lang } = props;
   const { [DEFAULT_LOCALE]: d } = AVAILABLE_LOCALES;
+  const [resetDataValue, setResetDataValue] = useState<{ t: string; c: number }>({ t: '', c: 0 });
 
   // Boolean state to show/hide the plugin's components
   const [isShowState, setIsShowState] = useState<AppIsShowState>(INITIAL_IS_SHOW_STATE);
@@ -106,7 +107,7 @@ const App: React.FC<IAppProps> = (props) => {
     unsubscribeRemoteDtableChanged = window.dtableSDK.subscribe('remote-dtable-changed', () => {
       onDTableChanged();
     });
-    resetData();
+    resetData('init');
   };
 
   let unsubscribeLocalDtableChanged = () => {
@@ -117,14 +118,15 @@ const App: React.FC<IAppProps> = (props) => {
   };
 
   const onDTableConnect = () => {
-    resetData();
+    resetData('TConnect');
   };
 
   const onDTableChanged = () => {
-    resetData();
+    resetData('TChanged');
   };
 
-  const resetData = () => {
+  const resetData = (on: string) => {
+    setResetDataValue({ t: on, c: resetDataValue.c + 1 });
     const allTables: TableArray = window.dtableSDK.getTables(); // All the Tables of the Base
     const activeTable: Table = window.dtableSDK.getActiveTable(); // How is the ActiveTable Set? allTables[0]?
     const activeTableViews: TableViewArray = activeTable.views; // All the Views of the specific Active Table
@@ -518,6 +520,7 @@ const App: React.FC<IAppProps> = (props) => {
               levelSelections={activeLevelSelections}
               pluginDataStore={pluginDataStore}
               activePresetId={appActiveState.activePresetId}
+              resetDataValue={resetDataValue}
             />
             {activeComponents.add_row_button && (
               <button className={styles.add_row} onClick={addRowItem}>

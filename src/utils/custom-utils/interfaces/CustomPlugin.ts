@@ -7,6 +7,7 @@ export interface IPluginTLProps {
   levelSelections: ILevelSelections;
   pluginDataStore: IPluginDataStore;
   activePresetId: string;
+  resetDataValue: { t: string; c: number };
 }
 
 export interface ILevelSelections {
