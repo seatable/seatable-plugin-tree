@@ -31,20 +31,15 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   const [expandedHasChanged, setExpandedHasChanged] = useState<boolean>(false);
 
   useEffect(() => {
-    console.log({ activePresetId });
     const newRowsExpandedInfo = pluginDataStore.presets.find(
       (preset) => preset._id === activePresetId
     )?.expandedRows;
     if (newRowsExpandedInfo === undefined) return;
-    console.log({ comp: newRowsExpandedInfo[0].expanded });
-    // setExpandedRowsInfo(newRowsExpandedInfo);
-    // setExpandedHasChanged(!expandedHasChanged);
-    return;
+    setExpandedRowsInfo(newRowsExpandedInfo);
+    setExpandedHasChanged(!expandedHasChanged);
   }, [activePresetId]);
 
   useEffect(() => {
-    console.log(0);
-
     const firstLevelTable = allTables.find((t) => t._id === levelSelections.first.selected.value);
     if (firstLevelTable !== undefined) {
       setColumns(firstLevelTable.columns);
@@ -55,7 +50,6 @@ const PluginTL: React.FC<IPluginTLProps> = ({
       const firstRows = getRowsByTableId(levelSelections.first.selected.value, allTables);
       if (firstRows !== undefined) {
         const firstTableId = levelSelections.first.selected.value;
-        console.log({ useEff00: expandedRowsInfo[0].expanded });
 
         const r = outputLevelsInfo(
           firstTableId,
@@ -72,25 +66,23 @@ const PluginTL: React.FC<IPluginTLProps> = ({
             expandedRowsInfo.map((r) => ({ '0000': r['0000'], _id: r._id, expanded: false })),
             r.cleanExpandedRowsObj.map((r) => ({ '0000': r['0000'], _id: r._id, expanded: false }))
           )
-        )
+        ) {
+          setExpandedRowsInfo(
+            pluginDataStore.presets.find((preset) => preset._id === activePresetId)?.expandedRows ||
+              []
+          );
+
           return;
-        console.log({ useEff01: expandedRowsInfo[0].expanded });
+        }
 
         setExpandedRowsInfo(r.cleanExpandedRowsObj);
       }
     }
-    console.log({ useEff02: expandedRowsInfo[0].expanded });
   }, [allTables, levelSelections]);
 
   const handleItemClick = (updatedRow: RowExpandedInfo): void => {
-    console.log(1);
-    console.log({ useEff10: expandedRowsInfo[0].expanded });
-
     const updatedRows = updateExpandedState(updatedRow, expandedRowsInfo);
-    console.log({ useEff11: expandedRowsInfo[0].expanded });
-
     setExpandedRowsInfo(updatedRows);
-    console.log({ useEff12: expandedRowsInfo[0].expanded });
 
     window.dtableSDK.updatePluginSettings(PLUGIN_NAME, {
       ...pluginDataStore,
@@ -104,10 +96,8 @@ const PluginTL: React.FC<IPluginTLProps> = ({
         return preset;
       }),
     });
-    console.log({ useEff13: expandedRowsInfo[0].expanded });
 
     setExpandedHasChanged(!expandedHasChanged);
-    console.log({ useEff14: expandedRowsInfo[0].expanded });
   };
 
   return (
