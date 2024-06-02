@@ -34,7 +34,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({ allTables, levelSelections }) => {
   }
   // console.log({ dataToDisplay });
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', width: 'max-content' }}>
       <HeaderRow columns={c} tableName={n} />
       {dataToDisplay &&
         dataToDisplay.map((i: levelRowInfo) => (

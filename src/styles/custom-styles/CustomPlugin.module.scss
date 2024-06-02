@@ -105,9 +105,8 @@
 
   &_expandableItem {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 10px;
+    padding-block: 10px;
     border: 1px solid #ccc;
   }
 
@@ -125,6 +124,13 @@
     border: 1px solid #ddd; /* Optional: to separate the columns */
     box-sizing: border-box; /* Ensures padding is included in width/height */
     height: 40px; /* Fixed height */
-    width: 100px; /* Fixed width */
+    width: 120px; /* Fixed width */
+  }
+
+  &_formatter_cell {
+    width: 120px;
+    max-height: 60px;
+    overflow: auto;
+    text-align: center;
   }
 }
