@@ -21,11 +21,12 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   const { levelTable, levelRows } = getLevelSelectionAndTable(level, allTables, levelSelections);
   const rows = item[levelRows];
   const isClickable = level !== 3 && rows?.length !== 0 && item[levelRows] !== undefined;
+  const currentTable = allTables.find((table) => table.name === item._name);
 
   let viewObj: TableView | undefined;
   const view = (): TableView | undefined => {
-    if (levelTable && levelTable.views && levelTable.views.length > 0) {
-      viewObj = levelTable.views[0];
+    if (currentTable && currentTable.views && currentTable.views.length > 0) {
+      viewObj = currentTable.views[0];
       return viewObj;
     } else {
       viewObj = undefined;
@@ -96,12 +97,12 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
               }
             : undefined
         }>
-        <p>
+        <p className={styles.custom_formatter_cell}>
           {'>'}
           {item['0000']}
         </p>
-        <div className={styles.custom_formatter_cell} />
-        {levelTable?.columns.map((column) => (
+        {/* <div className={styles.custom_formatter_cell} /> */}
+        {currentTable?.columns.map((column) => (
           <div key={column.key} className={styles.custom_formatter_cell}>
             <EditorFormatter
               column={column}
