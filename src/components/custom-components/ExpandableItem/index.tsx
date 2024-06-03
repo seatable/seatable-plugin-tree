@@ -28,6 +28,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
         className={styles.custom_expandableItem}
         style={{ cursor: isClickable ? 'pointer' : 'default' }}
         onClick={isClickable ? () => setIsExpanded(!isExpanded) : undefined}>
+
         {item['0000']}
       </div>{' '}
       {isExpanded && (
@@ -35,6 +36,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
           <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
             <HeaderRow columns={levelTable?.columns} tableName={levelTable?.name} />
             {rows?.map((i: levelRowInfo) => (
+
               <ExpandableItem
                 key={i._id}
                 item={i}

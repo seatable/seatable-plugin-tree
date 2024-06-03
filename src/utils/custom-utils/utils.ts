@@ -138,7 +138,7 @@ export const outputLevelsInfo = (
       [keyName ? keyName : 'secondLevelRows']: secondLevelRows,
     } satisfies levelRowInfo);
   });
-
+  // console.log({ finalResult });
   return finalResult;
 };
 
