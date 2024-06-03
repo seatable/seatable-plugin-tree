@@ -268,7 +268,7 @@
   height: 100%;
   width: 100%;
   overflow: scroll;
-  padding-bottom: 50px;
+  padding: 10px 300px 50px 10px; // 300px for horizontal scoll bug fix
   background-color: $main-content-bgColor;
 
   &::-webkit-scrollbar {
