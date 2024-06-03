@@ -20,15 +20,16 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   const [isExpanded, setIsExpanded] = useState<boolean>();
   const { levelTable, levelRows } = getLevelSelectionAndTable(level, allTables, levelSelections);
   const rows = item[levelRows];
-  console.log(levelTable?.columns);
   const isClickable = level !== 3 && rows?.length !== 0 && item[levelRows] !== undefined;
-  console.log({ levelTable });
 
+  let viewObj: TableView | undefined;
   const view = (): TableView | undefined => {
     if (levelTable && levelTable.views && levelTable.views.length > 0) {
-      return levelTable.views[0];
+      viewObj = levelTable.views[0];
+      return viewObj;
     } else {
-      return undefined;
+      viewObj = undefined;
+      return viewObj;
     }
   };
 
@@ -67,9 +68,11 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   };
 
   // Get the formula rows of the table
+  let formulaRowsObj: any;
   const formulaRows = () => {
     if (levelTable) {
-      return getTableFormulaRows(levelTable, view as unknown as TableView);
+      formulaRowsObj = getTableFormulaRows(levelTable, view as unknown as TableView);
+      return formulaRowsObj;
     }
   };
 
@@ -108,7 +111,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
               getLinkCellValue={_getLinkCellValue}
               getTableById={_getTableById}
               getRowsByID={getRowsByID}
-              selectedView={view}
+              selectedView={viewObj}
               collaborators={collaborators}
               getUserCommonInfo={getUserCommonInfo}
               getMediaUrl={getMediaUrl}

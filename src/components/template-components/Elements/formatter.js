@@ -157,9 +157,14 @@ class EditorFormatter extends React.Component {
           <TextFormatter value={row[columnKey]} containerClassName={'ptl-text-editor'} />
         );
         if (!row[columnKey]) {
+          console.log('if');
           textFormatter = this.renderEmptyFormatter();
         } else if (displayColumnName) {
+          console.log('else if');
           textFormatter = this.renderColumnFormatter(textFormatter);
+        }
+        if (textFormatter.props.value === 'P1') {
+          console.log({ textFormatter });
         }
         return textFormatter;
       }
@@ -189,6 +194,7 @@ class EditorFormatter extends React.Component {
       }
       case CellType.IMAGE: {
         let imageFormatter = <ImageFormatter value={row[columnKey]} isSample />;
+
         if (!row[columnKey] || row[columnKey].length === 0) {
           imageFormatter = this.renderEmptyFormatter();
         } else if (displayColumnName) {

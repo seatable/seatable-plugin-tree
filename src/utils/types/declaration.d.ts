@@ -4,7 +4,7 @@ declare module '*.png' {
   const value: any;
   export default value;
 }
-
+declare module 'dtable-ui-component';
 declare enum LINK_TYPE {
   Link = 'link',
   Formula = 'link-formula',

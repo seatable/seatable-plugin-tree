@@ -199,7 +199,7 @@ export const isArraysEqual = (a: RowExpandedInfo[], b: RowExpandedInfo[]) => {
   const firstLevel =
     JSON.stringify(a.map((r) => ({ '0000': r['0000'], _id: r._id, expanded: false }))) ===
     JSON.stringify(b.map((r) => ({ '0000': r['0000'], _id: r._id, expanded: false })));
-  console.log({ firstLevel });
+
   if (!firstLevel) return false;
   const secondLevel = a.every((r) => {
     const bRow = b.find((br) => br._id === r._id);
@@ -213,7 +213,6 @@ export const isArraysEqual = (a: RowExpandedInfo[], b: RowExpandedInfo[]) => {
       )
     );
   });
-  console.log({ secondLevel });
 
   if (!secondLevel) return false;
   const thirdLevel = a.every((r) => {
@@ -228,7 +227,6 @@ export const isArraysEqual = (a: RowExpandedInfo[], b: RowExpandedInfo[]) => {
       )
     );
   });
-  console.log({ thirdLevel });
 
   return thirdLevel;
 };
