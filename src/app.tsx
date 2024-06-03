@@ -521,6 +521,7 @@ const App: React.FC<IAppProps> = (props) => {
               pluginDataStore={pluginDataStore}
               activePresetId={appActiveState.activePresetId}
               resetDataValue={resetDataValue}
+              isDevelopment={isDevelopment}
             />
             {activeComponents.add_row_button && (
               <button className={styles.add_row} onClick={addRowItem}>
