@@ -47,7 +47,7 @@ const propTypes = {
   getTableById: PropTypes.func,
   getUserCommonInfo: PropTypes.func,
   getMediaUrl: PropTypes.func,
-  formulaRows: PropTypes.func,
+  formulaRows: PropTypes.object,
 };
 
 class EditorFormatter extends React.Component {

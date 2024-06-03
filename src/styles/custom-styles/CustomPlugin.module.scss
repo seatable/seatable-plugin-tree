@@ -126,4 +126,10 @@
     box-sizing: border-box; /* Ensures padding is included in width/height */
     height: 40px; /* Fixed height */
   }
+  &_formatter_cell {
+    width: 120px;
+    max-height: 60px;
+    overflow: auto;
+    text-align: center;
+  }
 }

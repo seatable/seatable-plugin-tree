@@ -12,7 +12,6 @@ const HeaderRow: React.FC<HeaderRowProps> = ({ columns, tableName }) => {
 
   return (
     <div className={styles.custom_headerRow}>
-      <div className={styles.custom_headerColumn}>{tableName}</div>
       {columns &&
         columns.map((column, index) => (
           <div key={index} className={styles.custom_headerColumn}>
