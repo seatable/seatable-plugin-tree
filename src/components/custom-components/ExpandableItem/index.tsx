@@ -19,20 +19,24 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const { levelTable, levelRows } = getLevelSelectionAndTable(level, allTables, levelSelections);
+  const rows = item[levelRows];
+  const isClickable = level !== 3 && rows?.length !== 0 && item[levelRows] !== undefined;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
       <div
         className={styles.custom_expandableItem}
-        style={{ cursor: level !== 3 ? 'pointer' : 'default' }}
-        onClick={level !== 3 ? () => setIsExpanded(!isExpanded) : undefined}>
+        style={{ cursor: isClickable ? 'pointer' : 'default' }}
+        onClick={isClickable ? () => setIsExpanded(!isExpanded) : undefined}>
+
         {item['0000']}
       </div>{' '}
       {isExpanded && (
         <div style={{ paddingLeft: '20px' }}>
           <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
             <HeaderRow columns={levelTable?.columns} tableName={levelTable?.name} />
-            {item[levelRows]?.map((i: levelRowInfo) => (
+            {rows?.map((i: levelRowInfo) => (
+
               <ExpandableItem
                 key={i._id}
                 item={i}
