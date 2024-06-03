@@ -1,9 +1,5 @@
 import { ILevelSelections } from '../interfaces/CustomPlugin';
 
-export function customUtils() {
-  console.log('custom utils');
-}
-
 const LINK_TYPE = {
   link: 'link',
   formula: 'link-formula',
@@ -20,4 +16,13 @@ const LEVEL_SEL_DEFAULT: ILevelSelections = {
   third: { selected: defaultSelectOption },
 };
 
-export { LINK_TYPE, LEVEL_SEL_DEFAULT };
+const INDEX_COLUMN_TYPE = 'index';
+
+const INDEX_COLUMN = {
+  type: INDEX_COLUMN_TYPE,
+  name: 'index',
+  width: 80,
+  key: 'index',
+};
+
+export { LINK_TYPE, LEVEL_SEL_DEFAULT, INDEX_COLUMN_TYPE, INDEX_COLUMN };

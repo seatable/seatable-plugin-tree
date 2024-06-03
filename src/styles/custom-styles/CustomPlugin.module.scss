@@ -102,4 +102,29 @@
       }
     }
   }
+
+  &_expandableItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+  }
+
+  &_headerRow {
+    display: flex;
+    background-color: white;
+    justify-content: flex-start; /* Align columns to the start */
+  }
+
+  &_headerColumn {
+    padding: 10px;
+    text-align: center;
+    background-color: white;
+    color: grey;
+    border: 1px solid #ddd; /* Optional: to separate the columns */
+    box-sizing: border-box; /* Ensures padding is included in width/height */
+    height: 40px; /* Fixed height */
+    width: 100px; /* Fixed width */
+  }
 }

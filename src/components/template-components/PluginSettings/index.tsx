@@ -44,7 +44,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   const [levelSelections, setLevelSelections] = useState<ILevelSelections>(activeLevelSelections);
 
   useEffect(() => {
-    console.log({ pluginPresets });
     const activeLevelSelections = pluginPresets.find((p) => p._id === appActiveState.activePresetId)
       ?.customSettings;
 
