@@ -4,6 +4,7 @@ import HeaderRow from './HeaderRow';
 import { TableColumn } from '../../utils/template-utils/interfaces/Table.interface';
 import { PLUGIN_NAME } from '../../utils/template-utils/constants';
 import {
+  getLevelSelectionAndTable,
   getRowsByTableId,
   isArraysEqual,
   outputLevelsInfo,
@@ -30,6 +31,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     pluginDataStore.presets.find((preset) => preset._id === activePresetId)?.expandedRows || []
   );
   const [expandedHasChanged, setExpandedHasChanged] = useState<boolean>(false);
+  const { levelTable } = getLevelSelectionAndTable(0, allTables, levelSelections);
 
   useEffect(() => {
     if (resetDataValue.t === 'TChanged') {
@@ -78,16 +80,14 @@ const PluginTL: React.FC<IPluginTLProps> = ({
         levelSelections?.third?.selected.value
       );
       setFinalResult(r.finalResult);
-      console.log(0);
       if (isArraysEqual(expandedRowsInfo, r.cleanExpandedRowsObj)) {
         setExpandedRowsInfo(
           pluginDataStore.presets.find((preset) => preset._id === activePresetId)?.expandedRows ||
             []
         );
-
         return;
 
-        setExpandedRowsInfo(r.cleanExpandedRowsObj);
+        // setExpandedRowsInfo(r.cleanExpandedRowsObj);
       }
     }
   }, [JSON.stringify(allTables), levelSelections, resetDataValue]);
@@ -113,7 +113,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+    <>
       <HeaderRow columns={columns} tableName={tableName} />
       {finalResult &&
         finalResult.map((i: levelRowInfo) => (
@@ -128,7 +128,8 @@ const PluginTL: React.FC<IPluginTLProps> = ({
             expandedRowsInfo={expandedRowsInfo}
           />
         ))}
-    </div>
+      <p>+ add {levelTable?.name}</p>
+    </>
   );
 };
 

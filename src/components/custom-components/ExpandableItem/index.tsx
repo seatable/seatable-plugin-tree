@@ -35,8 +35,11 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
               }
             : undefined
         }>
-        {item['0000']}
-      </div>{' '}
+        <p>
+          {'>'}
+          {item['0000']}
+        </p>
+      </div>
       {isExpanded && (
         <div style={{ paddingLeft: '20px' }}>
           <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
@@ -53,6 +56,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
                 expandedHasChanged={expandedHasChanged}
               />
             ))}
+            <p>+ add {levelTable?.name}</p>
           </div>
         </div>
       )}

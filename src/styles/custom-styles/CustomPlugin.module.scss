@@ -108,11 +108,13 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px;
-    border: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    background-color: white;
   }
 
   &_headerRow {
     display: flex;
+    border-bottom: 1px solid #ddd; /* Optional: to separate the columns */
     background-color: white;
     justify-content: flex-start; /* Align columns to the start */
   }
@@ -122,9 +124,7 @@
     text-align: center;
     background-color: white;
     color: grey;
-    border: 1px solid #ddd; /* Optional: to separate the columns */
     box-sizing: border-box; /* Ensures padding is included in width/height */
     height: 40px; /* Fixed height */
-    width: 100px; /* Fixed width */
   }
 }
