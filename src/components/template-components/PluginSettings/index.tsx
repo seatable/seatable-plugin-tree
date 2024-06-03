@@ -49,6 +49,10 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   const [thirdLevelSelectedOption, setThirdLevelSelectedOption] = useState<SelectOption>();
   const [thirdLevelExists, setThirdLevelExists] = useState<boolean>(true);
   const [levelSelections, setLevelSelections] = useState<ILevelSelections>(activeLevelSelections);
+  const defaultEmptyThirdLevel = {
+    value: '',
+    label: '',
+  };
 
   useEffect(() => {
     const activeLevelSelections = pluginPresets.find((p) => p._id === appActiveState.activePresetId)

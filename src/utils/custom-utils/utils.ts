@@ -100,7 +100,9 @@ export const outputLevelsInfo = (
 ) => {
   const table = allTables.find((t) => t._id === tableId);
   const linkedRows = window.dtableSDK.getTableLinkRows(rows, table);
+  // console.log({ linkedRows });
   const allRowsInAllTables: TableRow[] = allTables.flatMap((t: Table) => t.rows);
+  // console.log({ allRowsInAllTables });
   const linkedColumns = getLinkColumns(table?.columns || []);
 
   let secondLevelKey = linkedColumns.find((c) => c.data.other_table_id === secondLevelId)?.key;
@@ -324,3 +326,40 @@ export const expandTheItem = (
   }
   return undefined;
 };
+
+export function getLevelSelectionAndTable(
+  level: number,
+  allTables: TableArray,
+  levelSelections: ILevelSelections
+) {
+  let levelSelectionIdx: keyof ILevelSelections | undefined;
+  type LevelRowKeys = 'nextLevelRows' | 'secondLevelRows' | 'thirdLevelRows';
+  let levelRows: LevelRowKeys;
+
+  switch (level) {
+    case 0:
+      levelSelectionIdx = 'first';
+      levelRows = 'nextLevelRows';
+      break;
+    case 1:
+      levelSelectionIdx = 'second';
+      levelRows = 'secondLevelRows';
+      break;
+    case 2:
+      levelSelectionIdx = 'third';
+      levelRows = 'thirdLevelRows';
+      break;
+    default:
+      levelRows = 'nextLevelRows';
+      break;
+  }
+
+  let levelSelection: LevelSelection | undefined;
+  if (levelSelectionIdx !== undefined) {
+    levelSelection = levelSelections[levelSelectionIdx];
+  }
+
+  const levelTable = allTables.find((t) => t._id === levelSelection?.selected?.value);
+
+  return { levelTable, levelRows };
+}
