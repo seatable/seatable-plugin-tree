@@ -1,4 +1,4 @@
-import { ILevelSelections } from '@/utils/custom-utils/interfaces/CustomPlugin';
+import { ILevelSelections, RowExpandedInfo } from '@/utils/custom-utils/interfaces/CustomPlugin';
 import { AppActiveState, IPluginDataStore } from '../App.interface';
 import { SelectOption } from '../PluginSettings.interface';
 import { TableArray } from '../Table.interface';
@@ -32,6 +32,7 @@ export interface IPresetInfo {
   name: string;
   settings?: PresetSettings;
   customSettings?: ILevelSelections;
+  expandedRows?: RowExpandedInfo[];
 }
 
 export interface PresetSettings {

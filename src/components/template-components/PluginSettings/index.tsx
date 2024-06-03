@@ -1,19 +1,26 @@
+// React and Related Libraries
 import React, { useEffect, useState } from 'react';
+// Components
 import DtableSelect from '../Elements/dtable-select';
+// Styles
 import stylesPSettings from 't_styles/PluginSettings.module.scss';
 import stylesPresets from 't_styles/PluginPresets.module.scss';
+// Interfaces and Types
 import {
   SelectOption,
   IPluginSettingsProps,
 } from '@/utils/template-utils/interfaces/PluginSettings.interface';
+import { SettingsOption } from '@/utils/types';
+import { ILevelSelections } from '@/utils/custom-utils/interfaces/CustomPlugin';
+// Utilities
 import { truncateTableName } from 'utils/template-utils/utils';
+import { findFirstLevelTables, findSecondLevelTables } from '../../../utils/custom-utils/utils';
+import { THIRD_LEVEL_DATA_DEFAULT } from '../../../utils/custom-utils/constants';
+// Icons
 import { HiOutlineChevronDoubleRight } from 'react-icons/hi2';
-import { CustomSettingsOption, SettingsOption } from '@/utils/types';
+// Localization
 import intl from 'react-intl-universal';
 import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';
-import { findFirstLevelTables, findSecondLevelTables } from '../../../utils/custom-utils/utils';
-import { ILevelSelections } from '@/utils/custom-utils/interfaces/CustomPlugin';
-
 const { [DEFAULT_LOCALE]: d } = AVAILABLE_LOCALES;
 
 // PluginSettings component for managing table and view options
@@ -57,7 +64,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       setThirdLevelSelectedOption(activeLevelSelections?.third?.selected);
       onLevelSelectionChange(activeLevelSelections);
     }
-  }, []);
+  }, [appActiveState.activePresetId]);
 
   useEffect(() => {
     if (levelSelections) {
@@ -139,12 +146,11 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
         item.value !== firstLevelSelectedOption?.value &&
         item.value !== secondLevelSelectedOption?.value
     );
+    const isEmpty = filteredThirdLevelOptions.length === 0;
 
-    setThirdLevelExists(filteredThirdLevelOptions.length === 0 ? false : true);
+    setThirdLevelExists(!isEmpty);
     setThirdLevelOptions(filteredThirdLevelOptions);
-    setThirdLevelSelectedOption(
-      filteredThirdLevelOptions.length === 0 ? defaultEmptyThirdLevel : filteredThirdLevelOptions[0]
-    );
+    setThirdLevelSelectedOption(isEmpty ? THIRD_LEVEL_DATA_DEFAULT : filteredThirdLevelOptions[0]);
     if (firstLevelSelectedOption && secondLevelSelectedOption) {
       setLevelSelections(
         (prevState) =>
@@ -153,10 +159,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
             first: { selected: firstLevelSelectedOption },
             second: { selected: secondLevelSelectedOption },
             third: {
-              selected:
-                filteredThirdLevelOptions.length === 0
-                  ? defaultEmptyThirdLevel
-                  : filteredThirdLevelOptions[0],
+              selected: isEmpty ? THIRD_LEVEL_DATA_DEFAULT : filteredThirdLevelOptions[0],
             },
           }) satisfies ILevelSelections
       );
@@ -213,7 +216,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
               <p className="d-inline-block mb-2">
                 {intl.get('customSettings.1stLevel').d(`${d.table}`)}
               </p>
-              {/* Toggle table view */}
               <DtableSelect
                 value={firstLevelSelectedOption}
                 options={firstLevelOptions}
@@ -233,12 +235,10 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
               <p className="d-inline-block mb-2 mt-3">
                 {intl.get('customSettings.2ndLevel').d(`${d.view}/`)}
               </p>
-              {/* Toggle table view */}
               <DtableSelect
                 value={secondLevelSelectedOption}
                 options={secondLevelOptions}
                 onChange={(selectedOption: SelectOption) => {
-                  const type = 'second' satisfies CustomSettingsOption;
                   setSecondLevelSelectedOption(selectedOption);
                   setLevelSelections(
                     (prevState) =>
@@ -254,13 +254,11 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
               <p className="d-inline-block mb-2 mt-3">
                 {intl.get('customSettings.3rdLevel').d(`${d.view}/`)}
               </p>
-              {/* Toggle table view */}
               <DtableSelect
                 isDisabled={!thirdLevelExists}
                 value={thirdLevelSelectedOption}
                 options={thirdLevelOptions}
                 onChange={(selectedOption: SelectOption) => {
-                  const type = 'third' satisfies CustomSettingsOption;
                   setThirdLevelSelectedOption(selectedOption);
                   setLevelSelections(
                     (prevState) =>
@@ -273,7 +271,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
               />
             </div>
           </div>
-          {/* Insert custom settings */}
         </div>
       </div>
     </div>
