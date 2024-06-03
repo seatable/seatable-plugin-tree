@@ -101,8 +101,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
           {'>'}
           {item['0000']}
         </p>
-        {/* <div className={styles.custom_formatter_cell} /> */}
-        {currentTable?.columns.map((column) => (
+        {currentTable?.columns.filter((c) => c.name.toLowerCase() !== 'name').map((column) => (
           <div key={column.key} className={styles.custom_formatter_cell}>
             <EditorFormatter
               column={column}
