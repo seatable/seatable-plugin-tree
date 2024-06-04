@@ -61,7 +61,6 @@ class EditorFormatter extends React.Component {
 
   componentDidMount() {
     this.calculateCollaboratorData(this.props);
-    console.log({ c: this.props.table });
   }
 
   componentWillReceiveProps(nextProps) {

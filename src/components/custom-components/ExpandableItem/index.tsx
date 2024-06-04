@@ -135,7 +135,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
                 expandedHasChanged={expandedHasChanged}
               />
             ))}
-            <p>+ add {levelTable?.name}</p>
+            <p>+ {levelTable?.name.toLowerCase()}</p>
           </div>
         </div>
       )}
