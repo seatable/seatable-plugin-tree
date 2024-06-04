@@ -11,7 +11,7 @@ export interface IPresetsProps {
     currentIdx: number,
     presets: PresetsArray,
     _pluginDataStore: IPluginDataStore,
-    type: string
+    id: string
   ) => void;
   pluginDataStore: IPluginDataStore;
   isShowPresets: boolean;

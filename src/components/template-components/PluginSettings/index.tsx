@@ -106,14 +106,16 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   }, [appActiveState]);
 
   useEffect(() => {
+    console.log({ allTables });
     const FIRST_LEVEL_TABLES = findFirstLevelTables(allTables);
     const firstLevelOptions = FIRST_LEVEL_TABLES.map((item) => {
       const value = item._id;
       const label = truncateTableName(item.name);
       return { value, label };
     });
+    console.log({ firstLevelOptions });
     setFirstLevelOptions(firstLevelOptions);
-  }, [allTables]);
+  }, [JSON.stringify(allTables)]);
 
   useEffect(() => {
     let secondLevelOptions: SelectOption[] = [];
@@ -125,9 +127,10 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
         return { value, label };
       });
     }
+    console.log(secondLevelOptions);
     setSecondLevelOptions(secondLevelOptions);
     setSecondLevelSelectedOption(secondLevelOptions[0]);
-  }, [firstLevelSelectedOption]);
+  }, [firstLevelSelectedOption, firstLevelOptions]);
 
   useEffect(() => {
     let thirdLevelOptions: SelectOption[] = [];
@@ -164,7 +167,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
           }) satisfies ILevelSelections
       );
     }
-  }, [secondLevelSelectedOption]);
+  }, [secondLevelSelectedOption, secondLevelOptions]);
 
   return (
     <div
