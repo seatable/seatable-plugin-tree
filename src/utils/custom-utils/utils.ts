@@ -99,9 +99,7 @@ export const outputLevelsInfo = (
 ) => {
   const table = allTables.find((t) => t._id === tableId);
   const linkedRows = window.dtableSDK.getTableLinkRows(rows, table);
-  // console.log({ linkedRows });
   const allRowsInAllTables: TableRow[] = allTables.flatMap((t: Table) => t.rows);
-  // console.log({ allRowsInAllTables });
   const linkedColumns = getLinkColumns(table?.columns || []);
 
   let secondLevelKey = linkedColumns.find((c) => c.data.other_table_id === secondLevelId)?.key;
@@ -143,7 +141,6 @@ export const outputLevelsInfo = (
   });
 
   const cleanExpandedRowsObj = cleanObjects(finalResult, undefined);
-  console.log({ finalResult });
   return { finalResult, cleanExpandedRowsObj };
 };
 

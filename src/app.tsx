@@ -81,10 +81,6 @@ const App: React.FC<IAppProps> = (props) => {
     useState<ILevelSelections>(LEVEL_SEL_DEFAULT);
 
   useEffect(() => {
-    console.log({ pluginPresets });
-  }, [pluginPresets]);
-
-  useEffect(() => {
     initPluginDTableData();
     return () => {
       unsubscribeLocalDtableChanged();

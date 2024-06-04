@@ -33,12 +33,6 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   const [expandedHasChanged, setExpandedHasChanged] = useState<boolean>(false);
   const { levelTable } = getLevelSelectionAndTable(0, allTables, levelSelections);
 
-  // useEffect(() => {
-  //   if (resetDataValue.t === 'TChanged') {
-  //     console.log({ resetDataValue });
-  //   }
-  // }, [resetDataValue]);
-
   useEffect(() => {
     const newRowsExpandedInfo = pluginDataStore.presets.find(
       (preset) => preset._id === activePresetId
@@ -57,7 +51,6 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   }, []);
 
   useEffect(() => {
-    console.log({ rv: resetDataValue.t });
     const firstLevelTable = allTables.find((t) => t._id === levelSelections.first.selected.value);
     if (
       firstLevelTable !== undefined &&
@@ -94,7 +87,6 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   }, [JSON.stringify(allTables), levelSelections, resetDataValue]);
 
   const handleItemClick = (updatedRow: RowExpandedInfo): void => {
-    console.log({ updatedRow });
     const updatedRows = updateExpandedState(updatedRow, expandedRowsInfo);
     setExpandedRowsInfo(updatedRows);
 

@@ -82,8 +82,6 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
 
   useEffect(() => {
     const t = expandTheItem(expandedRowsInfo, item._id);
-    // console.log({ expandedRowsInfo });
-    // console.log({ i: item._id });
     setIsExpanded(t);
   }, [expandedHasChanged, expandedRowsInfo]);
 

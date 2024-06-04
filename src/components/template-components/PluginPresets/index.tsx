@@ -160,7 +160,6 @@ const PluginPresets: React.FC<IPresetsProps> = ({
         : type === PresetHandleAction.duplicate && option?.pSettings
           ? option.pSettings
           : {};
-    console.log({ option });
 
     setPluginPresets(_pluginPresets || []);
     const _activePresetIdx = _pluginPresets?.length;
@@ -171,15 +170,13 @@ const PluginPresets: React.FC<IPresetsProps> = ({
         : type === PresetHandleAction.duplicate && option?.pCustomSettings
           ? option.pCustomSettings
           : {};
-    console.log({ _presetCustomSettings });
+
     const newPreset = new Preset({ _id, name: presetName });
     const newPresetsArray = deepCopy(_pluginPresets);
     newPresetsArray.push(newPreset);
     const initUpdated = initPresetSetting();
-    console.log({ initUpdated });
     newPresetsArray[_activePresetIdx].settings = Object.assign(_presetSettings, initUpdated);
     newPresetsArray[_activePresetIdx].customSettings = Object.assign(_presetCustomSettings);
-    console.log({ newPresetsArray });
     pluginDataStore.presets = newPresetsArray;
     updatePresets(_activePresetIdx, newPresetsArray, pluginDataStore, _id);
     const _activeTableAndView: IActiveTableAndView = getActiveTableAndActiveView(
@@ -205,7 +202,6 @@ const PluginPresets: React.FC<IPresetsProps> = ({
   // Duplicate a preset
   const duplicatePreset = (p: IPresetInfo) => {
     const { name, _id, settings, customSettings } = p;
-    console.log({ customSettings });
     if (settings) {
       const _presetNames = _pluginPresets.map((p) => p.name);
       const _presetName = appendPresetSuffix(name, _presetNames, 'copy');
