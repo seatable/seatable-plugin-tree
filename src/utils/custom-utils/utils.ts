@@ -1,6 +1,5 @@
 // MAKE HERE YOUR CUSTOM UTILS
 
-import exp from 'constants';
 import { PresetsArray } from '../template-utils/interfaces/PluginPresets/Presets.interface';
 import { SelectOption } from '../template-utils/interfaces/PluginSettings.interface';
 import {

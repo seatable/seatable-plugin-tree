@@ -107,6 +107,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   }, [appActiveState]);
 
   useEffect(() => {
+    console.log('something changed');
     const FIRST_LEVEL_TABLES = findFirstLevelTables(allTables);
     const firstLevelOptions = FIRST_LEVEL_TABLES.map((item) => {
       const value = item._id;

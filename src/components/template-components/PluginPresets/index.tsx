@@ -35,6 +35,7 @@ import { AppActiveState } from '@/utils/template-utils/interfaces/App.interface'
 import { HiOutlineChevronDoubleLeft } from 'react-icons/hi2';
 import intl from 'react-intl-universal';
 import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';
+import { levelSelectionDefaultFallback } from '../../../utils/custom-utils/utils';
 const { [DEFAULT_LOCALE]: d } = AVAILABLE_LOCALES;
 
 const PluginPresets: React.FC<IPresetsProps> = ({
@@ -151,7 +152,7 @@ const PluginPresets: React.FC<IPresetsProps> = ({
   const addPreset = (
     type: string,
     presetName: string,
-    option?: { pId: string; pSettings: PresetSettings }
+    option?: { pId: string; pSettings: PresetSettings; pCustomSettings: any }
   ) => {
     const _presetSettings: PresetSettings =
       type === PresetHandleAction.new
@@ -159,15 +160,26 @@ const PluginPresets: React.FC<IPresetsProps> = ({
         : type === PresetHandleAction.duplicate && option?.pSettings
           ? option.pSettings
           : {};
+    console.log({ option });
 
     setPluginPresets(_pluginPresets || []);
     const _activePresetIdx = _pluginPresets?.length;
     const _id: string = generatorPresetId(pluginPresets) || '';
+    const _presetCustomSettings =
+      type === PresetHandleAction.new
+        ? levelSelectionDefaultFallback(_pluginPresets, _id, allTables)
+        : type === PresetHandleAction.duplicate && option?.pCustomSettings
+          ? option.pCustomSettings
+          : {};
+    console.log({ _presetCustomSettings });
     const newPreset = new Preset({ _id, name: presetName });
     const newPresetsArray = deepCopy(_pluginPresets);
     newPresetsArray.push(newPreset);
     const initUpdated = initPresetSetting();
+    console.log({ initUpdated });
     newPresetsArray[_activePresetIdx].settings = Object.assign(_presetSettings, initUpdated);
+    newPresetsArray[_activePresetIdx].customSettings = Object.assign(_presetCustomSettings);
+    console.log({ newPresetsArray });
     pluginDataStore.presets = newPresetsArray;
     updatePresets(_activePresetIdx, newPresetsArray, pluginDataStore, _id);
     const _activeTableAndView: IActiveTableAndView = getActiveTableAndActiveView(
@@ -192,11 +204,16 @@ const PluginPresets: React.FC<IPresetsProps> = ({
 
   // Duplicate a preset
   const duplicatePreset = (p: IPresetInfo) => {
-    const { name, _id, settings } = p;
+    const { name, _id, settings, customSettings } = p;
+    console.log({ customSettings });
     if (settings) {
       const _presetNames = _pluginPresets.map((p) => p.name);
       const _presetName = appendPresetSuffix(name, _presetNames, 'copy');
-      addPreset(PresetHandleAction.duplicate, _presetName, { pId: _id, pSettings: settings });
+      addPreset(PresetHandleAction.duplicate, _presetName, {
+        pId: _id,
+        pSettings: settings,
+        pCustomSettings: customSettings,
+      });
     }
   };
 

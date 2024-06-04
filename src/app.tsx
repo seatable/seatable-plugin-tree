@@ -81,6 +81,10 @@ const App: React.FC<IAppProps> = (props) => {
     useState<ILevelSelections>(LEVEL_SEL_DEFAULT);
 
   useEffect(() => {
+    console.log({ pluginPresets });
+  }, [pluginPresets]);
+
+  useEffect(() => {
     initPluginDTableData();
     return () => {
       unsubscribeLocalDtableChanged();
@@ -150,7 +154,6 @@ const App: React.FC<IAppProps> = (props) => {
         pluginPresets,
         allTables
       );
-
       const levelSelectionsDatabase = levelSelectionDefaultFallback(
         pluginPresets,
         pluginDataStore.activePresetId,
@@ -216,6 +219,7 @@ const App: React.FC<IAppProps> = (props) => {
       updatedActiveTableViews = newPresetActiveState?.activeTable?.views!;
     } else {
       const activePreset = pluginPresets.find((preset) => preset._id === presetId);
+
       const selectedTable = activePreset?.settings?.selectedTable;
       const selectedView = activePreset?.settings?.selectedView;
 
