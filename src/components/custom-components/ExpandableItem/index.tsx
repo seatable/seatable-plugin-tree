@@ -82,6 +82,8 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
 
   useEffect(() => {
     const t = expandTheItem(expandedRowsInfo, item._id);
+    // console.log({ expandedRowsInfo });
+    // console.log({ i: item._id });
     setIsExpanded(t);
   }, [expandedHasChanged, expandedRowsInfo]);
 
@@ -123,7 +125,6 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
         <div style={{ paddingLeft: '20px' }}>
           <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
             <HeaderRow columns={levelTable?.columns} tableName={levelTable?.name} />
-
             {rows?.map((i: levelRowInfo) => (
               <ExpandableItem
                 key={i._id}

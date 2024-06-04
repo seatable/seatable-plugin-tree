@@ -111,18 +111,6 @@ export const outputLevelsInfo = (
   }
   const finalResult: levelsStructureInfo = [];
 
-  // const expandedRowsObj: RowExpandedInfo[] = allRowsInAllTables.map((r) => ({
-  //   name: r['0000'],
-  //   id: r._id,
-  //   exp: false,
-  // }));
-
-  // const expandedRowsObj: RowExpandedInfo[] = allRowsInAllTables.map((r) => ({
-  //   name: r['0000'],
-  //   _id: r._id,
-  //   expanded: false,
-  // }));
-
   rows.forEach((r: TableRow) => {
     const _ids = linkedRows[r._id][secondLevelKey as string];
     let secondLevelRows = [];
@@ -156,7 +144,7 @@ export const outputLevelsInfo = (
   });
 
   const cleanExpandedRowsObj = cleanObjects(finalResult, undefined);
-
+  console.log({ finalResult });
   return { finalResult, cleanExpandedRowsObj };
 };
 

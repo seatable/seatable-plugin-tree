@@ -68,6 +68,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
 
   useEffect(() => {
     if (levelSelections) {
+      console.log({ levelSelections });
       onLevelSelectionChange(levelSelections);
     }
   }, [levelSelections]);
