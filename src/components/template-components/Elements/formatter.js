@@ -61,6 +61,7 @@ class EditorFormatter extends React.Component {
 
   componentDidMount() {
     this.calculateCollaboratorData(this.props);
+    console.log({ c: this.props.table });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -348,7 +349,7 @@ class EditorFormatter extends React.Component {
           <LinkFormatter
             column={column}
             row={row}
-            currentTableId={this.props.table._id}
+            currentTableId={this?.props?.table?._id}
             linkMetaData={linkMetaData}
             containerClassName="ptl-link-container"
           />
