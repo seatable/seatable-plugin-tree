@@ -108,6 +108,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
 
   return (
     <>
+      <HeaderRow columns={columns} tableName={tableName} />
       {finalResult &&
         finalResult.map((i: levelRowInfo) => (
           <ExpandableItem
