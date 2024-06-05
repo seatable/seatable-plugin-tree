@@ -150,7 +150,6 @@ const App: React.FC<IAppProps> = (props) => {
         pluginPresets,
         allTables
       );
-
       const levelSelectionsDatabase = levelSelectionDefaultFallback(
         pluginPresets,
         pluginDataStore.activePresetId,
@@ -216,6 +215,7 @@ const App: React.FC<IAppProps> = (props) => {
       updatedActiveTableViews = newPresetActiveState?.activeTable?.views!;
     } else {
       const activePreset = pluginPresets.find((preset) => preset._id === presetId);
+
       const selectedTable = activePreset?.settings?.selectedTable;
       const selectedView = activePreset?.settings?.selectedView;
 

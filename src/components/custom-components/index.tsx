@@ -34,12 +34,6 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   const { levelTable } = getLevelSelectionAndTable(0, allTables, levelSelections);
 
   useEffect(() => {
-    if (resetDataValue.t === 'TChanged') {
-      console.log({ resetDataValue });
-    }
-  }, [resetDataValue]);
-
-  useEffect(() => {
     const newRowsExpandedInfo = pluginDataStore.presets.find(
       (preset) => preset._id === activePresetId
     )?.expandedRows;
@@ -86,8 +80,8 @@ const PluginTL: React.FC<IPluginTLProps> = ({
             []
         );
         return;
-
-        // setExpandedRowsInfo(r.cleanExpandedRowsObj);
+      } else {
+        setExpandedRowsInfo(r.cleanExpandedRowsObj);
       }
     }
   }, [JSON.stringify(allTables), levelSelections, resetDataValue]);

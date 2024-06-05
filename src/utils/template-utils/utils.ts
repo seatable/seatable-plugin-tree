@@ -388,6 +388,19 @@ export const createDefaultPresetSettings = (allTables: TableArray) => {
     selectedView: viewInfo,
   };
 };
+export const createDefaultPresetCustomSettings = (allTables: TableArray) => {
+  // Extract information for the default table and view
+  const tableInfo = { value: allTables[0]._id, label: allTables[0].name };
+  const viewInfo = { value: allTables[0].views[0]._id, label: allTables[0].views[0].name };
+
+  // Create and return the default preset settings object
+  return {
+    shown_image_name: 'Image',
+    shown_title_name: 'Title',
+    selectedTable: tableInfo,
+    selectedView: viewInfo,
+  };
+};
 
 export const findPresetName = (presets: PresetsArray, presetId: string) => {
   return presets.find((preset) => preset._id === presetId)?.name;

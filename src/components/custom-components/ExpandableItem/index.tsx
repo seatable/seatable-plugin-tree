@@ -97,34 +97,32 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
               }
             : undefined
         }>
-        <p className={styles.custom_formatter_cell}>
-          {'>'}
-          {item['0000']}
-        </p>
-        {currentTable?.columns.filter((c) => c.name.toLowerCase() !== 'name').map((column) => (
-          <div key={column.key} className={styles.custom_formatter_cell}>
-            <EditorFormatter
-              column={column}
-              row={item}
-              table={levelTable}
-              displayColumnName={false}
-              getLinkCellValue={_getLinkCellValue}
-              getTableById={_getTableById}
-              getRowsByID={getRowsByID}
-              selectedView={viewObj}
-              collaborators={collaborators}
-              getUserCommonInfo={getUserCommonInfo}
-              getMediaUrl={getMediaUrl}
-              formulaRows={formulaRows}
-            />
-          </div>
-        ))}
+        <p className={styles.custom_formatter_cell}>{item['0000']}</p>
+        {currentTable?.columns
+          .filter((c) => c.name.toLowerCase() !== 'name')
+          .map((column) => (
+            <div key={column.key} className={styles.custom_formatter_cell}>
+              <EditorFormatter
+                column={column}
+                row={item}
+                table={levelTable}
+                displayColumnName={false}
+                getLinkCellValue={_getLinkCellValue}
+                getTableById={_getTableById}
+                getRowsByID={getRowsByID}
+                selectedView={viewObj}
+                collaborators={collaborators}
+                getUserCommonInfo={getUserCommonInfo}
+                getMediaUrl={getMediaUrl}
+                formulaRows={formulaRows()}
+              />
+            </div>
+          ))}
       </div>{' '}
       {isExpanded && (
         <div style={{ paddingLeft: '20px' }}>
           <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
             <HeaderRow columns={levelTable?.columns} tableName={levelTable?.name} />
-
             {rows?.map((i: levelRowInfo) => (
               <ExpandableItem
                 key={i._id}
@@ -137,7 +135,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
                 expandedHasChanged={expandedHasChanged}
               />
             ))}
-            <p>+ add {levelTable?.name}</p>
+            <p>+ {levelTable?.name.toLowerCase()}</p>
           </div>
         </div>
       )}
