@@ -50,6 +50,7 @@ export function findFirstLevelTables(tables: TableArray): TableArray {
     return table.columns.some((column) => column.type === LINK_TYPE.link && table.rows.length > 0);
   });
 }
+
 export function findSecondLevelTables(
   allTables: TableArray,
   firsLevelSelectedOption: SelectOption
