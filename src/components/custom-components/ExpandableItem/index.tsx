@@ -19,6 +19,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>();
   const { levelTable, levelRows } = getLevelSelectionAndTable(level, allTables, levelSelections);
+
   const rows = item[levelRows];
   const isClickable = level !== 3 && rows?.length !== 0 && item[levelRows] !== undefined;
   const currentTable = allTables.find((table) => table.name === item._name);

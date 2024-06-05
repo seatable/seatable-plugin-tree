@@ -113,7 +113,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       return { value, label };
     });
     setFirstLevelOptions(firstLevelOptions);
-  }, [allTables]);
+  }, [JSON.stringify(allTables)]);
 
   useEffect(() => {
     let secondLevelOptions: SelectOption[] = [];
@@ -127,7 +127,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     }
     setSecondLevelOptions(secondLevelOptions);
     setSecondLevelSelectedOption(secondLevelOptions[0]);
-  }, [firstLevelSelectedOption]);
+  }, [firstLevelSelectedOption, firstLevelOptions]);
 
   useEffect(() => {
     let thirdLevelOptions: SelectOption[] = [];
@@ -164,7 +164,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
           }) satisfies ILevelSelections
       );
     }
-  }, [secondLevelSelectedOption]);
+  }, [secondLevelSelectedOption, secondLevelOptions]);
 
   return (
     <div
