@@ -31,6 +31,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     pluginDataStore.presets.find((preset) => preset._id === activePresetId)?.expandedRows || []
   );
   const [expandedHasChanged, setExpandedHasChanged] = useState<boolean>(false);
+  const [rowsEmptyArray, setRowsEmptyArray] = useState<boolean>(false);
   const { levelTable } = getLevelSelectionAndTable(0, allTables, levelSelections);
 
   useEffect(() => {
@@ -52,6 +53,25 @@ const PluginTL: React.FC<IPluginTLProps> = ({
 
   useEffect(() => {
     const firstLevelTable = allTables.find((t) => t._id === levelSelections.first.selected.value);
+    const hasTableRowsWithLinks = window.dtableSDK.getTableLinkRows(
+      firstLevelTable?.rows,
+      firstLevelTable
+    );
+
+    for (const key in hasTableRowsWithLinks) {
+      if (Object.prototype.hasOwnProperty.call(hasTableRowsWithLinks, key)) {
+        const obj = hasTableRowsWithLinks[key];
+        // Iterate over properties of each nested object
+        for (const prop in obj) {
+          if (Object.prototype.hasOwnProperty.call(obj, prop) && Array.isArray(obj[prop])) {
+            if (obj[prop].length === 0) {
+              setRowsEmptyArray(true);
+            }
+          }
+        }
+      }
+    }
+
     if (
       firstLevelTable !== undefined &&
       resetDataValue.t === 'TChanged' &&
@@ -115,6 +135,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
             key={i._id}
             item={i}
             level={1}
+            rowsEmptyArray={rowsEmptyArray}
             expandedHasChanged={expandedHasChanged}
             allTables={allTables}
             levelSelections={levelSelections}

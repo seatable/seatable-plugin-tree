@@ -16,9 +16,11 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   handleItemClick,
   expandedRowsInfo,
   expandedHasChanged,
+  rowsEmptyArray,
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>();
   const { levelTable, levelRows } = getLevelSelectionAndTable(level, allTables, levelSelections);
+  const [rowsEmptyArrayItemLevel, setRowsEmptyArrayItemLevel] = useState<boolean>(false);
 
   const rows = item[levelRows];
   const isClickable = level !== 3 && rows?.length !== 0 && item[levelRows] !== undefined;
@@ -82,6 +84,25 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   const collaborators = window.app.state.collaborators;
 
   useEffect(() => {
+    // const hasTableRowsWithLinks = window.dtableSDK.getTableLinkRows(levelTable?.rows, levelTable);
+    // if (rowsEmptyArrayItemLevel) {
+    //   for (const key in hasTableRowsWithLinks) {
+    //     if (Object.prototype.hasOwnProperty.call(hasTableRowsWithLinks, key)) {
+    //       const obj = hasTableRowsWithLinks[key];
+    //       // Iterate over properties of each nested object
+    //       for (const prop in obj) {
+    //         if (Object.prototype.hasOwnProperty.call(obj, prop) && Array.isArray(obj[prop])) {
+    //           if (obj[prop].length === 0) {
+    //             setRowsEmptyArrayItemLevel(true);
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
+  }, [expandedHasChanged]);
+
+  useEffect(() => {
     const t = expandTheItem(expandedRowsInfo, item._id);
     setIsExpanded(t);
   }, [expandedHasChanged, expandedRowsInfo]);
@@ -123,7 +144,9 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
       {isExpanded && (
         <div style={{ paddingLeft: '20px' }}>
           <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-            <HeaderRow columns={levelTable?.columns} tableName={levelTable?.name} />
+            {!rowsEmptyArray && (
+              <HeaderRow columns={levelTable?.columns} tableName={levelTable?.name} />
+            )}
             {rows?.map((i: levelRowInfo) => (
               <ExpandableItem
                 key={i._id}
@@ -134,9 +157,10 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
                 levelSelections={levelSelections}
                 level={level + 1}
                 expandedHasChanged={expandedHasChanged}
+                rowsEmptyArray={rowsEmptyArray}
               />
             ))}
-            <p>+ {levelTable?.name.toLowerCase()}</p>
+            {!rowsEmptyArray && <p>+ {levelTable?.name.toLowerCase()}</p>}
           </div>
         </div>
       )}

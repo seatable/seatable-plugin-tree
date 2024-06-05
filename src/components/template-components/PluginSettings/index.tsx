@@ -110,6 +110,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     let secondLevelOptions: SelectOption[] = [];
     if (firstLevelSelectedOption) {
       const SECOND_LEVEL_TABLES = findSecondLevelTables(allTables, firstLevelSelectedOption);
+
       secondLevelOptions = SECOND_LEVEL_TABLES.map((item) => {
         const value = item._id;
         const label = truncateTableName(item.name);
@@ -117,7 +118,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       });
     }
     setSecondLevelOptions(secondLevelOptions);
-    setSecondLevelSelectedOption(secondLevelOptions[0]);
+    setSecondLevelSelectedOption(levelSelections.second.selected || secondLevelOptions[0]);
   }, [firstLevelSelectedOption, firstLevelOptions]);
 
   useEffect(() => {
