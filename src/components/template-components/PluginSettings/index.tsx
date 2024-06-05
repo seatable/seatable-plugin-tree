@@ -62,33 +62,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     }
   }, [appActiveState.activePresetId]);
 
-  const handleLevelSelection = (selectedOption: SelectOption, level: CustomSettingsOption) => {
-    const setSelectedOptionFunctions: Record<
-      CustomSettingsOption,
-      React.Dispatch<React.SetStateAction<SelectOption | undefined>>
-    > = {
-      first: setFirstLevelSelectedOption,
-      second: setSecondLevelSelectedOption,
-      third: setThirdLevelSelectedOption,
-    };
-
-    const setSelectedOption = setSelectedOptionFunctions[level];
-    setSelectedOption(selectedOption);
-
-    setLevelSelections(
-      (prevState) =>
-        ({
-          ...prevState,
-          [level]: { selected: selectedOption },
-        }) satisfies ILevelSelections
-    );
-
-    onLevelSelectionChange({
-      ...levelSelections,
-      [level]: { selected: selectedOption },
-    });
-  };
-
   // Change options when active table or view changes
   useEffect(() => {
     const { activeTableView } = appActiveState;
@@ -123,6 +96,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   }, [appActiveState]);
 
   useEffect(() => {
+    console.log('allTables has changed ');
     const FIRST_LEVEL_TABLES = findFirstLevelTables(allTables);
     const firstLevelOptions = FIRST_LEVEL_TABLES.map((item) => {
       const value = item._id;
@@ -158,32 +132,68 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
         return { value, label };
       });
     }
+    console.log({ thirdLevelOptions });
+    const activeThirdLevelSelectedOption = thirdLevelOptions.find(
+      (i) => i.value === activeLevelSelections.third?.selected.value
+    )
+      ? true
+      : false;
+
+    console.log({ activeThirdLevelSelectedOption });
     const filteredThirdLevelOptions = thirdLevelOptions.filter(
       (item) =>
         item.value !== firstLevelSelectedOption?.value &&
         item.value !== secondLevelSelectedOption?.value
     );
     const isEmpty = filteredThirdLevelOptions.length === 0;
+    const thirdLevelSelectedOptionFallBack = activeThirdLevelSelectedOption
+      ? activeLevelSelections.third?.selected
+      : filteredThirdLevelOptions[0];
+    const thirdLevelSelectedOptionLastCheck = isEmpty
+      ? THIRD_LEVEL_DATA_DEFAULT
+      : thirdLevelSelectedOptionFallBack;
 
     setThirdLevelExists(!isEmpty);
     setThirdLevelOptions(filteredThirdLevelOptions);
     setThirdLevelSelectedOption(
-      isEmpty ? THIRD_LEVEL_DATA_DEFAULT : activeLevelSelections.third?.selected
+      isEmpty ? THIRD_LEVEL_DATA_DEFAULT : thirdLevelSelectedOptionFallBack
     );
-    if (firstLevelSelectedOption && secondLevelSelectedOption) {
-      setLevelSelections(
-        (prevState) =>
-          ({
-            ...prevState,
-            first: { selected: firstLevelSelectedOption },
-            second: { selected: secondLevelSelectedOption },
-            third: {
-              selected: isEmpty ? THIRD_LEVEL_DATA_DEFAULT : filteredThirdLevelOptions[0],
-            },
-          }) satisfies ILevelSelections
-      );
+    if (
+      firstLevelSelectedOption &&
+      secondLevelSelectedOption &&
+      thirdLevelSelectedOptionLastCheck
+    ) {
+      console.log('coming here');
+      handleLevelSelection(thirdLevelSelectedOptionLastCheck, 'third');
     }
   }, [secondLevelSelectedOption, secondLevelOptions]);
+
+  const handleLevelSelection = (selectedOption: SelectOption, level: CustomSettingsOption) => {
+    const setSelectedOptionFunctions: Record<
+      CustomSettingsOption,
+      React.Dispatch<React.SetStateAction<SelectOption | undefined>>
+    > = {
+      first: setFirstLevelSelectedOption,
+      second: setSecondLevelSelectedOption,
+      third: setThirdLevelSelectedOption,
+    };
+
+    const setSelectedOption = setSelectedOptionFunctions[level];
+    setSelectedOption(selectedOption);
+
+    setLevelSelections(
+      (prevState) =>
+        ({
+          ...prevState,
+          [level]: { selected: selectedOption },
+        }) satisfies ILevelSelections
+    );
+
+    onLevelSelectionChange({
+      ...levelSelections,
+      [level]: { selected: selectedOption },
+    });
+  };
 
   return (
     <div

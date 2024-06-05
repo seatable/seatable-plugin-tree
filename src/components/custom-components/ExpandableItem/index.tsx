@@ -82,6 +82,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   const collaborators = window.app.state.collaborators;
 
   useEffect(() => {
+    // console.log({ item: levelTable?.rows.length });
     const t = expandTheItem(expandedRowsInfo, item._id);
     setIsExpanded(t);
   }, [expandedHasChanged, expandedRowsInfo]);

@@ -1,9 +1,9 @@
 {
-  "name": "plugin-table-relationships",
+  "name": "plugin-tree-list",
   "version": "0.0.1",
   "display_type": "overlay",
-  "display_name": "Plugin table relationships",
-  "description": "Table relationships plugin",
+  "display_name": "Plugin Tree Lists",
+  "description": "Plugin Tree Lists",
   "active_components": {
     "settings_dropdowns": false,
     "add_row_button": false

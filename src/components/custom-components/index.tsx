@@ -45,6 +45,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   useEffect(() => {
     const firstLevelTable = allTables.find((t) => t._id === levelSelections.first.selected.value);
     if (firstLevelTable !== undefined && firstLevelTable.columns !== undefined) {
+      // console.log({ tn: firstLevelTable?.name });levelSelections
       setColumns(firstLevelTable.columns);
       setTableName(firstLevelTable.name);
     }
@@ -84,7 +85,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
         setExpandedRowsInfo(r.cleanExpandedRowsObj);
       }
     }
-  }, [JSON.stringify(allTables), levelSelections, resetDataValue]);
+  }, [JSON.stringify(allTables), resetDataValue]);
 
   const handleItemClick = (updatedRow: RowExpandedInfo): void => {
     const updatedRows = updateExpandedState(updatedRow, expandedRowsInfo);
