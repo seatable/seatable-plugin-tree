@@ -31,6 +31,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     pluginDataStore.presets.find((preset) => preset._id === activePresetId)?.expandedRows || []
   );
   const [expandedHasChanged, setExpandedHasChanged] = useState<boolean>(false);
+  const [isTableWithRows, setIsTableWithRows] = useState<boolean>(false);
   const { levelTable } = getLevelSelectionAndTable(0, allTables, levelSelections);
 
   useEffect(() => {
@@ -46,6 +47,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     const firstLevelTable = allTables.find((t) => t._id === levelSelections.first.selected.value);
     if (firstLevelTable !== undefined && firstLevelTable.columns !== undefined) {
       setColumns(firstLevelTable.columns);
+      setIsTableWithRows(firstLevelTable.rows.length > 0);
       setTableName(firstLevelTable.name);
     }
   }, []);
@@ -108,7 +110,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
 
   return (
     <>
-      <HeaderRow columns={columns} tableName={tableName} />
+      {isTableWithRows && <HeaderRow columns={columns} tableName={tableName} />}
       {finalResult &&
         finalResult.map((i: levelRowInfo) => (
           <ExpandableItem

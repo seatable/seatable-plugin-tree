@@ -47,7 +47,7 @@ export function levelSelectionDefaultFallback(
 
 export function findFirstLevelTables(tables: TableArray): TableArray {
   return tables.filter((table) => {
-    return table.columns.some((column) => column.type === LINK_TYPE.link);
+    return table.columns.some((column) => column.type === LINK_TYPE.link && table.rows.length > 0);
   });
 }
 export function findSecondLevelTables(
@@ -71,7 +71,7 @@ export function findSecondLevelTables(
   );
 
   // Returning the second level tables
-  return allTables.filter((t) => columnsWithLinkTypeIds.includes(t._id));
+  return allTables.filter((t) => columnsWithLinkTypeIds.includes(t._id) && t.rows.length > 0);
 }
 
 export function getRowsByTableId(tId: string, allTables: TableArray) {
