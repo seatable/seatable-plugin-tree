@@ -24,23 +24,30 @@ export function levelSelectionDefaultFallback(
 ) {
   const dataStoreLevelSelections = pluginPresets.find((p) => p._id === activePresetId)
     ?.customSettings;
-
+  console.log('allTables', allTables);
   // Check if dataStoreLevelSelections is undefined or its first.selected.value is empty
   if (
     dataStoreLevelSelections === undefined ||
     dataStoreLevelSelections.first.selected.value === ''
   ) {
-    const { _id: fstId, name: fstName } = findFirstLevelTables(allTables)[0];
-    const { _id: sndId, name: sndName } = findSecondLevelTables(allTables, {
-      value: fstId,
-      label: fstName,
-    })[0];
-    return {
-      first: { selected: { value: fstId, label: fstName } },
-      second: { selected: { value: sndId, label: sndName } },
-    };
-  }
+    const fstLvlTbls = findFirstLevelTables(allTables);
 
+    const scnLvlTbls = findSecondLevelTables(allTables, {
+      value: fstLvlTbls[0]._id,
+      label: fstLvlTbls[0].name,
+    });
+
+    // const { _id: fstId, name: fstName } = findFirstLevelTables(allTables)[0];
+    // const { _id: sndId, name: sndName } = findSecondLevelTables(allTables, {
+    //   value: fstId,
+    //   label: fstName,
+    // })[0];
+    return {
+      first: { selected: { value: fstLvlTbls[0]._id, label: fstLvlTbls[0].name } },
+      second: { selected: { value: scnLvlTbls[0]._id, label: scnLvlTbls[0].name } },
+    } satisfies ILevelSelections;
+  }
+  console.log({ dataStoreLevelSelections });
   // If dataStoreLevelSelections is valid, return it as is or with modifications if necessary
   return dataStoreLevelSelections;
 }
@@ -135,7 +142,7 @@ export const outputLevelsInfo = (
       _name: table?.name || '',
       ...r,
       columns: linkedColumns,
-      '0000': r['0000'].toString(),
+      '0000': r['0000']?.toString() || '',
       expanded: expandedRowsInfo.find((obj) => obj.id === r._id)?.exp || false,
       [keyName ? keyName : 'secondLevelRows']: secondLevelRows,
     } satisfies levelRowInfo);
