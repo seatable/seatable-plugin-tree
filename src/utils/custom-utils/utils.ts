@@ -24,7 +24,7 @@ export function levelSelectionDefaultFallback(
 ) {
   const dataStoreLevelSelections = pluginPresets.find((p) => p._id === activePresetId)
     ?.customSettings;
-  console.log('allTables', allTables);
+
   // Check if dataStoreLevelSelections is undefined or its first.selected.value is empty
   if (
     dataStoreLevelSelections === undefined ||
@@ -37,17 +37,12 @@ export function levelSelectionDefaultFallback(
       label: fstLvlTbls[0].name,
     });
 
-    // const { _id: fstId, name: fstName } = findFirstLevelTables(allTables)[0];
-    // const { _id: sndId, name: sndName } = findSecondLevelTables(allTables, {
-    //   value: fstId,
-    //   label: fstName,
-    // })[0];
     return {
       first: { selected: { value: fstLvlTbls[0]._id, label: fstLvlTbls[0].name } },
       second: { selected: { value: scnLvlTbls[0]._id, label: scnLvlTbls[0].name } },
     } satisfies ILevelSelections;
   }
-  console.log({ dataStoreLevelSelections });
+
   // If dataStoreLevelSelections is valid, return it as is or with modifications if necessary
   return dataStoreLevelSelections;
 }
