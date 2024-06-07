@@ -189,6 +189,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     onLevelSelectionChange({
       ...levelSelections,
       [level]: { selected: selectedOption },
+      // test
     });
   };
 
