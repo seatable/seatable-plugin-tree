@@ -4,7 +4,7 @@ import React from 'react';
 const ImageFormatter: React.FC<IImageProps> = ({ value, containerClassName }) => {
   return (
     <div className={`${containerClassName}`}>
-      <img src={value[0]} alt="" />
+      <img style={{ width: '20px', height: '20px' }} src={value[0]} alt="" />
     </div>
   );
 };
