@@ -6,7 +6,6 @@ import { Table, TableView } from '@/utils/template-utils/interfaces/Table.interf
 import { expandTheItem, getLevelSelectionAndTable } from '../../../utils/custom-utils/utils';
 import styles from '../../../styles/custom-styles/CustomPlugin.module.scss';
 import pluginContext from '../../../plugin-context';
-// import EditorFormatter from '../../../components/template-components/Elements/formatter';
 import Formatter from '../../../components/template-components/Elements/Formatter';
 
 const ExpandableItem: React.FC<ExpandableItemProps> = ({
