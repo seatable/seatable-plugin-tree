@@ -6,7 +6,7 @@ import { Table, TableView } from '@/utils/template-utils/interfaces/Table.interf
 import { expandTheItem, getLevelSelectionAndTable } from '../../../utils/custom-utils/utils';
 import styles from '../../../styles/custom-styles/CustomPlugin.module.scss';
 import pluginContext from '../../../plugin-context';
-import EditorFormatter from '../../../components/template-components/Elements/formatter';
+import Formatter from '../../../components/template-components/Elements/Formatter';
 
 const ExpandableItem: React.FC<ExpandableItemProps> = ({
   item,
@@ -106,7 +106,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
     const t = expandTheItem(expandedRowsInfo, item._id);
     setIsExpanded(t);
   }, [expandedHasChanged, expandedRowsInfo]);
-
+ 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
       <div
@@ -124,7 +124,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
           .filter((c) => c.name.toLowerCase() !== 'name')
           .map((column) => (
             <div key={column.key} className={styles.custom_formatter_cell}>
-              <EditorFormatter
+              <Formatter
                 column={column}
                 row={item}
                 table={levelTable}
