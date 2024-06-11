@@ -118,11 +118,11 @@ const App: React.FC<IAppProps> = (props) => {
   };
 
   const onDTableConnect = () => {
-    resetData('TConnect');
+    resetData('DTConnect');
   };
 
   const onDTableChanged = () => {
-    resetData('TChanged');
+    resetData('DTChanged');
   };
 
   const resetData = (on: string) => {

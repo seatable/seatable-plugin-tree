@@ -184,7 +184,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
           ...prevState,
           [level]: { selected: selectedOption },
         }) satisfies ILevelSelections
-    );
+    );   
 
     onLevelSelectionChange({
       ...levelSelections,
