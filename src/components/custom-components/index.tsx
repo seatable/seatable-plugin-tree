@@ -143,7 +143,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
             expandedRowsInfo={expandedRowsInfo}
           />
         ))}
-      <p>+ add {levelTable?.name}</p>
+      {levelTable && <p>+ add {levelTable?.name}</p>}
     </>
   );
 };

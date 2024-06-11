@@ -15,7 +15,7 @@ import { ILevelSelections } from '@/utils/custom-utils/interfaces/CustomPlugin';
 // Utilities
 import { truncateTableName } from 'utils/template-utils/utils';
 import { findFirstLevelTables, findSecondLevelTables } from '../../../utils/custom-utils/utils';
-import { THIRD_LEVEL_DATA_DEFAULT } from '../../../utils/custom-utils/constants';
+import { LEVEL_DATA_DEFAULT } from '../../../utils/custom-utils/constants';
 // Icons
 import { HiOutlineChevronDoubleRight } from 'react-icons/hi2';
 // Localization
@@ -150,7 +150,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     const isEmpty = thirdLevelOptions.length === 0;
 
     const thirdLevelSelectedOptionLastCheck = isEmpty
-      ? THIRD_LEVEL_DATA_DEFAULT
+      ? LEVEL_DATA_DEFAULT
       : activeThirdLevelSelectedOption;
 
     setThirdLevelExists(!isEmpty);
@@ -184,7 +184,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
           ...prevState,
           [level]: { selected: selectedOption },
         }) satisfies ILevelSelections
-    );   
+    );
 
     onLevelSelectionChange({
       ...levelSelections,

@@ -8,7 +8,7 @@ import {
   TableColumn,
   TableRow,
 } from '../template-utils/interfaces/Table.interface';
-import { LINK_TYPE } from './constants';
+import { LEVEL_DATA_DEFAULT, LINK_TYPE } from './constants';
 import {
   ILevelSelections,
   LevelSelection,
@@ -31,15 +31,30 @@ export function levelSelectionDefaultFallback(
     dataStoreLevelSelections.first.selected.value === ''
   ) {
     const fstLvlTbls = findFirstLevelTables(allTables);
+    const selectedFstLvlObj =
+      fstLvlTbls.length === 0
+        ? LEVEL_DATA_DEFAULT
+        : { value: fstLvlTbls[0]._id, label: fstLvlTbls[0].name };
 
     const scnLvlTbls = findSecondLevelTables(allTables, {
-      value: fstLvlTbls[0]._id,
-      label: fstLvlTbls[0].name,
+      value: fstLvlTbls[0]?._id || '',
+      label: fstLvlTbls[0]?.name || '',
     });
 
+    const selectedScnLvlObj =
+      scnLvlTbls.length === 0
+        ? LEVEL_DATA_DEFAULT
+        : { value: scnLvlTbls[0]._id, label: scnLvlTbls[0].name };
+
+    if (fstLvlTbls.length === 0 || scnLvlTbls.length === 0) {
+      console.error(
+        'It is possible that the first and second level tables have not been located. Please check the tables in the workspace.'
+      );
+    }
+
     return {
-      first: { selected: { value: fstLvlTbls[0]._id, label: fstLvlTbls[0].name } },
-      second: { selected: { value: scnLvlTbls[0]._id, label: scnLvlTbls[0].name } },
+      first: { selected: selectedFstLvlObj },
+      second: { selected: selectedScnLvlObj },
     } satisfies ILevelSelections;
   }
 
