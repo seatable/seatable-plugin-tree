@@ -30,15 +30,17 @@ export function levelSelectionDefaultFallback(
     dataStoreLevelSelections === undefined ||
     dataStoreLevelSelections.first.selected.value === ''
   ) {
-    const { _id: fstId, name: fstName } = findFirstLevelTables(allTables)[0];
-    const { _id: sndId, name: sndName } = findSecondLevelTables(allTables, {
-      value: fstId,
-      label: fstName,
-    })[0];
+    const fstLvlTbls = findFirstLevelTables(allTables);
+
+    const scnLvlTbls = findSecondLevelTables(allTables, {
+      value: fstLvlTbls[0]._id,
+      label: fstLvlTbls[0].name,
+    });
+
     return {
-      first: { selected: { value: fstId, label: fstName } },
-      second: { selected: { value: sndId, label: sndName } },
-    };
+      first: { selected: { value: fstLvlTbls[0]._id, label: fstLvlTbls[0].name } },
+      second: { selected: { value: scnLvlTbls[0]._id, label: scnLvlTbls[0].name } },
+    } satisfies ILevelSelections;
   }
 
   // If dataStoreLevelSelections is valid, return it as is or with modifications if necessary
@@ -50,6 +52,7 @@ export function findFirstLevelTables(tables: TableArray): TableArray {
     return table.columns.some((column) => column.type === LINK_TYPE.link && table.rows.length > 0);
   });
 }
+
 export function findSecondLevelTables(
   allTables: TableArray,
   firsLevelSelectedOption: SelectOption
@@ -134,7 +137,7 @@ export const outputLevelsInfo = (
       _name: table?.name || '',
       ...r,
       columns: linkedColumns,
-      '0000': r['0000'].toString(),
+      '0000': r['0000']?.toString() || '',
       expanded: expandedRowsInfo.find((obj) => obj.id === r._id)?.exp || false,
       [keyName ? keyName : 'secondLevelRows']: secondLevelRows,
     } satisfies levelRowInfo);

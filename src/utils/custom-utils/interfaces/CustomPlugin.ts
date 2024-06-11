@@ -48,6 +48,7 @@ export interface ExpandableItemProps {
   level: number;
   handleItemClick: (updatedRow: RowExpandedInfo) => void;
   expandedHasChanged: boolean;
+  rowsEmptyArray: boolean;
 }
 
 export type levelsStructureInfo = levelRowInfo[];
