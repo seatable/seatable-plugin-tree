@@ -149,7 +149,7 @@ export const outputLevelsInfo = (
       _name: table?.name || '',
       ...r,
       columns: linkedColumns,
-      '0000': r['0000'].toString(),
+      '0000': String(r['0000'] || ''),
       expanded: expandedRowsInfo.find((obj) => obj.id === r._id)?.exp || false,
       [keyName ? keyName : 'secondLevelRows']: secondLevelRows,
     } satisfies levelRowInfo);

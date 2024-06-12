@@ -25,7 +25,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   pluginDataStore,
   activePresetId,
   resetDataValue,
-  isDevelopment
+  isDevelopment,
 }) => {
   const [finalResult, setFinalResult] = useState<levelsStructureInfo>([]);
   const [columns, setColumns] = useState<TableColumn[]>([]);
@@ -115,7 +115,6 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     setExpandedHasChanged(!expandedHasChanged);
   };
 
-
   return (
     <>
       <HeaderRow columns={columns} tableName={tableName} />
@@ -133,7 +132,11 @@ const PluginTL: React.FC<IPluginTLProps> = ({
             isDevelopment={isDevelopment}
           />
         ))}
-      <button style={{ all: 'unset', cursor: 'pointer'}} onClick={() => addRowItem(levelTable!, isDevelopment)}>+ add {levelTable?.name}</button>
+      <button
+        style={{ all: 'unset', cursor: 'pointer' }}
+        onClick={() => addRowItem(levelTable!, isDevelopment)}>
+        + add {levelTable?.name}
+      </button>
     </>
   );
 };

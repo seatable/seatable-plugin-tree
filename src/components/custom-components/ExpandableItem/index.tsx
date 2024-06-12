@@ -21,7 +21,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   handleItemClick,
   expandedRowsInfo,
   expandedHasChanged,
-  isDevelopment
+  isDevelopment,
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>();
   const { levelTable, levelRows } = getLevelSelectionAndTable(level, allTables, levelSelections);
@@ -146,7 +146,11 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
                 isDevelopment={isDevelopment}
               />
             ))}
-            <button style={{ all: 'unset', cursor: 'pointer'}} onClick={() => addRowItem(levelTable!, isDevelopment)}>+ add {levelTable?.name}</button>
+            <button
+              style={{ all: 'unset', cursor: 'pointer' }}
+              onClick={() => addRowItem(levelTable!, isDevelopment)}>
+              + add {levelTable?.name}
+            </button>
           </div>
         </div>
       )}
