@@ -1,5 +1,6 @@
 // Import any necessary SCSS files or define variables if needed
 @import '../abstracts/_media.scss';
+@import '../constants.scss';
 
 // Define your styles for the CustomPlugin component
 .custom {
@@ -108,24 +109,27 @@
     align-items: center;
     padding: 10px;
     border-bottom: 1px solid #ccc;
-    background-color: white;
+    background-color: $modal-bgColor;
   }
 
   &_headerRow {
+    font-size: 13px;
     display: flex;
-    border-bottom: 1px solid #ddd; /* Optional: to separate the columns */
-    background-color: white;
-    justify-content: flex-start; /* Align columns to the start */
+    padding-left: 50px;
+    background-color: $modal-bgColor;
+    justify-content: flex-start;
+    justify-content: start;
   }
 
   &_headerColumn {
-    width: 120px;
+    width: auto;
+    min-width: 100px;
     padding: 10px;
-    text-align: center;
-    background-color: white;
+    text-align: start;
+    background-color: $modal-bgColor;
     color: grey;
-    box-sizing: border-box; /* Ensures padding is included in width/height */
-    height: 40px; /* Fixed height */
+    box-sizing: border-box;
+    height: 40px;
   }
   &_formatter_cell {
     width: 120px;
