@@ -107,15 +107,41 @@
   &_expandableItem {
     display: flex;
     align-items: center;
-    padding: 10px;
+    padding: 0 0 0 16px;
     border-bottom: 1px solid #ccc;
     background-color: $modal-bgColor;
+
+    &_collapse_btn {
+      all: unset;
+      margin-right: 5px;
+      cursor: pointer;
+      outline: none !important;
+      z-index: 9;
+      margin: 0;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    &_name_col {
+      width: auto;
+      min-width: 100px;
+      max-height: 60px;
+      overflow: auto;
+      text-align: start;
+      font-weight: bold;
+      font-size: 16px;
+      padding-left: 10px;
+    }
   }
 
   &_headerRow {
     font-size: 13px;
     display: flex;
-    padding-left: 50px;
+    padding-left: 40px;
     background-color: $modal-bgColor;
     justify-content: flex-start;
     justify-content: start;
@@ -131,6 +157,7 @@
     box-sizing: border-box;
     height: 40px;
   }
+
   &_formatter_cell {
     width: 120px;
     max-height: 60px;

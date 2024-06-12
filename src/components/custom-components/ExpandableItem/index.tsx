@@ -7,6 +7,7 @@ import { expandTheItem, getLevelSelectionAndTable } from '../../../utils/custom-
 import styles from '../../../styles/custom-styles/CustomPlugin.module.scss';
 import pluginContext from '../../../plugin-context';
 import Formatter from '../../../components/template-components/Elements/Formatter';
+import { SlArrowDown, SlArrowRight } from 'react-icons/sl';
 
 const ExpandableItem: React.FC<ExpandableItemProps> = ({
   item,
@@ -83,43 +84,29 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   // Get the collaborators
   const collaborators = window.app.state.collaborators;
 
-  useEffect(() => {
-    // const hasTableRowsWithLinks = window.dtableSDK.getTableLinkRows(levelTable?.rows, levelTable);
-    // if (rowsEmptyArrayItemLevel) {
-    //   for (const key in hasTableRowsWithLinks) {
-    //     if (Object.prototype.hasOwnProperty.call(hasTableRowsWithLinks, key)) {
-    //       const obj = hasTableRowsWithLinks[key];
-    //       // Iterate over properties of each nested object
-    //       for (const prop in obj) {
-    //         if (Object.prototype.hasOwnProperty.call(obj, prop) && Array.isArray(obj[prop])) {
-    //           if (obj[prop].length === 0) {
-    //             setRowsEmptyArrayItemLevel(true);
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
-  }, [expandedHasChanged]);
 
   useEffect(() => {
     const t = expandTheItem(expandedRowsInfo, item._id);
     setIsExpanded(t);
   }, [expandedHasChanged, expandedRowsInfo]);
- 
+  
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
       <div
         className={styles.custom_expandableItem}
-        style={{ cursor: isClickable ? 'pointer' : 'default' }}
-        onClick={
-          isClickable
-            ? () => {
-                handleItemClick({ '0000': item['0000'], _id: item._id, expanded: !isExpanded });
-              }
-            : undefined
-        }>
-        <p className={styles.custom_formatter_cell}>{item['0000']}</p>
+        style={{ cursor: isClickable ? 'pointer' : 'default' }}>
+        <button
+          className={styles.custom_expandableItem_collapse_btn}
+          onClick={
+            isClickable
+              ? () => {
+                  handleItemClick({ '0000': item['0000'], _id: item._id, expanded: !isExpanded });
+                }
+              : undefined
+          }>
+          {(isExpanded && <SlArrowDown />) || <SlArrowRight />}
+        </button>
+        <p className={styles.custom_expandableItem_name_col}>{item['0000']}</p>
         {currentTable?.columns
           .filter((c) => c.name.toLowerCase() !== 'name')
           .map((column) => (
