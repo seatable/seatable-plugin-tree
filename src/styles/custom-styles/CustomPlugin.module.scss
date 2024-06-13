@@ -137,14 +137,14 @@
       overflow: auto;
       text-align: start;
       font-weight: bold;
-      overflow-x: auto; 
-      overflow-y: hidden; 
-      white-space: nowrap; 
+      overflow-x: auto;
+      overflow-y: hidden;
+      white-space: nowrap;
       font-size: 16px;
       padding: 5px 10px 5px 10px;
     }
     &_name_col::-webkit-scrollbar {
-      display: none; 
+      display: none;
     }
   }
   &_p {
