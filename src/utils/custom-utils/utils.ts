@@ -1,5 +1,4 @@
 // MAKE HERE YOUR CUSTOM UTILS
-
 import { PresetsArray } from '../template-utils/interfaces/PluginPresets/Presets.interface';
 import { SelectOption } from '../template-utils/interfaces/PluginSettings.interface';
 import {
@@ -7,6 +6,7 @@ import {
   TableArray,
   TableColumn,
   TableRow,
+  TableView,
 } from '../template-utils/interfaces/Table.interface';
 import { LINK_TYPE } from './constants';
 import {
@@ -16,6 +16,7 @@ import {
   levelRowInfo,
   levelsStructureInfo,
 } from './interfaces/CustomPlugin';
+import pluginContext from '../../plugin-context';
 
 export function levelSelectionDefaultFallback(
   pluginPresets: PresetsArray,
@@ -137,7 +138,7 @@ export const outputLevelsInfo = (
       _name: table?.name || '',
       ...r,
       columns: linkedColumns,
-      '0000': r['0000']?.toString() || '',
+      '0000': String(r['0000'] || ''),
       expanded: expandedRowsInfo.find((obj) => obj.id === r._id)?.exp || false,
       [keyName ? keyName : 'secondLevelRows']: secondLevelRows,
     } satisfies levelRowInfo);
@@ -312,4 +313,78 @@ export const expandTheItem = (
     }
   }
   return undefined;
+};
+
+const getInsertedRowInitData = (view: TableView, table: Table, rowID: string) => {
+  return window.dtableSDK.getInsertedRowInitData(view, table, rowID);
+};
+
+// functions for add row functionality
+const onAddRowItem = (view: TableView, table: Table, rowID: string) => {
+  const rowData = getInsertedRowInitData(view, table, rowID);
+  onInsertRow(table, view, rowData);
+};
+
+export const addRowItem = (table: Table, isDevelopment?: boolean) => {
+  if (isDevelopment) {
+    return;
+  }
+
+  let viewObj: TableView | undefined;
+  const view = (): TableView | undefined => {
+    if (table && table.views && table.views.length > 0) {
+      viewObj = table.views[0];
+      return viewObj;
+    } else {
+      viewObj = undefined;
+      return viewObj;
+    }
+  };
+
+  const rows = table?.rows;
+  if (rows) {
+    const row_id = rows.length > 0 ? rows[rows.length - 1]._id : '';
+    onAddRowItem(view()!, table, row_id);
+  }
+};
+
+const onInsertRow = (table: Table, view: TableView, rowData: any) => {
+  const columns = window.dtableSDK.getColumns(table);
+  const newRowData: { [key: string]: any } = {};
+  for (const key in rowData) {
+    const column = columns.find((column: TableColumn) => column.name === key);
+    if (!column) {
+      continue;
+    }
+    switch (column.type) {
+      case 'single-select': {
+        newRowData[column.name] =
+          column.data.options.find((item: any) => item.name === rowData[key])?.name || '';
+        break;
+      }
+      case 'multiple-select': {
+        const multipleSelectNameList: any[] = [];
+        rowData[key].forEach((multiItemId: any) => {
+          const multiSelectItemName = column.data.options.find(
+            (multiItem: any) => multiItem.id === multiItemId
+          );
+          if (multiSelectItemName) {
+            multipleSelectNameList.push(multiSelectItemName.name);
+          }
+        });
+        newRowData[column.name] = multipleSelectNameList;
+        break;
+      }
+      default:
+        newRowData[column.name] = rowData[key];
+    }
+  }
+
+  const row_data = { ...newRowData };
+  window.dtableSDK.appendRow(table, row_data, view);
+  const viewRows = window.dtableSDK.getViewRows(view, table);
+  const insertedRow = viewRows[viewRows.length - 1];
+  if (insertedRow) {
+    pluginContext.expandRow(insertedRow, table);
+  }
 };
