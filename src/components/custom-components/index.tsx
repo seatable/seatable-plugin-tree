@@ -147,11 +147,13 @@ const PluginTL: React.FC<IPluginTLProps> = ({
             isDevelopment={isDevelopment}
           />
         ))}
+      {levelTable && 
       <button
         style={{ all: 'unset', cursor: 'pointer' }}
         onClick={() => addRowItem(levelTable!, isDevelopment)}>
         + add {levelTable?.name}
       </button>
+}
     </>
   );
 };
