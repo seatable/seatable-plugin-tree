@@ -56,25 +56,6 @@ const PluginTL: React.FC<IPluginTLProps> = ({
 
   useEffect(() => {
     const firstLevelTable = allTables.find((t) => t._id === levelSelections.first.selected.value);
-    // const hasTableRowsWithLinks = window.dtableSDK.getTableLinkRows(
-    //   firstLevelTable?.rows,
-    //   firstLevelTable
-    // );
-
-    // for (const key in hasTableRowsWithLinks) {
-    //   if (Object.prototype.hasOwnProperty.call(hasTableRowsWithLinks, key)) {
-    //     const obj = hasTableRowsWithLinks[key];
-    //     // Iterate over properties of each nested object
-    //     for (const prop in obj) {
-    //       if (Object.prototype.hasOwnProperty.call(obj, prop) && Array.isArray(obj[prop])) {
-    //         if (obj[prop].length === 0) {
-    //           setRowsEmptyArray(true);
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
-
     if (
       firstLevelTable !== undefined &&
       resetDataValue.t === 'TChanged' &&
