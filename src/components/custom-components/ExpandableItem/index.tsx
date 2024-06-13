@@ -84,28 +84,29 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   // Get the collaborators
   const collaborators = window.app.state.collaborators;
 
-
   useEffect(() => {
     const t = expandTheItem(expandedRowsInfo, item._id);
     setIsExpanded(t);
   }, [expandedHasChanged, expandedRowsInfo]);
-  
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+    <div className={styles.custom_expandableItem_rows}>
       <div
         className={styles.custom_expandableItem}
         style={{ cursor: isClickable ? 'pointer' : 'default' }}>
-        <button
-          className={styles.custom_expandableItem_collapse_btn}
-          onClick={
-            isClickable
-              ? () => {
-                  handleItemClick({ '0000': item['0000'], _id: item._id, expanded: !isExpanded });
-                }
-              : undefined
-          }>
-          {(isExpanded && <SlArrowDown />) || <SlArrowRight />}
-        </button>
+        {isClickable && (
+          <button
+            className={styles.custom_expandableItem_collapse_btn}
+            onClick={
+              isClickable
+                ? () => {
+                    handleItemClick({ '0000': item['0000'], _id: item._id, expanded: !isExpanded });
+                  }
+                : undefined
+            }>
+            {(isExpanded && <SlArrowDown />) || <SlArrowRight />}
+          </button>
+        )}
         <p className={styles.custom_expandableItem_name_col}>{item['0000']}</p>
         {currentTable?.columns
           .filter((c) => c.name.toLowerCase() !== 'name')
@@ -129,26 +130,26 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
           ))}
       </div>{' '}
       {isExpanded && (
-        <div style={{ paddingLeft: '20px' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-            {!rowsEmptyArray && (
-              <HeaderRow columns={levelTable?.columns} tableName={levelTable?.name} />
-            )}
-            {rows?.map((i: levelRowInfo) => (
-              <ExpandableItem
-                key={i._id}
-                item={i}
-                expandedRowsInfo={expandedRowsInfo}
-                handleItemClick={handleItemClick}
-                allTables={allTables}
-                levelSelections={levelSelections}
-                level={level + 1}
-                expandedHasChanged={expandedHasChanged}
-                rowsEmptyArray={rowsEmptyArray}
-              />
-            ))}
-            {!rowsEmptyArray && <p>+ {levelTable?.name.toLowerCase()}</p>}
-          </div>
+        <div className={styles.custom_expandableItem_rows}>
+          {!rowsEmptyArray && (
+            <HeaderRow columns={levelTable?.columns} tableName={levelTable?.name} />
+          )}
+          {rows?.map((i: levelRowInfo) => (
+            <ExpandableItem
+              key={i._id}
+              item={i}
+              expandedRowsInfo={expandedRowsInfo}
+              handleItemClick={handleItemClick}
+              allTables={allTables}
+              levelSelections={levelSelections}
+              level={level + 1}
+              expandedHasChanged={expandedHasChanged}
+              rowsEmptyArray={rowsEmptyArray}
+            />
+          ))}
+          {!rowsEmptyArray && (
+            <p className={styles.custom_p}>+ add {levelTable?.name.toLowerCase()}</p>
+          )}
         </div>
       )}
     </div>

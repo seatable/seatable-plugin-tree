@@ -16,6 +16,7 @@ import {
   levelRowInfo,
   levelsStructureInfo,
 } from '../../utils/custom-utils/interfaces/CustomPlugin';
+import styles from '../../styles/custom-styles/CustomPlugin.module.scss';
 
 const PluginTL: React.FC<IPluginTLProps> = ({
   allTables,
@@ -124,7 +125,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
             expandedRowsInfo={expandedRowsInfo}
           />
         ))}
-      {levelTable && <p>+ add {levelTable?.name}</p>}
+      {levelTable && <p className={styles.custom_p}>+ add {levelTable?.name.toLowerCase()}</p>}
     </>
   );
 };
