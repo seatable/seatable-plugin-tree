@@ -1,4 +1,4 @@
-export interface Option {
+export interface SelectItemOption {
   id: string;
   name: string;
   color: string;
@@ -6,13 +6,13 @@ export interface Option {
 }
 
 export interface SelectItemProps {
-  option: Option;
+  option: SelectItemOption;
   fontSize?: number;
 }
 
-export interface SingleSelectFormatterProps {
+export interface ISingleSelectProps {
   value?: string;
   containerClassName?: string;
   fontSize?: number;
-  options: Option[];
+  options: SelectItemOption[];
 }

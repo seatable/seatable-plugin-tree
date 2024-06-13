@@ -1,11 +1,11 @@
 import {
   SelectItemProps,
-  Option,
+  SelectItemOption,
 } from '@/utils/template-utils/interfaces/Formatter/SingleSelect.interface';
 import React from 'react';
 
 const SelectItem: React.FC<SelectItemProps> = ({ option }) => {
-  const getStyle = (option: Option): React.CSSProperties => {
+  const getStyle = (option: SelectItemOption): React.CSSProperties => {
     return {
       display: 'inline-block',
       padding: '0px 10px',
@@ -24,7 +24,7 @@ const SelectItem: React.FC<SelectItemProps> = ({ option }) => {
   const style = getStyle(option);
 
   return (
-    <div className="dtable-ui select-item text-truncate" style={style} title={option.name}>
+    <div style={style} title={option.name}>
       {option.name}
     </div>
   );

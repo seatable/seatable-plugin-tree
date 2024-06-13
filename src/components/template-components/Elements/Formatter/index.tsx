@@ -183,9 +183,7 @@ const Formatter: React.FC<IFormatterProps> = ({
           multipleSelectFormatter = <div></div>;
         } else {
           const value: string[] = _row as string[]; // Update the type of value to be string[]
-          multipleSelectFormatter = (
-            <MultipleSelectFormatter value={value} options={options} isSingle={false} />
-          );
+          multipleSelectFormatter = <MultipleSelectFormatter value={value} options={options} />;
         }
         return multipleSelectFormatter;
       }

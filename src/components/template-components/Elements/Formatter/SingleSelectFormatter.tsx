@@ -1,13 +1,9 @@
 import React from 'react';
 import classnames from 'classnames';
 import SelectItem from './SelectItem';
-import { SingleSelectFormatterProps } from '@/utils/template-utils/interfaces/Formatter/SingleSelect.interface';
+import { ISingleSelectProps } from '@/utils/template-utils/interfaces/Formatter/SingleSelect.interface';
 
-
-
-
-
-const SingleSelectFormatter: React.FC<SingleSelectFormatterProps> = ({ value, options }) => {
+const SingleSelectFormatter: React.FC<ISingleSelectProps> = ({ value, options }) => {
   const getOption = () => {
     const option = options.find((item) => item.id === value || item.name === value);
     if (option) {
