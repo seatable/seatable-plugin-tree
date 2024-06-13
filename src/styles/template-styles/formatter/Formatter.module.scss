@@ -1,0 +1,15 @@
+.formatter_cell {
+  width: 200px;
+  max-height: 60px;
+  overflow-x: scroll; // Always show horizontal scrollbar, even if not needed
+  overflow-y: hidden; // Hide vertical scrollbar
+  text-align: start;
+  display: flex;
+  flex-direction: row;
+  padding: 5px 10px;
+  white-space: nowrap; // Prevent line breaks within the cell
+}
+
+.formatter_cell::-webkit-scrollbar {
+  display: none; // Hide the default scrollbar in WebKit browsers (Chrome, Safari, etc.)
+}

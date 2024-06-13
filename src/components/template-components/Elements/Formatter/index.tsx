@@ -22,6 +22,7 @@ import { ICollaborator } from '@/utils/template-utils/interfaces/Formatter/Colla
 import { ILongText } from '@/utils/template-utils/interfaces/Formatter/LongText.interface';
 import { IGeolocation } from '@/utils/template-utils/interfaces/Formatter/Geolocation.interface';
 import { IFile } from '@/utils/template-utils/interfaces/Formatter/File.interface';
+import SingleSelectFormatter from './SingleSelectFormatter';
 
 const Formatter: React.FC<IFormatterProps> = ({
   column,
@@ -196,9 +197,7 @@ const Formatter: React.FC<IFormatterProps> = ({
           singleSelectFormatter = <div></div>;
         } else {
           const value: string = _row as string; // Update the type of value to be string[]
-          singleSelectFormatter = (
-            <MultipleSelectFormatter value={value} options={options} isSingle />
-          );
+          singleSelectFormatter = <SingleSelectFormatter value={value} options={options} />;
         }
         return singleSelectFormatter;
       }
@@ -353,7 +352,7 @@ const Formatter: React.FC<IFormatterProps> = ({
     }
   };
 
-  return <div>{renderFormatter()}</div>;
+  return <>{renderFormatter()}</>;
 };
 
 export default Formatter;

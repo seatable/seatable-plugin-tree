@@ -5,6 +5,7 @@ import HeaderRow from '../HeaderRow';
 import { Table, TableView } from '@/utils/template-utils/interfaces/Table.interface';
 import { expandTheItem, getLevelSelectionAndTable } from '../../../utils/custom-utils/utils';
 import styles from '../../../styles/custom-styles/CustomPlugin.module.scss';
+import stylesFormatter from '../../../styles/template-styles/formatter/Formatter.module.scss';
 import pluginContext from '../../../plugin-context';
 import Formatter from '../../../components/template-components/Elements/Formatter';
 import { SlArrowDown, SlArrowRight } from 'react-icons/sl';
@@ -121,7 +122,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
         {currentTable?.columns
           .filter((c) => c.name.toLowerCase() !== 'name')
           .map((column) => (
-            <div key={column.key} className={styles.custom_formatter_cell}>
+            <div key={column.key} className={stylesFormatter.formatter_cell}>
               <Formatter
                 column={column}
                 row={item}
