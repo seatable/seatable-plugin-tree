@@ -137,8 +137,14 @@
       overflow: auto;
       text-align: start;
       font-weight: bold;
+      overflow-x: auto; // Enable horizontal scrolling
+      overflow-y: hidden; // Hide vertical scrollbar if not needed
+      white-space: nowrap; // Prevent line breaks within the cell
       font-size: 16px;
       padding: 5px 10px 5px 10px;
+    }
+    &_name_col::-webkit-scrollbar {
+      display: none; // Hide the default scrollbar in WebKit browsers (Chrome, Safari, etc.)
     }
   }
   &_p {
