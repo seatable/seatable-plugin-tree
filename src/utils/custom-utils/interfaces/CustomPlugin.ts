@@ -8,6 +8,7 @@ export interface IPluginTLProps {
   pluginDataStore: IPluginDataStore;
   activePresetId: string;
   resetDataValue: { t: string; c: number };
+  isDevelopment: boolean | undefined;
 }
 
 export interface ILevelSelections {
@@ -49,6 +50,7 @@ export interface ExpandableItemProps {
   handleItemClick: (updatedRow: RowExpandedInfo) => void;
   expandedHasChanged: boolean;
   rowsEmptyArray: boolean;
+  isDevelopment: boolean | undefined;
 }
 
 export type levelsStructureInfo = levelRowInfo[];

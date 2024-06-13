@@ -1,9 +1,14 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { ExpandableItemProps, levelRowInfo } from '@/utils/custom-utils/interfaces/CustomPlugin';
 import { getTableById, getRowsByIds, getLinkCellValue } from 'dtable-utils';
 import React, { useEffect, useState } from 'react';
 import HeaderRow from '../HeaderRow';
 import { Table, TableView } from '@/utils/template-utils/interfaces/Table.interface';
-import { expandTheItem, getLevelSelectionAndTable } from '../../../utils/custom-utils/utils';
+import {
+  addRowItem,
+  expandTheItem,
+  getLevelSelectionAndTable,
+} from '../../../utils/custom-utils/utils';
 import styles from '../../../styles/custom-styles/CustomPlugin.module.scss';
 import pluginContext from '../../../plugin-context';
 import Formatter from '../../../components/template-components/Elements/Formatter';
@@ -18,6 +23,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   expandedRowsInfo,
   expandedHasChanged,
   rowsEmptyArray,
+  isDevelopment,
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>();
   const { levelTable, levelRows } = getLevelSelectionAndTable(level, allTables, levelSelections);
@@ -145,9 +151,11 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
                 level={level + 1}
                 expandedHasChanged={expandedHasChanged}
                 rowsEmptyArray={rowsEmptyArray}
+                isDevelopment={isDevelopment}
               />
             ))}
-            {!rowsEmptyArray && <p>+ {levelTable?.name.toLowerCase()}</p>}
+            {!rowsEmptyArray && <button  style={{ all: 'unset', cursor: 'pointer' }}
+              onClick={() => addRowItem(levelTable!, isDevelopment)}>+ {levelTable?.name.toLowerCase()}</button>}
           </div>
         </div>
       )}
