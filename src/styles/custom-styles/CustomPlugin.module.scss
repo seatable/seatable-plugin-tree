@@ -107,17 +107,15 @@
   &_expandableItem {
     display: flex;
     align-items: center;
-    margin: 0 0 0 16px;
     border-bottom: 1px solid #eaeaea;
     background-color: $modal-bgColor;
+    height: 35px;
 
     &_rows {
       display: flex;
       flex-direction: column;
       width: 100%;
     }
-
-   
 
     &_collapse_btn {
       all: unset;
@@ -136,24 +134,22 @@
 
     &_name_col {
       width: 200px;
-      max-height: 60px;
       overflow: auto;
       text-align: start;
       font-weight: bold;
       font-size: 16px;
-      padding-left: 10px;
+      padding: 5px 10px 5px 10px;
     }
   }
   &_p {
-    padding-left: 30px;
     color: $med-gray;
     font-size: 12px;
+    padding-left: 34px;
   }
 
   &_headerRow {
     font-size: 13px;
     display: flex;
-    padding-left: 40px;
     background-color: $modal-bgColor;
     justify-content: flex-start;
     justify-content: start;
@@ -161,12 +157,13 @@
 
   &_headerColumn {
     width: 200px;
-    padding: 10px;
+    padding: 5px 10px 5px 10px;
     text-align: start;
     background-color: $modal-bgColor;
     color: grey;
     box-sizing: border-box;
-    height: 40px;
+    height: 35px;
+    align-content: center;
   }
 
   &_formatter_cell {
@@ -179,7 +176,7 @@
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    padding: 10px;
+    padding: 5px 10px 5px 10px;
   }
   &_formatter_cell > div > div {
     padding-right: 3px;

@@ -89,11 +89,21 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
     setIsExpanded(t);
   }, [expandedHasChanged, expandedRowsInfo]);
 
+  const missingCollapseBtn = (isClickable: boolean) => {
+    if (!isClickable) {
+      return { cursor: 'default', paddingLeft: 24 };
+    }
+  };
+
+  const levelStyleRows = (level: number) => {
+    if (level === 2) {
+      return { paddingLeft: 24 };
+    }
+  };
+
   return (
-    <div className={styles.custom_expandableItem_rows}>
-      <div
-        className={styles.custom_expandableItem}
-        style={{ cursor: isClickable ? 'pointer' : 'default' }}>
+    <div className={styles.custom_expandableItem_rows} style={levelStyleRows(level)}>
+      <div className={styles.custom_expandableItem} style={missingCollapseBtn(isClickable)}>
         {isClickable && (
           <button
             className={styles.custom_expandableItem_collapse_btn}
@@ -104,7 +114,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
                   }
                 : undefined
             }>
-            {(isExpanded && <SlArrowDown />) || <SlArrowRight />}
+            {(isExpanded && <SlArrowDown size={10} />) || <SlArrowRight size={10} />}
           </button>
         )}
         <p className={styles.custom_expandableItem_name_col}>{item['0000']}</p>
@@ -132,7 +142,11 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
       {isExpanded && (
         <div className={styles.custom_expandableItem_rows}>
           {!rowsEmptyArray && (
-            <HeaderRow columns={levelTable?.columns} tableName={levelTable?.name} />
+            <HeaderRow
+              columns={levelTable?.columns}
+              level={level + 1}
+              tableName={levelTable?.name}
+            />
           )}
           {rows?.map((i: levelRowInfo) => (
             <ExpandableItem
