@@ -38,9 +38,8 @@ class SeaTablePlugin {
   }
 
   static onClosePlugin(lang) {
-    const ILanguageDropdown = LanguageDropdown.default;
+    const ILanguageDropdown = LanguageDropdown;
     const langDropElement = document.getElementById('language-dropdown');
-
     ReactDOM.render(
       <ILanguageDropdown lang={lang} updateLanguageAndIntl={updateLanguageAndIntl} />,
       langDropElement

@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { useEffect, useState } from 'react';
 import ExpandableItem from './ExpandableItem';
 import HeaderRow from './HeaderRow';
 import { TableColumn } from '../../utils/template-utils/interfaces/Table.interface';
 import { PLUGIN_NAME } from '../../utils/template-utils/constants';
 import {
+  addRowItem,
   getLevelSelectionAndTable,
   getRowsByTableId,
   isArraysEqual,
@@ -23,6 +25,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   pluginDataStore,
   activePresetId,
   resetDataValue,
+  isDevelopment,
 }) => {
   const [finalResult, setFinalResult] = useState<levelsStructureInfo>([]);
   const [columns, setColumns] = useState<TableColumn[]>([]);
@@ -141,9 +144,16 @@ const PluginTL: React.FC<IPluginTLProps> = ({
             levelSelections={levelSelections}
             handleItemClick={handleItemClick}
             expandedRowsInfo={expandedRowsInfo}
+            isDevelopment={isDevelopment}
           />
         ))}
-      {levelTable && <p>+ add {levelTable?.name}</p>}
+      {levelTable && 
+      <button
+        style={{ all: 'unset', cursor: 'pointer' }}
+        onClick={() => addRowItem(levelTable!, isDevelopment)}>
+        + add {levelTable?.name}
+      </button>
+}
     </>
   );
 };
