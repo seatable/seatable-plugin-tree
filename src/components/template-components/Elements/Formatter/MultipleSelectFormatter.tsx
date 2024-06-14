@@ -3,7 +3,7 @@ import {
   IMultipleSelectProps,
 } from '@/utils/template-utils/interfaces/Formatter/MultipleSelect.interface';
 import React from 'react';
-import SelectItem from './SelectItem';
+import SelectItem from './SingleSelectFormatter/SelectItem';
 
 const MultipleSelectFormatter: React.FC<IMultipleSelectProps> = ({ value, options }) => {
   const _options = options.filter((option: IMultipleSelectOptions) => value.includes(option.id));

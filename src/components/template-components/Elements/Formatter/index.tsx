@@ -22,7 +22,7 @@ import { ICollaborator } from '@/utils/template-utils/interfaces/Formatter/Colla
 import { ILongText } from '@/utils/template-utils/interfaces/Formatter/LongText.interface';
 import { IGeolocation } from '@/utils/template-utils/interfaces/Formatter/Geolocation.interface';
 import { IFile } from '@/utils/template-utils/interfaces/Formatter/File.interface';
-import SingleSelectFormatter from './SingleSelectFormatter';
+import SingleSelectFormatter from './SingleSelectFormatter/SingleSelectFormatter';
 
 const Formatter: React.FC<IFormatterProps> = ({
   column,
@@ -116,7 +116,7 @@ const Formatter: React.FC<IFormatterProps> = ({
         if (!_row) {
           textFormatter = <div></div>;
         } else {
-          const value: string = _row as string; 
+          const value: string = _row as string;
           textFormatter = (
             <TextFormatter value={value} containerClassName={'ptl-text-editor'} url={false} />
           );
@@ -147,7 +147,7 @@ const Formatter: React.FC<IFormatterProps> = ({
         if (!_row) {
           longTextFormatter = <div></div>;
         } else {
-          const value: ILongText = _row as unknown as ILongText; 
+          const value: ILongText = _row as unknown as ILongText;
           longTextFormatter = <SimpleLongTextFormatter value={value} containerClassName="" />;
         }
         return longTextFormatter;
@@ -311,7 +311,7 @@ const Formatter: React.FC<IFormatterProps> = ({
         if (!_row) {
           urlFormatter = <div></div>;
         } else {
-          const value: string = _row as string; 
+          const value: string = _row as string;
           urlFormatter = <TextFormatter value={value} containerClassName={'ptl-text-editor'} url />;
         }
         return urlFormatter;
@@ -321,7 +321,7 @@ const Formatter: React.FC<IFormatterProps> = ({
         if (!_row) {
           durationFormatter = <div></div>;
         } else {
-          const value: string = _row as string; 
+          const value: string = _row as string;
           durationFormatter = (
             <DurationFormatter
               value={value}
@@ -338,7 +338,7 @@ const Formatter: React.FC<IFormatterProps> = ({
         if (!_row) {
           rateFormatter = <div></div>;
         } else {
-          const value: number = _row as unknown as number; 
+          const value: number = _row as unknown as number;
           rateFormatter = (
             <RateFormatter value={value} data={column.data} containerClassName="ptl-text-editor" />
           );
