@@ -1,12 +1,13 @@
-import { ICheckboxProps } from '@/utils/template-utils/interfaces/Formatter/Checkbox.interface';
 import React from 'react';
+import { ICheckboxProps } from '@/utils/template-utils/interfaces/Formatter/Checkbox.interface';
+import styles from '../../../../styles/template-styles/formatter/CheckBox.module.scss';
 
 const CheckboxFormatter: React.FC<ICheckboxProps> = ({ value }) => {
   if (value) {
     return (
-      <div className="dtable-ui cell-formatter-container checkbox-formatter d-flex align-items-center justify-content-center">
-        <span className="dtable-font dtable-icon-check-mark checkbox-checked-mark"></span>
-      </div>
+      <>
+        <span className={`dtable-font dtable-icon-check-mark ${styles.checkboxMark}`}></span>
+      </>
     );
   }
   return null;
