@@ -1,12 +1,12 @@
 export interface ITimeProps {
-    value: string;
-    containerClassName: string;
+  value: string;
+  containerClassName: string;
 }
 
-export interface ITextProps extends ITimeProps{
-    url: boolean;
+export interface ITextProps extends ITimeProps {
+  url: boolean;
 }
 
-export interface IDurationProps extends ITimeProps{
-    format: string;
+export interface IDurationProps extends ITimeProps {
+  format: string;
 }

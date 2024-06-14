@@ -1,4 +1,4 @@
 export interface IImageProps {
-    value: string[];
-    containerClassName: string;
+  value: string[];
+  containerClassName: string;
 }

@@ -10,7 +10,7 @@ import ImageFormatter from '../Formatter/ImageFormatter';
 import { levelRowInfo } from '@/utils/custom-utils/interfaces/CustomPlugin';
 import GeolocationFormatter from '../Formatter/GeolocationFormatter';
 import MultipleSelectFormatter from '../Formatter/MultipleSelectFormatter';
-import FileFormatter from '../Formatter/FileFormatter';
+import FileFormatter from './FileFormatter/FileFormatter';
 import CheckboxFormatter from '../Formatter/CheckboxFormatter';
 import CTimeFormatter from '../Formatter/CTimeFormatter';
 import FormulaFormatter from '../Formatter/FormulaFormatter';
@@ -205,8 +205,9 @@ const Formatter: React.FC<IFormatterProps> = ({
         if (!Array.isArray(_row) || _row.length === 0) {
           fileFormatter = <div></div>;
         } else {
-          const value: IFile[] = _row as IFile[]; // Update the type of _row to IFile[]
-          fileFormatter = <FileFormatter value={value} />;
+          const values: IFile[] = _row as IFile[]; // Update the type of _row to IFile[]
+          console.log({ values });
+          fileFormatter = <FileFormatter value={values} />;
         }
         return fileFormatter;
       }
