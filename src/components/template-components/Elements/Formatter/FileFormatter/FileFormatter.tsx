@@ -3,8 +3,7 @@ import { FileFormatterProps } from '@/utils/template-utils/interfaces/Formatter/
 import FileItemFormatter from './FileItemFormatter';
 import styles from '../../../../../styles/template-styles/formatter/FileFormatter.module.scss';
 
-const FileFormatter: React.FC<FileFormatterProps> = ({ value = [], renderItem }) => {
-  console.log({ renderItem });
+const FileFormatter: React.FC<FileFormatterProps> = ({ value = [] }) => {
   if (!Array.isArray(value) || value.length === 0) {
     return null;
   }

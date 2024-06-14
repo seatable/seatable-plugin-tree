@@ -13,10 +13,10 @@ const FileItemFormatter: React.FC<FileItemFormatterProps> = ({ file }) => {
   const [fileIconData, setFileIconData] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log({ file });
+
     const loadIcon = async () => {
       const fileIconUrl = getFileIconUrl(file.name, file.type);
-      console.log({ fileIconUrl });
+
       try {
         const fileIcon = await import(`./${fileIconUrl}`);
         setFileIconData(fileIcon.default);
