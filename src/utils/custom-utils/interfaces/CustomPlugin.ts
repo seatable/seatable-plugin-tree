@@ -38,6 +38,7 @@ export interface levelRowInfo {
 }
 export interface HeaderRowProps {
   columns: TableColumn[] | undefined;
+  level: number;
   tableName?: string;
 }
 

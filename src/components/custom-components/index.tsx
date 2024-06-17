@@ -18,6 +18,7 @@ import {
   levelRowInfo,
   levelsStructureInfo,
 } from '../../utils/custom-utils/interfaces/CustomPlugin';
+import styles from '../../styles/custom-styles/CustomPlugin.module.scss';
 
 const PluginTL: React.FC<IPluginTLProps> = ({
   allTables,
@@ -112,7 +113,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
 
   return (
     <>
-      <HeaderRow columns={columns} tableName={tableName} />
+      <HeaderRow columns={columns} level={1} tableName={tableName} />
       {finalResult &&
         finalResult.map((i: levelRowInfo) => (
           <ExpandableItem
@@ -130,9 +131,10 @@ const PluginTL: React.FC<IPluginTLProps> = ({
         ))}
       {levelTable && 
       <button
+      className={styles.custom_p}
         style={{ all: 'unset', cursor: 'pointer' }}
         onClick={() => addRowItem(levelTable!, isDevelopment)}>
-        + add {levelTable?.name}
+        + add {levelTable?.name.toLowerCase()}
       </button>
 }
     </>

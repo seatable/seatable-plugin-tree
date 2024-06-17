@@ -1,6 +1,18 @@
 @import '../abstracts/_media.scss';
 @import '../constants.scss';
 
+.body {
+  height: 100%;
+  width: 100%;
+  overflow: scroll;
+  padding: 10px;
+  background-color: $modal-bgColor;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 .plugin_wrapper {
   width: 100%;
   position: fixed;
@@ -261,17 +273,5 @@
       border-left: 10px solid #000;
       transform: translate(calc(100% + 5px), -50%);
     }
-  }
-}
-
-.body {
-  height: 100%;
-  width: 100%;
-  overflow: scroll;
-  padding: 0px 50px 50px 0px;
-  background-color: $main-content-bgColor;
-
-  &::-webkit-scrollbar {
-    display: none;
   }
 }

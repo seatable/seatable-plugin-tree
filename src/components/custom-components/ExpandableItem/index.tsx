@@ -10,6 +10,7 @@ import {
   getLevelSelectionAndTable,
 } from '../../../utils/custom-utils/utils';
 import styles from '../../../styles/custom-styles/CustomPlugin.module.scss';
+import stylesFormatter from '../../../styles/template-styles/formatter/Formatter.module.scss';
 import pluginContext from '../../../plugin-context';
 import Formatter from '../../../components/template-components/Elements/Formatter';
 import { SlArrowDown, SlArrowRight } from 'react-icons/sl';
@@ -90,33 +91,44 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   // Get the collaborators
   const collaborators = window.app.state.collaborators;
 
-
   useEffect(() => {
     const t = expandTheItem(expandedRowsInfo, item._id);
     setIsExpanded(t);
   }, [expandedHasChanged, expandedRowsInfo]);
-  
+
+  const missingCollapseBtn = (isClickable: boolean) => {
+    if (!isClickable) {
+      return { cursor: 'default', paddingLeft: 24 };
+    }
+  };
+
+  const levelStyleRows = (level: number) => {
+    if (level === 2) {
+      return { paddingLeft: 24 };
+    }
+  };
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-      <div
-        className={styles.custom_expandableItem}
-        style={{ cursor: isClickable ? 'pointer' : 'default' }}>
-        <button
-          className={styles.custom_expandableItem_collapse_btn}
-          onClick={
-            isClickable
-              ? () => {
-                  handleItemClick({ '0000': item['0000'], _id: item._id, expanded: !isExpanded });
-                }
-              : undefined
-          }>
-          {(isExpanded && <SlArrowDown />) || <SlArrowRight />}
-        </button>
+    <div className={styles.custom_expandableItem_rows} style={levelStyleRows(level)}>
+      <div className={styles.custom_expandableItem} style={missingCollapseBtn(isClickable)}>
+        {isClickable && (
+          <button
+            className={styles.custom_expandableItem_collapse_btn}
+            onClick={
+              isClickable
+                ? () => {
+                    handleItemClick({ '0000': item['0000'], _id: item._id, expanded: !isExpanded });
+                  }
+                : undefined
+            }>
+            {(isExpanded && <SlArrowDown size={10} />) || <SlArrowRight size={10} />}
+          </button>
+        )}
         <p className={styles.custom_expandableItem_name_col}>{item['0000']}</p>
         {currentTable?.columns
           .filter((c) => c.name.toLowerCase() !== 'name')
           .map((column) => (
-            <div key={column.key} className={styles.custom_formatter_cell}>
+            <div key={column.key} className={stylesFormatter.formatter_cell}>
               <Formatter
                 column={column}
                 row={item}
@@ -135,28 +147,35 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
           ))}
       </div>{' '}
       {isExpanded && (
-        <div style={{ paddingLeft: '20px' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-            {!rowsEmptyArray && (
-              <HeaderRow columns={levelTable?.columns} tableName={levelTable?.name} />
-            )}
-            {rows?.map((i: levelRowInfo) => (
-              <ExpandableItem
-                key={i._id}
-                item={i}
-                expandedRowsInfo={expandedRowsInfo}
-                handleItemClick={handleItemClick}
-                allTables={allTables}
-                levelSelections={levelSelections}
-                level={level + 1}
-                expandedHasChanged={expandedHasChanged}
-                rowsEmptyArray={rowsEmptyArray}
-                isDevelopment={isDevelopment}
-              />
-            ))}
-            {!rowsEmptyArray && <button  style={{ all: 'unset', cursor: 'pointer' }}
-              onClick={() => addRowItem(levelTable!, isDevelopment)}>+ {levelTable?.name.toLowerCase()}</button>}
-          </div>
+        <div className={styles.custom_expandableItem_rows}>
+          {!rowsEmptyArray && (
+            <HeaderRow
+              columns={levelTable?.columns}
+              level={level + 1}
+              tableName={levelTable?.name}
+            />
+          )}
+          {rows?.map((i: levelRowInfo) => (
+            <ExpandableItem
+              key={i._id}
+              item={i}
+              expandedRowsInfo={expandedRowsInfo}
+              handleItemClick={handleItemClick}
+              allTables={allTables}
+              levelSelections={levelSelections}
+              level={level + 1}
+              expandedHasChanged={expandedHasChanged}
+              rowsEmptyArray={rowsEmptyArray}
+              isDevelopment={isDevelopment}
+            />
+          ))}
+          {!rowsEmptyArray && (
+            <button
+              style={{ all: 'unset', cursor: 'pointer' }}
+              onClick={() => addRowItem(levelTable!, isDevelopment)}>
+              + {levelTable?.name.toLowerCase()}
+            </button>
+          )}
         </div>
       )}
     </div>

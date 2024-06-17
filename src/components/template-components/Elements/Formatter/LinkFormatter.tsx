@@ -4,6 +4,7 @@ import React from 'react';
 import { CellType, getNumberDisplayString, getDateDisplayString } from 'dtable-utils';
 import { ILinkProps } from '@/utils/template-utils/interfaces/Formatter/Link.interface';
 import { levelRowInfo } from '@/utils/custom-utils/interfaces/CustomPlugin';
+import styles from '../../../../styles/template-styles/formatter/LinkFormatter.module.scss';
 
 const LinkFormatter: React.FC<ILinkProps> = ({
   column,
@@ -61,8 +62,8 @@ const LinkFormatter: React.FC<ILinkProps> = ({
         const { display_column_key: displayColumnKey } = column.data;
         const displayValue = getDisplayValue(linkedTable, row, displayColumnKey);
         return (
-          <div key={index} className="link-item">
-            <div className="link-name">{displayValue}</div>
+          <div key={index} className={styles.linkFormatter_linkItem}>
+            <div className={styles.linkFormatter_linkName}>{displayValue}</div>
           </div>
         );
       });

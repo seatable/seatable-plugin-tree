@@ -1,0 +1,27 @@
+.linkFormatter {
+  &_linkItem {
+    display: inline-flex;
+    height: 20px;
+    max-width: 230px;
+    padding: 0 5px 0 5px;
+    align-items: center;
+    justify-content: center; /* Center the content horizontally */
+    font-size: 13px;
+    margin-right: 10px;
+    border-radius: 3px;
+    background: #eceff4;
+    cursor: pointer;
+  }
+  &_linkName {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center; /* Center the text within its container */
+    width: 100%; /* Ensure it takes full width for proper centering */
+  }
+}
+
+.dtable-ui.cell-formatter-container {
+  overflow: hidden;
+  line-height: 1;
+  width: 100%;
+}
