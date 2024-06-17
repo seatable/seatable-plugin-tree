@@ -15,9 +15,6 @@ const FileFormatter: React.FC<FileFormatterProps> = ({ value = [] }) => {
           <Fragment key={index}>
             <div className={styles.fileFormatter}>
               <FileItemFormatter file={item} />
-              {value.length !== 1 && (
-                <span className={styles.fileItemCount}>{`+${value.length}`}</span>
-              )}
             </div>
           </Fragment>
         );
