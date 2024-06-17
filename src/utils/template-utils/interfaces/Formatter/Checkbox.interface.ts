@@ -1,4 +1,4 @@
 export interface ICheckboxProps {
-    value: boolean;
-    containerClassName?: string;
+  value: boolean;
+  containerClassName?: string;
 }

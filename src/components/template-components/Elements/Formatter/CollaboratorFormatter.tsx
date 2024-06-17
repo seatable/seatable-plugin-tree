@@ -1,7 +1,14 @@
-import { ICollaborator, ICollaboratorProps } from '@/utils/template-utils/interfaces/Formatter/Collaborator.interface';
+import {
+  ICollaborator,
+  ICollaboratorProps,
+} from '@/utils/template-utils/interfaces/Formatter/Collaborator.interface';
 import React from 'react';
 
-const CollaboratorFormatter: React.FC<ICollaboratorProps> = ({ value, containerClassName, collaborators }) => {
+const CollaboratorFormatter: React.FC<ICollaboratorProps> = ({
+  value,
+  containerClassName,
+  collaborators,
+}) => {
   let collaborator;
   if (typeof value === 'string') {
     collaborator = collaborators.find((c: ICollaborator) => c.email === value);

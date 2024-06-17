@@ -10,7 +10,7 @@ import ImageFormatter from '../Formatter/ImageFormatter';
 import { levelRowInfo } from '@/utils/custom-utils/interfaces/CustomPlugin';
 import GeolocationFormatter from '../Formatter/GeolocationFormatter';
 import MultipleSelectFormatter from '../Formatter/MultipleSelectFormatter';
-import FileFormatter from '../Formatter/FileFormatter';
+import FileFormatter from './FileFormatter/FileFormatter';
 import CheckboxFormatter from '../Formatter/CheckboxFormatter';
 import CTimeFormatter from '../Formatter/CTimeFormatter';
 import FormulaFormatter from '../Formatter/FormulaFormatter';
@@ -22,7 +22,7 @@ import { ICollaborator } from '@/utils/template-utils/interfaces/Formatter/Colla
 import { ILongText } from '@/utils/template-utils/interfaces/Formatter/LongText.interface';
 import { IGeolocation } from '@/utils/template-utils/interfaces/Formatter/Geolocation.interface';
 import { IFile } from '@/utils/template-utils/interfaces/Formatter/File.interface';
-import SingleSelectFormatter from './SingleSelectFormatter';
+import SingleSelectFormatter from './SingleSelectFormatter/SingleSelectFormatter';
 
 const Formatter: React.FC<IFormatterProps> = ({
   column,
@@ -116,7 +116,7 @@ const Formatter: React.FC<IFormatterProps> = ({
         if (!_row) {
           textFormatter = <div></div>;
         } else {
-          const value: string = _row as string; // Update the type of _row to string
+          const value: string = _row as string;
           textFormatter = (
             <TextFormatter value={value} containerClassName={'ptl-text-editor'} url={false} />
           );
@@ -147,7 +147,7 @@ const Formatter: React.FC<IFormatterProps> = ({
         if (!_row) {
           longTextFormatter = <div></div>;
         } else {
-          const value: ILongText = _row as unknown as ILongText; // Update the type of _row to ILongText
+          const value: ILongText = _row as unknown as ILongText;
           longTextFormatter = <SimpleLongTextFormatter value={value} containerClassName="" />;
         }
         return longTextFormatter;
@@ -167,7 +167,7 @@ const Formatter: React.FC<IFormatterProps> = ({
         if (!_row) {
           geolocationFormatter = <div></div>;
         } else {
-          const value: IGeolocation = _row as unknown as IGeolocation; // Update the type of _row to IGeolocation
+          const value: IGeolocation = _row as unknown as IGeolocation;
           geolocationFormatter = (
             <GeolocationFormatter value={value} containerClassName="ptl-text-editor" />
           );
@@ -182,7 +182,7 @@ const Formatter: React.FC<IFormatterProps> = ({
         if (!Array.isArray(_row) || _row.length === 0) {
           multipleSelectFormatter = <div></div>;
         } else {
-          const value: string[] = _row as string[]; // Update the type of value to be string[]
+          const value: string[] = _row as string[];
           multipleSelectFormatter = <MultipleSelectFormatter value={value} options={options} />;
         }
         return multipleSelectFormatter;
@@ -194,7 +194,7 @@ const Formatter: React.FC<IFormatterProps> = ({
         if (!_row) {
           singleSelectFormatter = <div></div>;
         } else {
-          const value: string = _row as string; // Update the type of value to be string[]
+          const value: string = _row as string;
           singleSelectFormatter = <SingleSelectFormatter value={value} options={options} />;
         }
         return singleSelectFormatter;
@@ -205,8 +205,8 @@ const Formatter: React.FC<IFormatterProps> = ({
         if (!Array.isArray(_row) || _row.length === 0) {
           fileFormatter = <div></div>;
         } else {
-          const value: IFile[] = _row as IFile[]; // Update the type of _row to IFile[]
-          fileFormatter = <FileFormatter value={value} />;
+          const values: IFile[] = _row as IFile[];
+          fileFormatter = <FileFormatter value={values} />;
         }
         return fileFormatter;
       }
@@ -311,7 +311,7 @@ const Formatter: React.FC<IFormatterProps> = ({
         if (!_row) {
           urlFormatter = <div></div>;
         } else {
-          const value: string = _row as string; // Update the type of _row to string
+          const value: string = _row as string;
           urlFormatter = <TextFormatter value={value} containerClassName={'ptl-text-editor'} url />;
         }
         return urlFormatter;
@@ -321,7 +321,7 @@ const Formatter: React.FC<IFormatterProps> = ({
         if (!_row) {
           durationFormatter = <div></div>;
         } else {
-          const value: string = _row as string; // Update the type of _row to string
+          const value: string = _row as string;
           durationFormatter = (
             <DurationFormatter
               value={value}
@@ -338,7 +338,7 @@ const Formatter: React.FC<IFormatterProps> = ({
         if (!_row) {
           rateFormatter = <div></div>;
         } else {
-          const value: number = _row as unknown as number; // Update the type of _row to number
+          const value: number = _row as unknown as number;
           rateFormatter = (
             <RateFormatter value={value} data={column.data} containerClassName="ptl-text-editor" />
           );
