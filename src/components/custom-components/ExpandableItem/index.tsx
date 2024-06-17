@@ -8,6 +8,7 @@ import {
   addRowItem,
   expandTheItem,
   getLevelSelectionAndTable,
+  paddingAddBtn,
 } from '../../../utils/custom-utils/utils';
 import styles from '../../../styles/custom-styles/CustomPlugin.module.scss';
 import stylesFormatter from '../../../styles/template-styles/formatter/Formatter.module.scss';
@@ -171,9 +172,10 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
           ))}
           {!rowsEmptyArray && (
             <button
-              style={{ all: 'unset', cursor: 'pointer' }}
+              className={styles.custom_p}
+              style={paddingAddBtn(level)}
               onClick={() => addRowItem(levelTable!, isDevelopment)}>
-              + {levelTable?.name.toLowerCase()}
+              + add {levelTable?.name.toLowerCase()}
             </button>
           )}
         </div>

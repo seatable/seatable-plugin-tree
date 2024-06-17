@@ -403,3 +403,11 @@ const onInsertRow = (table: Table, view: TableView, rowData: any) => {
     pluginContext.expandRow(insertedRow, table);
   }
 };
+
+export const paddingAddBtn = (level: number) => {
+  if (level === 0 || level === 2) {
+    return { paddingLeft: 34 };
+  } else if (level === 1) {
+    return { paddingLeft: 58 };
+  }
+};

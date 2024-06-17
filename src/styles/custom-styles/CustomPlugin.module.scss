@@ -148,9 +148,10 @@
     }
   }
   &_p {
+    all: unset;
+    cursor: pointer;
     color: $med-gray;
     font-size: 12px;
-    padding-left: 34px;
   }
 
   &_headerRow {

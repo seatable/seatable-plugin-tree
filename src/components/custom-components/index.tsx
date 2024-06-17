@@ -10,6 +10,7 @@ import {
   getRowsByTableId,
   isArraysEqual,
   outputLevelsInfo,
+  paddingAddBtn,
   updateExpandedState,
 } from '../../utils/custom-utils/utils';
 import {
@@ -129,14 +130,14 @@ const PluginTL: React.FC<IPluginTLProps> = ({
             isDevelopment={isDevelopment}
           />
         ))}
-      {levelTable && 
-      <button
-      className={styles.custom_p}
-        style={{ all: 'unset', cursor: 'pointer' }}
-        onClick={() => addRowItem(levelTable!, isDevelopment)}>
-        + add {levelTable?.name.toLowerCase()}
-      </button>
-}
+      {levelTable && (
+        <button
+          className={styles.custom_p}
+          style={paddingAddBtn(0)}
+          onClick={() => addRowItem(levelTable!, isDevelopment)}>
+          + add {levelTable?.name.toLowerCase()}
+        </button>
+      )}
     </>
   );
 };
