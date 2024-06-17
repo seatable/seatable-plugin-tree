@@ -30,7 +30,6 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   const [isExpanded, setIsExpanded] = useState<boolean>();
   const { levelTable, levelRows } = getLevelSelectionAndTable(level, allTables, levelSelections);
   const [rowsEmptyArrayItemLevel, setRowsEmptyArrayItemLevel] = useState<boolean>(false);
-
   const rows = item[levelRows];
   const isClickable = level !== 3 && rows?.length !== 0 && item[levelRows] !== undefined;
   const currentTable = allTables.find((table) => table.name === item._name);
@@ -93,7 +92,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   const collaborators = window.app.state.collaborators;
 
   useEffect(() => {
-    const t = expandTheItem(expandedRowsInfo, item._id);
+    const t = expandTheItem(expandedRowsInfo, item.uniqueId);
     setIsExpanded(t);
   }, [expandedHasChanged, expandedRowsInfo]);
 
@@ -118,7 +117,12 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
             onClick={
               isClickable
                 ? () => {
-                    handleItemClick({ '0000': item['0000'], _id: item._id, expanded: !isExpanded });
+                    handleItemClick({
+                      '0000': item['0000'],
+                      _id: item._id,
+                      expanded: !isExpanded,
+                      uniqueId: item.uniqueId,
+                    });
                   }
                 : undefined
             }>

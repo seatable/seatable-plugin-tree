@@ -155,11 +155,12 @@ export const outputLevelsInfo = (
       columns: linkedColumns,
       '0000': String(r['0000'] || ''),
       expanded: expandedRowsInfo.find((obj) => obj.id === r._id)?.exp || false,
+      uniqueId: '',
       [keyName ? keyName : 'secondLevelRows']: secondLevelRows,
     } satisfies levelRowInfo);
   });
 
-  const cleanExpandedRowsObj = cleanObjects(finalResult, undefined);
+  const cleanExpandedRowsObj = cleanObjects(finalResult, undefined, 1, undefined);
   return { finalResult, cleanExpandedRowsObj };
 };
 
@@ -236,7 +237,12 @@ export const isArraysEqual = (a: RowExpandedInfo[], b: RowExpandedInfo[]) => {
   return thirdLevel;
 };
 
-function cleanObjects(a: levelsStructureInfo, propertiesToKeep: string[] | undefined) {
+function cleanObjects(
+  a: levelsStructureInfo,
+  propertiesToKeep: string[] | undefined,
+  level: number,
+  parentId: string | undefined
+) {
   const propertiesToKeeps =
     propertiesToKeep === undefined
       ? ['0000', '_id', 'expanded', 'secondLevelRows']
@@ -248,14 +254,28 @@ function cleanObjects(a: levelsStructureInfo, propertiesToKeep: string[] | undef
         cleanObj[prop as keyof RowExpandedInfo] = obj[prop as keyof levelRowInfo];
       }
     });
+    parentId = (parentId || obj._id).slice(0, 4);
+    const uniqueId = parentId + '_' + obj._id.slice(0, 4);
+    cleanObj.uniqueId = uniqueId;
+    obj.uniqueId = uniqueId;
 
     if (obj.secondLevelRows) {
       const propertiesToKeep = ['0000', '_id', 'expanded', 'thirdLevelRows'];
-      cleanObj.secondLevelRows = cleanObjects(obj.secondLevelRows, propertiesToKeep);
+      cleanObj.secondLevelRows = cleanObjects(
+        obj.secondLevelRows,
+        propertiesToKeep,
+        level + 1,
+        obj._id
+      );
     }
     if (obj.thirdLevelRows) {
       const propertiesToKeep = ['0000', '_id', 'expanded'];
-      cleanObj.thirdLevelRows = cleanObjects(obj.thirdLevelRows, propertiesToKeep);
+      cleanObj.thirdLevelRows = cleanObjects(
+        obj.thirdLevelRows,
+        propertiesToKeep,
+        level + 1,
+        obj._id
+      );
     }
 
     return cleanObj;
@@ -267,11 +287,11 @@ export const updateExpandedState = (
   updatedRow: RowExpandedInfo,
   rows: RowExpandedInfo[]
 ): RowExpandedInfo[] => {
-  const targetId = updatedRow._id;
+  const targetId = updatedRow.uniqueId;
   const expandedValue = updatedRow.expanded;
 
   for (const row of rows) {
-    if (row._id === targetId) {
+    if (row.uniqueId === targetId) {
       row.expanded = expandedValue;
       if (!expandedValue) {
         updateNestedExpanded(row, expandedValue);
@@ -302,11 +322,11 @@ const updateNestedExpanded = (row: RowExpandedInfo, expandedValue: boolean): voi
 
 export const expandTheItem = (
   expandedRowsInfo: RowExpandedInfo[],
-  itemId: string,
+  itemUniqueId: string,
   isFirstLevel = true
 ): boolean | undefined => {
   for (const row of expandedRowsInfo) {
-    if (row._id === itemId) {
+    if (row.uniqueId === itemUniqueId) {
       return row.expanded;
     } else if (!row.expanded && isFirstLevel && row.secondLevelRows) {
       row.secondLevelRows.forEach((secondLevelRow: RowExpandedInfo) => {
@@ -323,7 +343,7 @@ export const expandTheItem = (
       });
     }
     if (row.secondLevelRows) {
-      const result = expandTheItem(row.secondLevelRows, itemId, false);
+      const result = expandTheItem(row.secondLevelRows, itemUniqueId, false);
       if (result !== undefined) return result;
     }
   }

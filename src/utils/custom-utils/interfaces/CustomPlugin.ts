@@ -32,6 +32,7 @@ export interface levelRowInfo {
   '0000': string;
   expanded: boolean;
   columns: TableColumn[];
+  uniqueId: string;
   nextLevelRows?: levelRowInfo[];
   secondLevelRows?: levelRowInfo[];
   thirdLevelRows?: levelRowInfo[];
@@ -60,6 +61,7 @@ export interface RowExpandedInfo {
   ['0000']: string | number | any[];
   _id: string;
   expanded: boolean;
+  uniqueId: string;
   secondLevelRows?: RowExpandedInfo[];
   thirdLevelRows?: RowExpandedInfo[];
   [key: string]: any;
