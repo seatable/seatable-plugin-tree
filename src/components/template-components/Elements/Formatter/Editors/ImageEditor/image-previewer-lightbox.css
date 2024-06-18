@@ -1,0 +1,3 @@
+.ril__outer .ril__toolbarItem button:focus {
+  outline: none;
+}

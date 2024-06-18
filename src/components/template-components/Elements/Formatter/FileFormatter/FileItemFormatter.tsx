@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getFileIconUrl } from './utils';
 import styles from '../../../../../styles/template-styles/formatter/FileFormatter.module.scss';
+import FileEditor from '../FileEditor';
 
 interface FileItemFormatterProps {
   file: {
@@ -13,7 +14,6 @@ const FileItemFormatter: React.FC<FileItemFormatterProps> = ({ file }) => {
   const [fileIconData, setFileIconData] = useState<string | null>(null);
 
   useEffect(() => {
-
     const loadIcon = async () => {
       const fileIconUrl = getFileIconUrl(file.name, file.type);
 
@@ -28,11 +28,26 @@ const FileItemFormatter: React.FC<FileItemFormatterProps> = ({ file }) => {
     loadIcon();
   }, [file]);
 
+  const openFileEditor = () => {
+    return (
+      <div>
+        <FileEditor />
+      </div>
+    );
+  };
+
   if (!fileIconData) {
     return null;
   }
 
-  return <img className={styles.fileItemIcon} src={fileIconData} alt={file.name} />;
+  return (
+    <img
+      className={styles.fileItemIcon}
+      src={fileIconData}
+      alt={file.name}
+      onDoubleClick={openFileEditor}
+    />
+  );
 };
 
 export default FileItemFormatter;
