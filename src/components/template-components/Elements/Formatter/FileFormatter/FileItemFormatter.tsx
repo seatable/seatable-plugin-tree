@@ -28,26 +28,11 @@ const FileItemFormatter: React.FC<FileItemFormatterProps> = ({ file }) => {
     loadIcon();
   }, [file]);
 
-  const openFileEditor = () => {
-    return (
-      <div>
-        <FileEditor />
-      </div>
-    );
-  };
-
   if (!fileIconData) {
     return null;
   }
 
-  return (
-    <img
-      className={styles.fileItemIcon}
-      src={fileIconData}
-      alt={file.name}
-      onDoubleClick={openFileEditor}
-    />
-  );
+  return <img className={styles.fileItemIcon} src={fileIconData} alt={file.name} />;
 };
 
 export default FileItemFormatter;
