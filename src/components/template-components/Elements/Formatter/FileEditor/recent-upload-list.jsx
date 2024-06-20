@@ -10,7 +10,6 @@ const propTypes = {
 };
 
 class RecentUploadList extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -32,16 +31,16 @@ class RecentUploadList extends React.Component {
     if (file_items.length === 0) {
       return (
         <Fragment>
-          <div className='file-date'>{date}</div>
-          <div className='file-empty'>({intl.get('Empty')})</div>
+          <div className="file-date">{date}</div>
+          <div className="file-empty">({intl.get('Empty')})</div>
         </Fragment>
       );
     }
 
     return (
       <Fragment>
-        <div className='file-date'>{date}</div>
-        <div className='file-content'>
+        <div className="file-date">{date}</div>
+        <div className="file-content">
           {file_items.map((item, index) => {
             return (
               <RecentUploadItem

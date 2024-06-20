@@ -11,21 +11,33 @@ function getEventTransfer(event) {
 
   // paste dtable
   if (dtableFragment) {
-    return { [TransferTypes.DTABLE_FRAGMENT]: JSON.parse(dtableFragment), type: TransferTypes.DTABLE_FRAGMENT };
+    return {
+      [TransferTypes.DTABLE_FRAGMENT]: JSON.parse(dtableFragment),
+      type: TransferTypes.DTABLE_FRAGMENT,
+    };
   }
 
   // paste html
   if (html) {
-    let copiedTableNode = (new DOMParser()).parseFromString(html, HTML).querySelector('table');
+    let copiedTableNode = new DOMParser().parseFromString(html, HTML).querySelector('table');
     if (copiedTableNode) {
-      return { [TransferTypes.DTABLE_FRAGMENT]: html2TableFragment(copiedTableNode), html, text, type: 'html' };
+      return {
+        [TransferTypes.DTABLE_FRAGMENT]: html2TableFragment(copiedTableNode),
+        html,
+        text,
+        type: 'html',
+      };
     }
     return { [TransferTypes.DTABLE_FRAGMENT]: text2TableFragment(text), html, text, type: 'html' };
   }
 
   // paste local picture or other files here
   if (files && files.length) {
-    return { [TransferTypes.DTABLE_FRAGMENT]: text2TableFragment(text), 'files': files, type: 'files' };
+    return {
+      [TransferTypes.DTABLE_FRAGMENT]: text2TableFragment(text),
+      files: files,
+      type: 'files',
+    };
   }
 
   // paste text
@@ -89,8 +101,8 @@ function getFiles(transfer) {
     // Get and normalize files if they exist.
     if (transfer.items && transfer.items.length) {
       files = Array.from(transfer.items)
-        .map(item => (item.kind === 'file' ? item.getAsFile() : null))
-        .filter(exists => exists);
+        .map((item) => (item.kind === 'file' ? item.getAsFile() : null))
+        .filter((exists) => exists);
     } else if (transfer.files && transfer.files.length) {
       files = Array.from(transfer.files);
     }

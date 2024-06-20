@@ -8,7 +8,6 @@ const propTypes = {
 };
 
 class RecentUploadAdditionPreviewer extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {

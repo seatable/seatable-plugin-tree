@@ -5,6 +5,7 @@ import TransferTypes from '../FileEditor/constants/TransferTypes';
 import { FILEEXT_ICON_MAP } from '../FileEditor/constants/constants';
 import { html2TableFragment, text2TableFragment } from '../FileEditor/functions/get-event-transfer';
 const { HTML, FRAGMENT, TEXT, FILES, DTABLE_FRAGMENT } = transferTypes;
+
 export const getFileIconUrl = (filename: string, direntType: string): string => {
   if (direntType === 'dir') {
     return 'assets/folder/' + FILEEXT_ICON_MAP['folder'];

@@ -16,7 +16,6 @@ const propTypes = {
 };
 
 class RecentItemDropdownMenu extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -57,7 +56,11 @@ class RecentItemDropdownMenu extends React.Component {
   render() {
     return (
       <Fragment>
-        <Dropdown isOpen={this.state.isItemMenuShow} toggle={this.onDropdownToggleClick} className="item-dropdown-menu" size="sm">
+        <Dropdown
+          isOpen={this.state.isItemMenuShow}
+          toggle={this.onDropdownToggleClick}
+          className="item-dropdown-menu"
+          size="sm">
           <DropdownToggle
             className="item-dropdown"
             tag="span"
@@ -65,11 +68,12 @@ class RecentItemDropdownMenu extends React.Component {
             data-toggle="dropdown"
             title={intl.get('More_operations')}
             aria-label={intl.get('More_operations')}
-            aria-expanded={this.state.isItemMenuShow}
-          >
+            aria-expanded={this.state.isItemMenuShow}>
             <span className="dtable-font dtable-icon-more-vertical item-dropdown-more"></span>
           </DropdownToggle>
-          <DropdownMenu style={{ marginLeft: '-16px', transform: 'none' }} className="dtable-dropdown-menu large" >
+          <DropdownMenu
+            style={{ marginLeft: '-16px', transform: 'none' }}
+            className="dtable-dropdown-menu large">
             <DropdownItem onClick={this.viewFile}>
               <i className="item-icon dtable-font dtable-icon-eye"></i>
               <span className="item-text">{intl.get('View')}</span>

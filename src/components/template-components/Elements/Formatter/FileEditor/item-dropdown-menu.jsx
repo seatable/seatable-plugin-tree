@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import intl from 'react-intl-universal';
-import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, } from 'reactstrap';
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
 const propTypes = {
   itemIndex: PropTypes.number,
@@ -15,7 +15,6 @@ const propTypes = {
 };
 
 class ItemDropdownMenu extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -49,7 +48,10 @@ class ItemDropdownMenu extends React.Component {
   render() {
     return (
       <Fragment>
-        <Dropdown isOpen={this.state.isItemMenuShow} toggle={this.onDropdownToggleClick} className="item-dropdown-menu">
+        <Dropdown
+          isOpen={this.state.isItemMenuShow}
+          toggle={this.onDropdownToggleClick}
+          className="item-dropdown-menu">
           <DropdownToggle
             className="item-dropdown"
             tag="span"
@@ -57,8 +59,7 @@ class ItemDropdownMenu extends React.Component {
             data-toggle="dropdown"
             title={intl.get('More_operations')}
             aria-label={intl.get('More_operations')}
-            aria-expanded={this.state.isItemMenuShow}
-          >
+            aria-expanded={this.state.isItemMenuShow}>
             <span className="dtable-font dtable-icon-more-vertical item-dropdown-more"></span>
           </DropdownToggle>
           <DropdownMenu className="dtable-dropdown-menu dropdown-menu large">

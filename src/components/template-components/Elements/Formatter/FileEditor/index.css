@@ -208,7 +208,10 @@
   font-size: 12px;
 }
 
-.dtable-file-addition-right .dtable-file-upload-container .dtable-file-add-span .dtable-file-add-span-btn {
+.dtable-file-addition-right
+  .dtable-file-upload-container
+  .dtable-file-add-span
+  .dtable-file-add-span-btn {
   position: relative;
   color: orange;
   cursor: pointer;

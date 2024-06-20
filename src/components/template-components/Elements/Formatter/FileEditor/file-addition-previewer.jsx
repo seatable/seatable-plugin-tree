@@ -19,12 +19,11 @@ const propTypes = {
 };
 
 class FileAdditionPreviewer extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
       activeTab: 'localFiles',
-      fileSelectedList: []
+      fileSelectedList: [],
     };
   }
 
@@ -55,7 +54,7 @@ class FileAdditionPreviewer extends React.Component {
   getTabClass = (tab) => {
     const { activeTab } = this.state;
     return classNames('dtable-addition-item', {
-      'selected-dtable-addition-item': tab === activeTab
+      'selected-dtable-addition-item': tab === activeTab,
     });
   };
 
@@ -67,38 +66,47 @@ class FileAdditionPreviewer extends React.Component {
       <div className="dtable-file-addition-container">
         <div className="dtable-file-addition-left">
           <div className="dtable-file-addition-nav">
-            <div className={this.getTabClass('localFiles')} onClick={this.toggle.bind(this, 'localFiles')}>
+            <div
+              className={this.getTabClass('localFiles')}
+              onClick={this.toggle.bind(this, 'localFiles')}>
               {intl.get('Local_Files')}
             </div>
             {isSupportLibrary && (
-              <div className={this.getTabClass('libraryFiles')} onClick={this.toggle.bind(this, 'libraryFiles')}>
+              <div
+                className={this.getTabClass('libraryFiles')}
+                onClick={this.toggle.bind(this, 'libraryFiles')}>
                 {intl.get('Library_Files')}
               </div>
             )}
             {isSupportRecent && (
-              <div className={this.getTabClass('recentUpload')} onClick={this.toggle.bind(this, 'recentUpload')}>
+              <div
+                className={this.getTabClass('recentUpload')}
+                onClick={this.toggle.bind(this, 'recentUpload')}>
                 {intl.get('Recent_uploaded')}
               </div>
             )}
           </div>
         </div>
-        <div className={`dtable-file-addition-right ${activeTab === 'recentUpload' ? 'dtable-file-addition-right-recent' : ''}`}>
+        <div
+          className={`dtable-file-addition-right ${
+            activeTab === 'recentUpload' ? 'dtable-file-addition-right-recent' : ''
+          }`}>
           <div className="dtable-file-addition-right-container">
-            {this.state.activeTab === 'localFiles' &&
+            {this.state.activeTab === 'localFiles' && (
               <LocalFileAdditionPreviewer
                 uploadLocalFileValue={this.props.uploadLocalFileValue}
                 deleteFile={this.props.deleteFile}
                 fileUploadCompleted={this.props.fileUploadCompleted}
               />
-            }
-            {this.state.activeTab === 'libraryFiles' &&
+            )}
+            {this.state.activeTab === 'libraryFiles' && (
               <LibraryFileAdditionPreviewer
                 onFileChooserToggle={this.props.onFileChooserToggle}
                 uploadLibraryFileValue={this.props.uploadLibraryFileValue}
                 deleteFile={this.props.deleteFile}
               />
-            }
-            {activeTab === 'recentUpload' &&
+            )}
+            {activeTab === 'recentUpload' && (
               <>
                 <div className="file-recent-upload">
                   <RecentUploadAdditionPreviewer
@@ -107,11 +115,15 @@ class FileAdditionPreviewer extends React.Component {
                   />
                 </div>
                 <ModalFooter className="w-100">
-                  <Button color="secondary" onClick={this.props.showFileListPreviewer}>{intl.get('Cancel')}</Button>
-                  <Button color="primary" onClick={this.addFiles}>{intl.get('Submit')}</Button>
+                  <Button color="secondary" onClick={this.props.showFileListPreviewer}>
+                    {intl.get('Cancel')}
+                  </Button>
+                  <Button color="primary" onClick={this.addFiles}>
+                    {intl.get('Submit')}
+                  </Button>
                 </ModalFooter>
               </>
-            }
+            )}
           </div>
         </div>
       </div>
