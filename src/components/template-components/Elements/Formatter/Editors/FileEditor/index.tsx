@@ -15,7 +15,6 @@ const FileEditor: React.FC<FileModalProps> = ({ isOpen, toggle, files }) => {
       <ModalHeader toggle={toggle}>
         <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
           <span>All files</span>
-          <Button color="link">Select</Button>
         </div>
       </ModalHeader>
       <ModalBody>
@@ -36,9 +35,7 @@ const FileEditor: React.FC<FileModalProps> = ({ isOpen, toggle, files }) => {
             </ListGroupItem>
           ))}
         </ListGroup>
-        <div className="text-center mt-3">
-          <Button color="link">+ Add files</Button>
-        </div>
+        <div className="text-center mt-3"></div>
       </ModalBody>
     </Modal>
   );
