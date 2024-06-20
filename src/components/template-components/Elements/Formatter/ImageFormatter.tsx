@@ -1,10 +1,15 @@
 import { IImageProps } from '@/utils/template-utils/interfaces/Formatter/Image.interface';
+import styles from '../../../../styles/template-styles/formatter/ImageFormatter.module.scss';
 import React from 'react';
+import { getImageThumbnailUrl } from '../../../../utils/template-utils/utils';
 
-const ImageFormatter: React.FC<IImageProps> = ({ value, containerClassName }) => {
+const ImageFormatter: React.FC<IImageProps> = ({ value }) => {
+  const image = value[0];
+  const url = getImageThumbnailUrl(image, 256);
+
   return (
-    <div className={`${containerClassName}`}>
-      <img style={{ width: '20px', height: '20px' }} src={value[0]} alt="" />
+    <div className={styles.imageItem}>
+      <img style={{ width: '20px', height: '20px' }} src={url} alt="" />
     </div>
   );
 };

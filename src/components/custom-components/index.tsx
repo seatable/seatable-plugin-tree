@@ -79,7 +79,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
         allTables,
         levelSelections?.third?.selected.value
       );
-      
+
       setFinalResult(r.finalResult);
       if (isArraysEqual(expandedRowsInfo, r.cleanExpandedRowsObj)) {
         setExpandedRowsInfo(
