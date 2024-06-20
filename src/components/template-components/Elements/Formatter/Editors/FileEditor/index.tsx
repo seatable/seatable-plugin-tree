@@ -1,6 +1,7 @@
 import { IFile } from '@/utils/template-utils/interfaces/Formatter/File.interface';
-import React, { useState } from 'react';
+import React from 'react';
 import { Modal, ModalHeader, ModalBody, Button, ListGroup, ListGroupItem } from 'reactstrap';
+import { getFileThumbnailUrl } from './utils';
 
 interface FileModalProps {
   isOpen: boolean;
@@ -21,25 +22,11 @@ const FileEditor: React.FC<FileModalProps> = ({ isOpen, toggle, files }) => {
         <ListGroup>
           {files.map((file, index) => (
             <ListGroupItem key={index} className="d-flex align-items-center">
-              {file.type.startsWith('image/') ? (
-                <img
-                  src={file.url}
-                  alt={file.name}
-                  style={{ width: '50px', marginRight: '10px' }}
-                />
-              ) : file.type === 'application/pdf' ? (
-                <iframe
-                  src={file.url}
-                  title={file.name}
-                  style={{ width: '50px', height: '50px', marginRight: '10px' }}
-                />
-              ) : (
-                <iframe
-                  src={file.url}
-                  title={file.name}
-                  style={{ width: '50px', height: '50px', marginRight: '10px' }}
-                />
-              )}{' '}
+              <img
+                src={getFileThumbnailUrl(file)}
+                alt={file.name}
+                style={{ width: '50px', marginRight: '10px' }}
+              />
               <div>
                 <div>{file.name}</div>
                 <small>
