@@ -1,7 +1,8 @@
 import { IFile } from '@/utils/template-utils/interfaces/Formatter/File.interface';
-import { getFileThumbnailUrl } from '../../../../../../utils/template-utils/utils';
+import { getFileThumbnailUrl } from './utils';
+
 import React from 'react';
-import { Modal, ModalHeader, ModalBody, Button, ListGroup, ListGroupItem } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ListGroup, ListGroupItem } from 'reactstrap';
 
 interface FileModalProps {
   isOpen: boolean;
@@ -10,6 +11,7 @@ interface FileModalProps {
 }
 
 const FileEditor: React.FC<FileModalProps> = ({ isOpen, toggle, files }) => {
+  console.log({ files });
   return (
     <Modal isOpen={isOpen} toggle={toggle} size="lg">
       <ModalHeader toggle={toggle}>
