@@ -10,7 +10,7 @@ import {
   isInternalURL,
   needUseThumbnailImage,
 } from '../../../../../../utils/template-utils/utils';
-import { PREVIEWER } from '../../../Formatter/FileEditor/constants/constants';
+import { PREVIEWER } from '../FileEditor/constants';
 import '@seafile/react-image-lightbox/style.css';
 import './image-previewer-lightbox.css';
 

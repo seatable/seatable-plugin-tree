@@ -1,7 +1,7 @@
 import { IFile } from '@/utils/template-utils/interfaces/Formatter/File.interface';
+import { getFileThumbnailUrl } from '../../../../../../utils/template-utils/utils';
 import React from 'react';
 import { Modal, ModalHeader, ModalBody, Button, ListGroup, ListGroupItem } from 'reactstrap';
-import { getFileThumbnailUrl } from './utils';
 
 interface FileModalProps {
   isOpen: boolean;
