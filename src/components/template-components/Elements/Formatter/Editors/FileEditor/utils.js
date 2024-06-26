@@ -2,60 +2,60 @@ import pluginContext from '../../../../../../plugin-context';
 
 const FILEEXT_ICON_MAP = {
   // text file
-  'md': 'txt.png',
-  'txt': 'txt.png',
+  md: 'txt.png',
+  txt: 'txt.png',
 
   // pdf file
-  'pdf': 'pdf.png',
+  pdf: 'pdf.png',
 
   // document file
-  'doc': 'word.png',
-  'docx': 'word.png',
-  'odt': 'word.png',
-  'fodt': 'word.png',
+  doc: 'word.png',
+  docx: 'word.png',
+  odt: 'word.png',
+  fodt: 'word.png',
 
-  'ppt': 'ppt.png',
-  'pptx': 'ppt.png',
-  'odp': 'ppt.png',
-  'fodp': 'ppt.png',
+  ppt: 'ppt.png',
+  pptx: 'ppt.png',
+  odp: 'ppt.png',
+  fodp: 'ppt.png',
 
-  'xls': 'excel.png',
-  'xlsx': 'excel.png',
-  'ods': 'excel.png',
-  'fods': 'excel.png',
+  xls: 'excel.png',
+  xlsx: 'excel.png',
+  ods: 'excel.png',
+  fods: 'excel.png',
 
   // video
-  'mp4': 'video.png',
-  'ogv': 'video.png',
-  'webm': 'video.png',
-  'mov': 'video.png',
-  'flv': 'video.png',
-  'wmv': 'video.png',
-  'rmvb': 'video.png',
+  mp4: 'video.png',
+  ogv: 'video.png',
+  webm: 'video.png',
+  mov: 'video.png',
+  flv: 'video.png',
+  wmv: 'video.png',
+  rmvb: 'video.png',
 
   // music file
-  'mp3': 'music.png',
-  'oga': 'music.png',
-  'ogg': 'music.png',
-  'flac': 'music.png',
-  'aac': 'music.png',
-  'ac3': 'music.png',
-  'wma': 'music.png',
+  mp3: 'music.png',
+  oga: 'music.png',
+  ogg: 'music.png',
+  flac: 'music.png',
+  aac: 'music.png',
+  ac3: 'music.png',
+  wma: 'music.png',
 
   // image file
-  'jpg': 'pic.png',
-  'jpeg': 'pic.png',
-  'png': 'pic.png',
-  'svg': 'pic.png',
-  'gif': 'pic.png',
-  'bmp': 'pic.png',
-  'ico': 'pic.png',
+  jpg: 'pic.png',
+  jpeg: 'pic.png',
+  png: 'pic.png',
+  svg: 'pic.png',
+  gif: 'pic.png',
+  bmp: 'pic.png',
+  ico: 'pic.png',
 
   // folder dir
-  'folder': 'folder-192.png',
+  folder: 'folder-192.png',
 
   // default
-  'default': 'file.png'
+  default: 'file.png',
 };
 
 export const getServer = () => {
@@ -74,7 +74,7 @@ export const getDtableUuid = () => {
   return pluginContext && pluginContext.getSetting('dtableUuid');
 };
 
-const imageCheck = filename => {
+const imageCheck = (filename) => {
   // no file ext
   if (!filename || typeof filename !== 'string') return false;
   if (filename.lastIndexOf('.') === -1) {
@@ -125,7 +125,13 @@ const isDigitalSignsUrl = (url) => {
   return isTargetUrl('/digital-signs/', url) && !url.includes('http');
 };
 
-const generateCurrentBaseImageThumbnailUrl = ({ server, workspaceID, dtableUuid, partUrl, size }) => {
+const generateCurrentBaseImageThumbnailUrl = ({
+  server,
+  workspaceID,
+  dtableUuid,
+  partUrl,
+  size,
+}) => {
   if (!partUrl || typeof partUrl !== 'string') return '';
   return `${server}/thumbnail/workspace/${workspaceID}/asset/${dtableUuid}${partUrl}?size=${size}`;
 };
@@ -149,11 +155,17 @@ const getImageThumbnailUrl = (url, size = 256) => {
   const dtableUuid = getDtableUuid();
   if (isCustomAssetUrl(url)) {
     let assetUuid = url.slice(url.lastIndexOf('/') + 1, url.lastIndexOf('.'));
-    return server + '/dtable/' + dtableUuid + '/custom-asset-thumbnail/' + assetUuid + '?size=' + size;
+    return (
+      server + '/dtable/' + dtableUuid + '/custom-asset-thumbnail/' + assetUuid + '?size=' + size
+    );
   }
   if (isDigitalSignsUrl(url)) {
     return generateCurrentBaseImageThumbnailUrl({
-      server, workspaceID, dtableUuid, size, partUrl: url,
+      server,
+      workspaceID,
+      dtableUuid,
+      size,
+      partUrl: url,
     });
   }
   if (checkSVGImage(url) || !isInternalUrl(url)) {

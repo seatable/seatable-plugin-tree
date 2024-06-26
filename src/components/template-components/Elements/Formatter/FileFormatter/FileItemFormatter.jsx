@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styles from '../../../../../styles/template-styles/formatter/FileFormatter.module.scss';
-import { getFileIconUrl } from './utils';
+import { getFileIconUrl } from '../../../../../utils/template-utils/utils';
 
 export default class FileItemFormatter extends Component {
   static propTypes = {
@@ -10,7 +11,6 @@ export default class FileItemFormatter extends Component {
 
   getFileIconData = (item) => {
     const fileIconUrl = getFileIconUrl(item.name, item.type);
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const fileIconData = require('./' + fileIconUrl);
     return fileIconData;
   };

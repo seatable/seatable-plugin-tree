@@ -9,27 +9,27 @@ import {
   TableRow,
   TableView,
 } from './interfaces/Table.interface';
-import { DEFAULT_PLUGIN_DATA, PLUGIN_NAME, POSSIBLE, PresetHandleAction } from './constants';
-import transferTypes from '../../components/template-components/Elements/Formatter/FileEditor/constants/TransferTypes';
-import { FILEEXT_ICON_MAP } from '../../components/template-components/Elements/Formatter/FileEditor/constants/constants';
-import TransferTypes from '../../components/template-components/Elements/Formatter/FileEditor/constants/TransferTypes';
 import {
-  html2TableFragment,
-  text2TableFragment,
-} from '../../components/template-components/Elements/Formatter/FileEditor/functions/get-event-transfer';
+  DEFAULT_PLUGIN_DATA,
+  FILEEXT_ICON_MAP,
+  PLUGIN_NAME,
+  POSSIBLE,
+  PresetHandleAction,
+} from './constants';
 
-const { HTML, FRAGMENT, TEXT } = transferTypes;
-export const getFileIconUrl = (filename: string, direntType: string): string => {
-  if (direntType === 'dir') {
+export const getFileIconUrl = (filename: any, direntType: any) => {
+  if (typeof direntType === 'string' && direntType === 'dir') {
     return 'assets/folder/' + FILEEXT_ICON_MAP['folder'];
   }
 
-  const identifierIndex = filename.lastIndexOf('.');
+  const identifierIndex = typeof filename === 'string' ? filename.lastIndexOf('.') : -1;
   if (identifierIndex === -1) {
     return 'assets/file/192/' + FILEEXT_ICON_MAP['default'];
   }
 
-  const file_ext = filename.slice(identifierIndex + 1).toLowerCase() || 'default';
+  const file_ext =
+    (typeof filename === 'string' && filename.slice(identifierIndex + 1).toLowerCase()) ||
+    'default';
   const iconUrl = FILEEXT_ICON_MAP[file_ext]
     ? 'assets/file/192/' + FILEEXT_ICON_MAP[file_ext]
     : 'assets/file/192/' + FILEEXT_ICON_MAP['default'];
@@ -83,9 +83,6 @@ export const downloadFiles = (downloadUrlList: any) => {
   });
 };
 
-export const getMediaUrl = () => {
-  return pluginContext && pluginContext.getSetting('mediaUrl');
-};
 export const bytesToSize = (bytes: number | undefined): string => {
   if (typeof bytes === 'undefined') return ' ';
   if (bytes < 0) return '--';
@@ -98,20 +95,49 @@ export const bytesToSize = (bytes: number | undefined): string => {
   return (bytes / Math.pow(1000, i)).toFixed(1) + ' ' + sizes[i];
 };
 
-export const getFileThumbnailUrl = (fileItem: any) => {
-  if (!fileItem.name) {
-    const mediaUrl = getMediaUrl();
-    return `${mediaUrl}img/file/192/${FILEEXT_ICON_MAP['default']}`;
+const isInternalUrl = (url: string) => {
+  if (!url || typeof url !== 'string') return false;
+  const server = getServer();
+  return url.indexOf(server) > -1;
+};
+
+export const getImageThumbnailUrl = (url: string, size = 256) => {
+  if (!url || typeof url !== 'string') return '';
+  const server = getServer();
+  const workspaceID = getWorkspaceID();
+  const dtableUuid = getDtableUuid();
+  if (isCustomAssetUrl(url)) {
+    const assetUuid = url.slice(url.lastIndexOf('/') + 1, url.lastIndexOf('.'));
+    return (
+      server + '/dtable/' + dtableUuid + '/custom-asset-thumbnail/' + assetUuid + '?size=' + size
+    );
   }
-  const isImage = imageCheck(fileItem.name);
-  const seafileFileIndex = fileItem.url.indexOf('seafile-connector');
+  if (isDigitalSignsUrl(url)) {
+    return generateCurrentBaseImageThumbnailUrl({
+      server,
+      workspaceID,
+      dtableUuid,
+      size,
+      partUrl: url,
+    });
+  }
+  if (checkSVGImage(url) || !isInternalUrl(url)) {
+    return url;
+  }
+  return url.replace('/workspace', '/thumbnail/workspace') + '?size=' + size;
+};
+
+export const getFileThumbnailUrl = (file: any) => {
+  const { type: fileType, name: fileName, url: fileUrl } = file;
+  if (!fileName) return FILEEXT_ICON_MAP['default'];
+  const isImage = imageCheck(fileName);
   let fileIconUrl;
-  if (seafileFileIndex > -1) {
-    fileIconUrl = getFileIconUrl(fileItem.name, fileItem.type);
+  if (isSeafileConnectorUrl(fileUrl) || isCustomAssetUrl(fileUrl)) {
+    fileIconUrl = getFileIconUrl(fileName, fileType);
   } else if (isImage) {
-    fileIconUrl = getImageThumbnailUrl(fileItem.url, fileItem.size);
+    fileIconUrl = getImageThumbnailUrl(fileUrl);
   } else {
-    fileIconUrl = getFileIconUrl(fileItem.name, fileItem.type);
+    fileIconUrl = getFileIconUrl(fileName, fileType);
   }
   return fileIconUrl;
 };
@@ -126,89 +152,6 @@ export const imageCheck = (filename: string) => {
   const image_exts = ['gif', 'jpeg', 'jpg', 'png', 'ico', 'bmp', 'tif', 'tiff'];
   return image_exts.includes(file_ext);
 };
-
-export const getImageThumbnailUrl = (url: string, size: number) => {
-  if (checkSVGImage(url) || !isInternalImg(url) || url.indexOf('/digital-signs/') > -1) {
-    return url;
-  }
-  size = size || 256;
-  return url.replace('/workspace', '/thumbnail/workspace') + '?size=' + size;
-};
-
-export function getEventTransfer(event: any) {
-  const transfer = event.dataTransfer || event.clipboardData;
-  const dtableFragment = getType(transfer, FRAGMENT);
-  const html = getType(transfer, HTML);
-  const text = getType(transfer, TEXT);
-  const files = getFiles(transfer);
-
-  // paste dtable
-  if (dtableFragment) {
-    return {
-      [TransferTypes.DTABLE_FRAGMENT]: JSON.parse(dtableFragment),
-      type: TransferTypes.DTABLE_FRAGMENT,
-    };
-  }
-
-  // paste html
-  if (html) {
-    const copiedTableNode = new DOMParser()
-      .parseFromString(html, 'text/html')
-      .querySelector('table');
-    if (copiedTableNode) {
-      return {
-        [TransferTypes.DTABLE_FRAGMENT]: html2TableFragment(copiedTableNode),
-        html,
-        text,
-        type: 'html',
-      };
-    }
-    return { [TransferTypes.DTABLE_FRAGMENT]: text2TableFragment(text), html, text, type: 'html' };
-  }
-
-  // paste local picture or other files here
-  if (files && files.length) {
-    return {
-      [TransferTypes.DTABLE_FRAGMENT]: text2TableFragment(text),
-      files: files,
-      type: 'files',
-    };
-  }
-
-  // paste text
-  if (text) {
-    return { [TransferTypes.DTABLE_FRAGMENT]: text2TableFragment(text), text, type: 'text' };
-  }
-}
-
-function getType(transfer: any, type: any) {
-  if (!transfer.types || !transfer.types.length) {
-    // COMPAT: In IE 11, there is no `types` field but `getData('Text')`
-    // is supported`. (2017/06/23)
-    return type === transferTypes.TEXT ? transfer.getData('Text') || null : null;
-  }
-
-  return transfer.getData(type);
-}
-
-function getFiles(transfer: any) {
-  let files;
-  try {
-    // Get and normalize files if they exist.
-    if (transfer.items && transfer.items.length) {
-      files = Array.from(transfer.items)
-        .map((item: any) => (item.kind === 'file' ? item.getAsFile() : null))
-        .filter((exists) => exists);
-    } else if (transfer.files && transfer.files.length) {
-      files = Array.from(transfer.files);
-    }
-  } catch (err) {
-    if (transfer.files && transfer.files.length) {
-      files = Array.from(transfer.files);
-    }
-  }
-  return files;
-}
 
 export const assetUrlAddParams = (url: string, options: any) => {
   if (typeof url !== 'string') {
@@ -656,4 +599,41 @@ export const findPresetName = (presets: PresetsArray, presetId: string) => {
 
 export const isMobile = () => {
   return window.innerWidth <= 800;
+};
+
+export const getServer = () => {
+  return pluginContext && pluginContext.getSetting('server');
+};
+
+export const getMediaUrl = () => {
+  return pluginContext && pluginContext.getSetting('mediaUrl');
+};
+
+export const getWorkspaceID = () => {
+  return pluginContext && pluginContext.getSetting('workspaceID');
+};
+
+export const getDtableUuid = () => {
+  return pluginContext && pluginContext.getSetting('dtableUuid');
+};
+
+const isSeafileConnectorUrl = (url: string) => {
+  return isTargetUrl('seafile-connector://', url);
+};
+
+const generateCurrentBaseImageThumbnailUrl = ({
+  server,
+  workspaceID,
+  dtableUuid,
+  partUrl,
+  size,
+}: {
+  server: string;
+  workspaceID: string;
+  dtableUuid: string;
+  partUrl: string;
+  size: number;
+}) => {
+  if (!partUrl || typeof partUrl !== 'string') return '';
+  return `${server}/thumbnail/workspace/${workspaceID}/asset/${dtableUuid}${partUrl}?size=${size}`;
 };
