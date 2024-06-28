@@ -72,15 +72,16 @@ const PluginTL: React.FC<IPluginTLProps> = ({
       const firstTableId = levelSelections.first.selected.value;
 
       const r = outputLevelsInfo(
+        levelSelections,
         firstTableId,
         firstRows,
         expandedRowsInfo,
         levelSelections.second.selected.value,
         allTables,
-        levelSelections?.third?.selected.value
+        levelSelections?.third?.selected.value,
       );
 
-      setFinalResult(r.finalResult);
+      setFinalResult(r.cleanFinalResult);
       if (isArraysEqual(expandedRowsInfo, r.cleanExpandedRowsObj)) {
         setExpandedRowsInfo(
           pluginDataStore.presets.find((preset) => preset._id === activePresetId)?.expandedRows ||

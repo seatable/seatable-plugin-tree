@@ -34,6 +34,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   activeComponents,
   activeLevelSelections,
   onLevelSelectionChange,
+  onLevelDisableChange,
   pluginPresets,
 }) => {
   // State variables for table and view options
@@ -49,6 +50,10 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   const [thirdLevelSelectedOption, setThirdLevelSelectedOption] = useState<SelectOption>();
   const [thirdLevelExists, setThirdLevelExists] = useState<boolean>(true);
   const [levelSelections, setLevelSelections] = useState<ILevelSelections>(activeLevelSelections);
+  const [levelsDisabled, setLevelDisabled] = useState<{ second: boolean; third: boolean }>({
+    second: false,
+    third: false,
+  });
 
   useEffect(() => {
     const activeLevelSelections = pluginPresets.find((p) => p._id === appActiveState.activePresetId)
@@ -59,6 +64,10 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       setSecondLevelSelectedOption(activeLevelSelections?.second?.selected);
       setThirdLevelSelectedOption(activeLevelSelections?.third?.selected);
       onLevelSelectionChange(activeLevelSelections);
+      setLevelDisabled({
+        second: activeLevelSelections.second.isDisabled,
+        third: activeLevelSelections.third ? activeLevelSelections.third.isDisabled : true,
+      });
     }
   }, [appActiveState.activePresetId]);
 
@@ -192,6 +201,14 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     });
   };
 
+  const handleLevelDisabled = (level: 'second' | 'third') => {
+    onLevelDisableChange(level, !levelsDisabled[level]);
+    setLevelDisabled((prevState) => ({
+      ...prevState,
+      [level]: !prevState[level],
+    }));
+  };
+
   return (
     <div
       className={`bg-white ${
@@ -257,6 +274,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
               <DtableSelect
                 value={secondLevelSelectedOption}
                 options={secondLevelOptions}
+                isDisabled={levelsDisabled.second}
                 onChange={(selectedOption: SelectOption) => {
                   handleLevelSelection(selectedOption, 'second');
                 }}
@@ -267,13 +285,49 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                 {intl.get('customSettings.3rdLevel').d(`${d.view}/`)}
               </p>
               <DtableSelect
-                isDisabled={!thirdLevelExists}
                 value={thirdLevelSelectedOption}
                 options={thirdLevelOptions}
+                isDisabled={!thirdLevelExists || levelsDisabled.second || levelsDisabled.third}
                 onChange={(selectedOption: SelectOption) => {
                   handleLevelSelection(selectedOption, 'third');
                 }}
               />
+            </div>
+          </div>
+          <div className={'mt-2'}>
+            <div className="mb-2 d-flex align-items-center justify-content-between">
+              <p>
+                {intl
+                  .get('customSettings.ScnLevelDisabled')
+                  .d(`${d.customSettings.ScnLevelDisabled}`)}
+              </p>
+              <button
+                onClick={() => {
+                  handleLevelDisabled('second');
+                }}
+                className={`${
+                  levelsDisabled.second
+                    ? stylesPSettings.settings_toggle_btns_active
+                    : stylesPSettings.settings_toggle_btns
+                } `}></button>
+            </div>
+          </div>
+          <div className={'mt-2'}>
+            <div className="mb-2 d-flex align-items-center justify-content-between">
+              <p>
+                {intl
+                  .get('customSettings.TrdLevelDisabled')
+                  .d(`${d.customSettings.TrdLevelDisabled}`)}
+              </p>
+              <button
+                onClick={() => {
+                  handleLevelDisabled('third');
+                }}
+                className={`${
+                  !thirdLevelExists || levelsDisabled.second || levelsDisabled.third
+                    ? stylesPSettings.settings_toggle_btns_active
+                    : stylesPSettings.settings_toggle_btns
+                } `}></button>
             </div>
           </div>
         </div>

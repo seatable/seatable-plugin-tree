@@ -19,6 +19,7 @@ export interface ILevelSelections {
 
 export interface LevelSelection {
   selected: SelectOption;
+  isDisabled: boolean;
 }
 
 export interface levelRowInfo {

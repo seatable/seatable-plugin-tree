@@ -11,9 +11,9 @@ const defaultSelectOption = {
   label: '',
 };
 const LEVEL_SEL_DEFAULT: ILevelSelections = {
-  first: { selected: defaultSelectOption },
-  second: { selected: defaultSelectOption },
-  third: { selected: defaultSelectOption },
+  first: { selected: defaultSelectOption, isDisabled: false },
+  second: { selected: defaultSelectOption, isDisabled: false },
+  third: { selected: defaultSelectOption, isDisabled: false },
 };
 
 const INDEX_COLUMN_TYPE = 'index';
@@ -29,5 +29,16 @@ const LEVEL_DATA_DEFAULT = {
   value: '',
   label: '',
 };
+const LEVEL_DATA_DISABLED = {
+  value: 'disabledLvl',
+  label: 'Disable Level',
+};
 
-export { LINK_TYPE, LEVEL_SEL_DEFAULT, INDEX_COLUMN_TYPE, INDEX_COLUMN, LEVEL_DATA_DEFAULT };
+export {
+  LINK_TYPE,
+  LEVEL_SEL_DEFAULT,
+  INDEX_COLUMN_TYPE,
+  INDEX_COLUMN,
+  LEVEL_DATA_DEFAULT,
+  LEVEL_DATA_DISABLED,
+};

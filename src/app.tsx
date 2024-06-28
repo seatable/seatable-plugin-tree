@@ -468,6 +468,7 @@ const App: React.FC<IAppProps> = (props) => {
 
   // HANDLERS FOR CUSTOM COMPONENTS
   const handleLevelSelection = (levelSelections: ILevelSelections) => {
+    console.log({ levelSelections });
     window.dtableSDK.updatePluginSettings(PLUGIN_NAME, {
       ...pluginDataStore,
       presets: pluginDataStore.presets.map((preset) => {
@@ -481,6 +482,28 @@ const App: React.FC<IAppProps> = (props) => {
       }),
     });
     setActiveLevelSelections(levelSelections);
+  };
+
+  const handleLevelDisabled = (level: 'second' | 'third', isDisabled: boolean) => {
+    window.dtableSDK.updatePluginSettings(PLUGIN_NAME, {
+      ...pluginDataStore,
+      presets: pluginDataStore.presets.map((preset) => {
+        if (preset._id === activePresetId) {
+          // Ensure customSettings and the specific level settings are defined
+          return {
+            ...preset,
+            customSettings: {
+              ...preset.customSettings,
+              [level]: {
+                ...(preset.customSettings ? preset.customSettings[level] : {}),
+                isDisabled,
+              },
+            },
+          };
+        }
+        return preset;
+      }),
+    });
   };
 
   return isLoading ? (
@@ -545,6 +568,7 @@ const App: React.FC<IAppProps> = (props) => {
             onTableOrViewChange={onTableOrViewChange}
             onToggleSettings={toggleSettings}
             onLevelSelectionChange={handleLevelSelection}
+            onLevelDisableChange={handleLevelDisabled}
             activeLevelSelections={activeLevelSelections}
           />
         </div>
