@@ -467,7 +467,7 @@ const App: React.FC<IAppProps> = (props) => {
   }
 
   // HANDLERS FOR CUSTOM COMPONENTS
-  const handleLevelSelection = (levelSelections: ILevelSelections) => {
+  const handleLevelSelectionApp = (levelSelections: ILevelSelections) => {
     console.log({ levelSelections });
     window.dtableSDK.updatePluginSettings(PLUGIN_NAME, {
       ...pluginDataStore,
@@ -567,7 +567,7 @@ const App: React.FC<IAppProps> = (props) => {
             pluginPresets={pluginPresets}
             onTableOrViewChange={onTableOrViewChange}
             onToggleSettings={toggleSettings}
-            onLevelSelectionChange={handleLevelSelection}
+            onLevelSelectionChange={handleLevelSelectionApp}
             onLevelDisableChange={handleLevelDisabled}
             activeLevelSelections={activeLevelSelections}
           />

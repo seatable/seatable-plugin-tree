@@ -197,7 +197,10 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
 
     onLevelSelectionChange({
       ...levelSelections,
-      [level]: { selected: selectedOption },
+      [level]: {
+        selected: selectedOption,
+        isDisabled: level === ('second' || 'third') ? levelsDisabled[level] : false,
+      },
     });
   };
 
