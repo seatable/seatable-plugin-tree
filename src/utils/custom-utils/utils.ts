@@ -122,27 +122,28 @@ export const outputLevelsInfo = (
   const linkedColumns = getLinkColumns(table?.columns || []);
 
   let secondLevelKey = linkedColumns.find((c) => c.data.other_table_id === secondLevelId)?.key;
-  if (secondLevelKey === undefined) {
+  if (!secondLevelKey) {
     secondLevelKey = linkedColumns.find((c) => c.data.table_id === secondLevelId)?.key;
   }
+
   const finalResult: levelsStructureInfo = [];
 
   rows.forEach((r: TableRow) => {
     const _ids = linkedRows[r._id][secondLevelKey as string];
     let secondLevelRows = [];
     for (const i in _ids) {
-      const linked_row = allRowsInAllTables.find((r: TableRow) => r._id === _ids[i]);
+      const linked_row = allRowsInAllTables.find((row: TableRow) => row._id === _ids[i]);
       if (linked_row) {
         secondLevelRows.push(linked_row);
       }
     }
 
-    if (thirdLevelId) {
+    if (thirdLevelId || secondLevelId) {
       secondLevelRows = outputLevelsInfo(
         secondLevelId,
         secondLevelRows,
         expandedRowsInfo,
-        thirdLevelId,
+        thirdLevelId || '',
         allTables,
         undefined,
         'thirdLevelRows'
