@@ -60,7 +60,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     const firstLevelTable = allTables.find((t) => t._id === levelSelections.first.selected.value);
     if (
       firstLevelTable !== undefined &&
-      resetDataValue.t === 'TChanged' &&
+      resetDataValue.t === 'DTChanged' &&
       levelSelections !== undefined
     ) {
       setColumns(firstLevelTable.columns);
@@ -78,7 +78,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
         expandedRowsInfo,
         levelSelections.second.selected.value,
         allTables,
-        levelSelections?.third?.selected.value,
+        levelSelections?.third?.selected.value
       );
 
       setFinalResult(r.cleanFinalResult);
