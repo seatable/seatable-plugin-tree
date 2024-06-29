@@ -42,6 +42,7 @@ export interface HeaderRowProps {
   columns: TableColumn[] | undefined;
   level: number;
   tableName?: string;
+  levelSelections: ILevelSelections;
 }
 
 export interface ExpandableItemProps {

@@ -468,7 +468,6 @@ const App: React.FC<IAppProps> = (props) => {
 
   // HANDLERS FOR CUSTOM COMPONENTS
   const handleLevelSelectionApp = (levelSelections: ILevelSelections) => {
-    console.log({ levelSelections });
     window.dtableSDK.updatePluginSettings(PLUGIN_NAME, {
       ...pluginDataStore,
       presets: pluginDataStore.presets.map((preset) => {

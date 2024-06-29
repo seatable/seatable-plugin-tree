@@ -9,11 +9,13 @@ import {
   getLevelSelectionAndTable,
   getRowsByTableId,
   isArraysEqual,
+  isLevelSelectionDisabled,
   outputLevelsInfo,
   paddingAddBtn,
   updateExpandedState,
 } from '../../utils/custom-utils/utils';
 import {
+  ILevelSelections,
   IPluginTLProps,
   RowExpandedInfo,
   levelRowInfo,
@@ -116,7 +118,12 @@ const PluginTL: React.FC<IPluginTLProps> = ({
 
   return (
     <>
-      <HeaderRow columns={columns} level={1} tableName={tableName} />
+      <HeaderRow
+        columns={columns}
+        level={1}
+        tableName={tableName}
+        levelSelections={levelSelections}
+      />
       {finalResult &&
         finalResult.map((i: levelRowInfo) => (
           <ExpandableItem
@@ -132,7 +139,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
             isDevelopment={isDevelopment}
           />
         ))}
-      {levelTable && (
+      {levelTable && isLevelSelectionDisabled(1, levelSelections) && (
         <button
           className={styles.custom_p}
           style={paddingAddBtn(0)}

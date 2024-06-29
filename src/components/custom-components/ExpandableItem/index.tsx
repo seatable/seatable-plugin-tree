@@ -8,6 +8,7 @@ import {
   addRowItem,
   expandTheItem,
   getLevelSelectionAndTable,
+  isLevelSelectionDisabled,
   paddingAddBtn,
 } from '../../../utils/custom-utils/utils';
 import styles from '../../../styles/custom-styles/CustomPlugin.module.scss';
@@ -29,11 +30,10 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>();
   const { levelTable, levelRows } = getLevelSelectionAndTable(level, allTables, levelSelections);
-  const [rowsEmptyArrayItemLevel, setRowsEmptyArrayItemLevel] = useState<boolean>(false);
   const rows = item[levelRows];
   const isClickable = level !== 3 && rows?.length !== 0 && item[levelRows] !== undefined;
   const currentTable = allTables.find((table) => table.name === item._name);
-
+  console.log(level, item._name);
   let viewObj: TableView | undefined;
   const view = (): TableView | undefined => {
     if (currentTable && currentTable.views && currentTable.views.length > 0) {
@@ -158,6 +158,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
               columns={levelTable?.columns}
               level={level + 1}
               tableName={levelTable?.name}
+              levelSelections={levelSelections}
             />
           )}
           {rows?.map((i: levelRowInfo) => (
@@ -174,7 +175,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
               isDevelopment={isDevelopment}
             />
           ))}
-          {!rowsEmptyArray && (
+          {!rowsEmptyArray && isLevelSelectionDisabled(level + 1, levelSelections) && (
             <button
               className={styles.custom_p}
               style={paddingAddBtn(level)}

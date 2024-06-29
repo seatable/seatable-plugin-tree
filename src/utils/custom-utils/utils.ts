@@ -19,6 +19,17 @@ import {
 import pluginContext from '../../plugin-context';
 import _ from 'lodash';
 
+export function isLevelSelectionDisabled(level: number, levelSelections: ILevelSelections) {
+  switch (level) {
+    case 1:
+      return !levelSelections.first.isDisabled;
+    case 2:
+      return !levelSelections.second.isDisabled;
+    case 3:
+      return !levelSelections.third?.isDisabled;
+  }
+}
+
 export function levelSelectionDefaultFallback(
   pluginPresets: PresetsArray,
   activePresetId: string,
@@ -176,7 +187,7 @@ export const outputLevelsInfo = (
   return { cleanFinalResult, cleanExpandedRowsObj };
 };
 
-export function getLevelSelectionAndTable( 
+export function getLevelSelectionAndTable(
   level: number,
   allTables: TableArray,
   levelSelections: ILevelSelections
