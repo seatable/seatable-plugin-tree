@@ -127,7 +127,10 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       });
     }
     setSecondLevelOptions(secondLevelOptions);
-    setSecondLevelSelectedOption(levelSelections.second.selected || secondLevelOptions[0]);
+    setSecondLevelSelectedOption(
+      (!levelSelections.second.isDisabled ? levelSelections.second.selected : LEVEL_DATA_DEFAULT) ||
+        secondLevelOptions[0]
+    );
   }, [firstLevelSelectedOption, firstLevelOptions]);
 
   useEffect(() => {
@@ -158,9 +161,10 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
 
     const isEmpty = thirdLevelOptions.length === 0;
 
-    const thirdLevelSelectedOptionLastCheck = isEmpty
-      ? LEVEL_DATA_DEFAULT
-      : activeThirdLevelSelectedOption;
+    const thirdLevelSelectedOptionLastCheck =
+      isEmpty || levelSelections.third?.isDisabled
+        ? LEVEL_DATA_DEFAULT
+        : activeThirdLevelSelectedOption;
 
     setThirdLevelExists(!isEmpty);
     setThirdLevelOptions(thirdLevelOptions);
@@ -205,11 +209,24 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   };
 
   const handleLevelDisabled = (level: 'second' | 'third') => {
-    onLevelDisableChange(level, !levelsDisabled[level]);
-    setLevelDisabled((prevState) => ({
-      ...prevState,
-      [level]: !prevState[level],
-    }));
+    switch (level) {
+      case 'second':
+        setSecondLevelSelectedOption(LEVEL_DATA_DEFAULT);
+        onLevelDisableChange(level, !levelsDisabled[level]);
+        setLevelDisabled((prevState) => ({
+          ...prevState,
+          [level]: !prevState[level],
+        }));
+        break;
+      case 'third':
+        setThirdLevelSelectedOption(LEVEL_DATA_DEFAULT);
+        onLevelDisableChange(level, !levelsDisabled[level]);
+        setLevelDisabled((prevState) => ({
+          ...prevState,
+          [level]: !prevState[level],
+        }));
+        break;
+    }
   };
 
   return (

@@ -484,6 +484,7 @@ const App: React.FC<IAppProps> = (props) => {
   };
 
   const handleLevelDisabled = (level: 'second' | 'third', isDisabled: boolean) => {
+    console.log(level, isDisabled);
     window.dtableSDK.updatePluginSettings(PLUGIN_NAME, {
       ...pluginDataStore,
       presets: pluginDataStore.presets.map((preset) => {

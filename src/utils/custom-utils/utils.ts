@@ -184,6 +184,8 @@ export const outputLevelsInfo = (
   if (testDisablingLevels.second || testDisablingLevels.third) {
     cleanFinalResult = isLevelDisabled(finalResult, testDisablingLevels);
   } else cleanFinalResult = finalResult;
+  console.log({ levelSelections });
+  console.log({ cleanFinalResult });
   return { cleanFinalResult, cleanExpandedRowsObj };
 };
 

@@ -33,7 +33,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   const rows = item[levelRows];
   const isClickable = level !== 3 && rows?.length !== 0 && item[levelRows] !== undefined;
   const currentTable = allTables.find((table) => table.name === item._name);
-  console.log(level, item._name);
+
   let viewObj: TableView | undefined;
   const view = (): TableView | undefined => {
     if (currentTable && currentTable.views && currentTable.views.length > 0) {
