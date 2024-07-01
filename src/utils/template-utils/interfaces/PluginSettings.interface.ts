@@ -14,7 +14,6 @@ interface IPluginSettingsProps {
   isShowSettings: boolean;
   activeComponents: IActiveComponents;
   onLevelSelectionChange: (levelSelections: ILevelSelections) => void;
-  onLevelDisableChange: (level: 'second' | 'third', isDisabled: boolean) => void;
   activeLevelSelections: ILevelSelections;
 }
 

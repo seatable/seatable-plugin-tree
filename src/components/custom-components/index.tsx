@@ -15,7 +15,6 @@ import {
   updateExpandedState,
 } from '../../utils/custom-utils/utils';
 import {
-  ILevelSelections,
   IPluginTLProps,
   RowExpandedInfo,
   levelRowInfo,
