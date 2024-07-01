@@ -35,7 +35,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   activeComponents,
   activeLevelSelections,
   onLevelSelectionChange,
-
   pluginPresets,
 }) => {
   // State variables for table and view options
@@ -55,9 +54,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   useEffect(() => {
     const activeLevelSelections = pluginPresets.find((p) => p._id === appActiveState.activePresetId)
       ?.customSettings;
-
-    console.log('sec', activeLevelSelections?.second.isDisabled);
-    console.log('thr', activeLevelSelections?.third?.isDisabled);
 
     if (activeLevelSelections) {
       setFirstLevelSelectedOption(activeLevelSelections?.first?.selected);
@@ -123,7 +119,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       });
     }
     setSecondLevelOptions(secondLevelOptions);
-
     setSecondLevelSelectedOption(secondLevelOptions[0]);
   }, [firstLevelSelectedOption, firstLevelOptions]);
 
@@ -169,9 +164,10 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     ) {
       handleLevelSelection(thirdLevelSelectedOptionLastCheck, 'third');
     }
-  }, [secondLevelSelectedOption, secondLevelOptions, firstLevelSelectedOption]);
+  }, [secondLevelSelectedOption, secondLevelOptions, firstLevelOptions, firstLevelSelectedOption]);
 
   const handleLevelSelection = (selectedOption: SelectOption, level: CustomSettingsOption) => {
+    console.log(level, selectedOption);
     const setSelectedOptionFunctions: Record<
       CustomSettingsOption,
       React.Dispatch<React.SetStateAction<SelectOption | undefined>>
@@ -223,7 +219,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
 
         break;
       case 'third':
-        console.log('third');
         newLevelSelections = {
           ...levelSelections,
           third: {

@@ -30,6 +30,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>();
   const { levelTable, levelRows } = getLevelSelectionAndTable(level, allTables, levelSelections);
+
   const rows = item[levelRows];
   const isClickable = level !== 3 && rows?.length !== 0 && item[levelRows] !== undefined;
   const currentTable = allTables.find((table) => table.name === item._name);
@@ -58,7 +59,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   };
 
   // Function to get the rows by ID
-  const getRowsByID = (tableId: string, rowIds: any) => {
+  const getRowsByID = (tableId: string, rowIds: string[]) => {
     const table = _getTableById(tableId);
     return getRowsByIds(table, rowIds);
   };
