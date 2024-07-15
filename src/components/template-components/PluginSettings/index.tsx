@@ -117,6 +117,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
         const label = truncateTableName(item.name);
         return { value, label };
       });
+      handleLevelSelection(secondLevelOptions[0], 'second');
     }
     setSecondLevelOptions(secondLevelOptions);
     setSecondLevelSelectedOption(secondLevelOptions[0]);
@@ -167,7 +168,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   }, [secondLevelSelectedOption, secondLevelOptions, firstLevelOptions, firstLevelSelectedOption]);
 
   const handleLevelSelection = (selectedOption: SelectOption, level: CustomSettingsOption) => {
-    console.log(level, selectedOption);
     const setSelectedOptionFunctions: Record<
       CustomSettingsOption,
       React.Dispatch<React.SetStateAction<SelectOption | undefined>>
