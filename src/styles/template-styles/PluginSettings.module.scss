@@ -20,6 +20,41 @@
     }
   }
 
+  &_toggle_btns,
+  &_toggle_btns_active {
+    width: 22px;
+    height: 12px;
+    border-radius: 10px;
+    background: $borderColor;
+    border: 1px solid $toggle-borderColor;
+    transition:
+      0.3s border-color,
+      0.3s background;
+    cursor: pointer;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      height: 10px;
+      width: 10px;
+      background: #fff;
+      border-radius: 50%;
+      top: 0;
+      left: 1px;
+      transition: 0.3s left;
+      box-shadow: $toggle-after-boxShadow;
+    }
+  }
+
+  &_toggle_btns_active {
+    background: $toggle-active-bgColor;
+
+    &::after {
+      left: 10px;
+    }
+  }
+
   @include mobile {
     width: 60%;
     max-width: none;

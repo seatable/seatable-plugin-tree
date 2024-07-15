@@ -11,7 +11,6 @@ interface FileModalProps {
 }
 
 const FileEditor: React.FC<FileModalProps> = ({ isOpen, toggle, files }) => {
-  console.log({ files });
   return (
     <Modal isOpen={isOpen} toggle={toggle} size="lg">
       <ModalHeader toggle={toggle}>

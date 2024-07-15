@@ -17,6 +17,18 @@ import {
   levelsStructureInfo,
 } from './interfaces/CustomPlugin';
 import pluginContext from '../../plugin-context';
+import _ from 'lodash';
+
+export function isLevelSelectionDisabled(level: number, levelSelections: ILevelSelections) {
+  switch (level) {
+    case 1:
+      return !levelSelections.first.isDisabled;
+    case 2:
+      return !levelSelections.second.isDisabled;
+    case 3:
+      return !levelSelections.third?.isDisabled;
+  }
+}
 
 export function levelSelectionDefaultFallback(
   pluginPresets: PresetsArray,
@@ -54,8 +66,8 @@ export function levelSelectionDefaultFallback(
     }
 
     return {
-      first: { selected: selectedFstLvlObj },
-      second: { selected: selectedScnLvlObj },
+      first: { selected: selectedFstLvlObj, isDisabled: false },
+      second: { selected: selectedScnLvlObj, isDisabled: false },
     } satisfies ILevelSelections;
   }
 
@@ -108,6 +120,7 @@ const getLinkColumns = (columns: TableColumn[]) => {
 
 // // linkCol is the selected column that links to another table e.g PROJECTS or MILESTONES
 export const outputLevelsInfo = (
+  levelSelections: ILevelSelections,
   tableId: string,
   rows: TableRow[],
   expandedRowsInfo: RowExpandedInfo[],
@@ -116,6 +129,10 @@ export const outputLevelsInfo = (
   thirdLevelId?: string,
   keyName?: string
 ) => {
+  const testDisablingLevels = {
+    second: levelSelections.second.isDisabled,
+    third: levelSelections.third ? levelSelections.third.isDisabled : true,
+  };
   const table = allTables.find((t) => t._id === tableId);
   const linkedRows = window.dtableSDK.getTableLinkRows(rows, table);
   const allRowsInAllTables: TableRow[] = allTables.flatMap((t: Table) => t.rows);
@@ -140,6 +157,7 @@ export const outputLevelsInfo = (
 
     if (thirdLevelId || secondLevelId) {
       secondLevelRows = outputLevelsInfo(
+        levelSelections,
         secondLevelId,
         secondLevelRows,
         expandedRowsInfo,
@@ -147,7 +165,7 @@ export const outputLevelsInfo = (
         allTables,
         undefined,
         'thirdLevelRows'
-      ).finalResult;
+      ).cleanFinalResult;
     }
 
     finalResult.push({
@@ -162,7 +180,11 @@ export const outputLevelsInfo = (
   });
 
   const cleanExpandedRowsObj = cleanObjects(finalResult, undefined, 1, undefined);
-  return { finalResult, cleanExpandedRowsObj };
+  let cleanFinalResult;
+  if (testDisablingLevels.second || testDisablingLevels.third) {
+    cleanFinalResult = isLevelDisabled(finalResult, testDisablingLevels);
+  } else cleanFinalResult = finalResult;
+  return { cleanFinalResult, cleanExpandedRowsObj };
 };
 
 export function getLevelSelectionAndTable(
@@ -282,6 +304,28 @@ function cleanObjects(
     return cleanObj;
   });
   return newCleanedExpandedRowsInfo as RowExpandedInfo[];
+}
+
+function isLevelDisabled(
+  finalResult: levelsStructureInfo,
+  testDisablingLevels: { second: boolean; third: boolean }
+) {
+  const newResult = _.cloneDeep(finalResult);
+
+  newResult.forEach((r) => {
+    if (r.secondLevelRows) {
+      r.secondLevelRows.forEach((row) => {
+        if (row.thirdLevelRows && testDisablingLevels.third) {
+          delete row.thirdLevelRows;
+        }
+      });
+      if (testDisablingLevels.second) {
+        delete r.secondLevelRows;
+      }
+    }
+  });
+
+  return newResult;
 }
 
 export const updateExpandedState = (

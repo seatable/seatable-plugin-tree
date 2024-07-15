@@ -21,6 +21,7 @@ import { HiOutlineChevronDoubleRight } from 'react-icons/hi2';
 // Localization
 import intl from 'react-intl-universal';
 import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';
+
 const { [DEFAULT_LOCALE]: d } = AVAILABLE_LOCALES;
 
 // PluginSettings component for managing table and view options
@@ -118,7 +119,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       });
     }
     setSecondLevelOptions(secondLevelOptions);
-    setSecondLevelSelectedOption(levelSelections.second.selected || secondLevelOptions[0]);
+    setSecondLevelSelectedOption(secondLevelOptions[0]);
   }, [firstLevelSelectedOption, firstLevelOptions]);
 
   useEffect(() => {
@@ -163,9 +164,10 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     ) {
       handleLevelSelection(thirdLevelSelectedOptionLastCheck, 'third');
     }
-  }, [secondLevelSelectedOption, secondLevelOptions, firstLevelSelectedOption]);
+  }, [secondLevelSelectedOption, secondLevelOptions, firstLevelOptions, firstLevelSelectedOption]);
 
   const handleLevelSelection = (selectedOption: SelectOption, level: CustomSettingsOption) => {
+    console.log(level, selectedOption);
     const setSelectedOptionFunctions: Record<
       CustomSettingsOption,
       React.Dispatch<React.SetStateAction<SelectOption | undefined>>
@@ -188,8 +190,47 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
 
     onLevelSelectionChange({
       ...levelSelections,
-      [level]: { selected: selectedOption },
+      [level]: {
+        selected: selectedOption,
+        isDisabled: level === ('second' || 'third') ? levelSelections[level].isDisabled : false,
+      },
     });
+  };
+
+  const handleLevelDisabled = (level: 'second' | 'third') => {
+    let newLevelSelections;
+    const thirdSelected = activeLevelSelections.third
+      ? activeLevelSelections.third.selected
+      : LEVEL_DATA_DEFAULT;
+
+    switch (level) {
+      case 'second':
+        newLevelSelections = {
+          ...activeLevelSelections,
+          second: {
+            selected: activeLevelSelections.second.selected,
+            isDisabled: !activeLevelSelections.second.isDisabled,
+          },
+          third: {
+            selected: thirdSelected,
+            isDisabled: !activeLevelSelections.second.isDisabled,
+          },
+        };
+
+        break;
+      case 'third':
+        newLevelSelections = {
+          ...levelSelections,
+          third: {
+            selected: thirdSelected,
+            isDisabled: !activeLevelSelections?.third?.isDisabled,
+          },
+        };
+        break;
+    }
+
+    setLevelSelections(newLevelSelections);
+    onLevelSelectionChange(newLevelSelections);
   };
 
   return (
@@ -257,6 +298,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
               <DtableSelect
                 value={secondLevelSelectedOption}
                 options={secondLevelOptions}
+                isDisabled={levelSelections.second.isDisabled}
                 onChange={(selectedOption: SelectOption) => {
                   handleLevelSelection(selectedOption, 'second');
                 }}
@@ -267,13 +309,54 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                 {intl.get('customSettings.3rdLevel').d(`${d.view}/`)}
               </p>
               <DtableSelect
-                isDisabled={!thirdLevelExists}
                 value={thirdLevelSelectedOption}
                 options={thirdLevelOptions}
+                isDisabled={
+                  !thirdLevelExists ||
+                  levelSelections.second.isDisabled ||
+                  levelSelections.third?.isDisabled
+                }
                 onChange={(selectedOption: SelectOption) => {
                   handleLevelSelection(selectedOption, 'third');
                 }}
               />
+            </div>
+          </div>
+          <div className={'mt-2'}>
+            <div className="mb-2 d-flex align-items-center justify-content-between">
+              <p>
+                {intl
+                  .get('customSettings.ScnLevelDisabled')
+                  .d(`${d.customSettings.ScnLevelDisabled}`)}
+              </p>
+              <button
+                onClick={() => {
+                  handleLevelDisabled('second');
+                }}
+                className={`${
+                  levelSelections.second.isDisabled
+                    ? stylesPSettings.settings_toggle_btns_active
+                    : stylesPSettings.settings_toggle_btns
+                } `}></button>
+            </div>
+          </div>
+          <div className={'mt-2'}>
+            <div className="mb-2 d-flex align-items-center justify-content-between">
+              <p>
+                {intl
+                  .get('customSettings.TrdLevelDisabled')
+                  .d(`${d.customSettings.TrdLevelDisabled}`)}
+              </p>
+              <button
+                disabled={!thirdLevelExists || levelSelections.second.isDisabled}
+                onClick={() => {
+                  handleLevelDisabled('third');
+                }}
+                className={`${
+                  !thirdLevelExists || levelSelections.third?.isDisabled
+                    ? stylesPSettings.settings_toggle_btns_active
+                    : stylesPSettings.settings_toggle_btns
+                } `}></button>
             </div>
           </div>
         </div>

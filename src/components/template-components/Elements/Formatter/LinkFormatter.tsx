@@ -23,9 +23,13 @@ const LinkFormatter: React.FC<ILinkProps> = ({
     linkID = link_id;
     const link = links.find((link: any) => link._id === linkID);
 
+    if (!link || (!link.table1_table2_map && !link.table2_table1_map)) {
+      return [];
+    }
+
     const ids = link.table1_table2_map?.[row._id] || link.table2_table1_map?.[row._id];
 
-    return ids;
+    return ids || [];
   };
 
   const rowIds = getLinkedCellValue(row);

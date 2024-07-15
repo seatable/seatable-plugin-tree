@@ -9,6 +9,7 @@ import {
   getLevelSelectionAndTable,
   getRowsByTableId,
   isArraysEqual,
+  isLevelSelectionDisabled,
   outputLevelsInfo,
   paddingAddBtn,
   updateExpandedState,
@@ -60,7 +61,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     const firstLevelTable = allTables.find((t) => t._id === levelSelections.first.selected.value);
     if (
       firstLevelTable !== undefined &&
-      resetDataValue.t === 'TChanged' &&
+      resetDataValue.t === 'DTChanged' &&
       levelSelections !== undefined
     ) {
       setColumns(firstLevelTable.columns);
@@ -72,6 +73,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
       const firstTableId = levelSelections.first.selected.value;
 
       const r = outputLevelsInfo(
+        levelSelections,
         firstTableId,
         firstRows,
         expandedRowsInfo,
@@ -80,7 +82,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
         levelSelections?.third?.selected.value
       );
 
-      setFinalResult(r.finalResult);
+      setFinalResult(r.cleanFinalResult);
       if (isArraysEqual(expandedRowsInfo, r.cleanExpandedRowsObj)) {
         setExpandedRowsInfo(
           pluginDataStore.presets.find((preset) => preset._id === activePresetId)?.expandedRows ||
@@ -115,7 +117,12 @@ const PluginTL: React.FC<IPluginTLProps> = ({
 
   return (
     <>
-      <HeaderRow columns={columns} level={1} tableName={tableName} />
+      <HeaderRow
+        columns={columns}
+        level={1}
+        tableName={tableName}
+        levelSelections={levelSelections}
+      />
       {finalResult &&
         finalResult.map((i: levelRowInfo) => (
           <ExpandableItem
@@ -131,7 +138,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
             isDevelopment={isDevelopment}
           />
         ))}
-      {levelTable && (
+      {levelTable && isLevelSelectionDisabled(1, levelSelections) && (
         <button
           className={styles.custom_p}
           style={paddingAddBtn(0)}

@@ -19,6 +19,7 @@ export interface ILevelSelections {
 
 export interface LevelSelection {
   selected: SelectOption;
+  isDisabled: boolean;
 }
 
 export interface levelRowInfo {
@@ -41,6 +42,7 @@ export interface HeaderRowProps {
   columns: TableColumn[] | undefined;
   level: number;
   tableName?: string;
+  levelSelections: ILevelSelections;
 }
 
 export interface ExpandableItemProps {
