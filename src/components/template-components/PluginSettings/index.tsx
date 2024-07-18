@@ -184,7 +184,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       (prevState) =>
         ({
           ...prevState,
-          [level]: { selected: selectedOption },
+          [level]: { selected: selectedOption, isDisabled: levelSelections[level]?.isDisabled },
         }) satisfies ILevelSelections
     );
 
@@ -192,7 +192,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       ...levelSelections,
       [level]: {
         selected: selectedOption,
-        isDisabled: level === ('second' || 'third') ? levelSelections[level].isDisabled : false,
+        isDisabled: levelSelections[level]?.isDisabled,
       },
     });
   };

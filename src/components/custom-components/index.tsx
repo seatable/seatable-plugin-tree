@@ -37,7 +37,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     pluginDataStore.presets.find((preset) => preset._id === activePresetId)?.expandedRows || []
   );
   const [expandedHasChanged, setExpandedHasChanged] = useState<boolean>(false);
-  const [rowsEmptyArray, setRowsEmptyArray] = useState<boolean>(false);
+  const [rowsEmptyArray] = useState<boolean>(false);
   const { levelTable } = getLevelSelectionAndTable(0, allTables, levelSelections);
 
   useEffect(() => {
