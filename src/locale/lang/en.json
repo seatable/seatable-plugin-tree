@@ -11,7 +11,7 @@
     "1stLevel": "Select Level 1",
     "2ndLevel": "Select Level 2",
     "3rdLevel": "Select Level 3",
-    "ScnLevelDisabled": "Disable Level 2 and 3",
-    "TrdLevelDisabled": "Disable Level 3"
+    "ScnLevelDisabled": "disable",
+    "TrdLevelDisabled": "disable"
   }
 }
