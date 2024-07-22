@@ -110,6 +110,7 @@
     border-bottom: 1px solid #eaeaea;
     background-color: $modal-bgColor;
     height: 35px;
+    width: max-content;
 
     &_rows {
       display: flex;
@@ -142,6 +143,9 @@
       white-space: nowrap;
       font-size: 16px;
       padding: 5px 10px 5px 10px;
+      display: flex;
+      flex-direction: row;
+      flex: 0 0 auto;
     }
     &_name_col::-webkit-scrollbar {
       display: none;
@@ -163,7 +167,6 @@
   }
 
   &_headerColumn {
-    width: 200px;
     padding: 5px 10px 5px 10px;
     text-align: start;
     background-color: $modal-bgColor;
@@ -171,5 +174,16 @@
     box-sizing: border-box;
     height: 35px;
     align-content: center;
+  }
+
+  &_cell_resize_handle {
+    width: 2.5px;
+    cursor: col-resize;
+    height: 70%;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 2px;
   }
 }

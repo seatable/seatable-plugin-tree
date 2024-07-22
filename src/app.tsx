@@ -522,6 +522,9 @@ const App: React.FC<IAppProps> = (props) => {
               activePresetId={appActiveState.activePresetId}
               resetDataValue={resetDataValue}
               isDevelopment={isDevelopment}
+              pluginPresets={pluginPresets}
+              activePresetIdx={activePresetIdx}
+              updatePresets={updatePresets}
             />
             {activeComponents.add_row_button && (
               <button className={styles.add_row} onClick={addRowItem}>

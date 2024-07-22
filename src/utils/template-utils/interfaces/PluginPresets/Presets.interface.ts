@@ -40,6 +40,12 @@ export interface PresetSettings {
   shown_title_name?: string | undefined;
   selectedTable?: SelectOption;
   selectedView?: SelectOption;
+  resize_details?: ResizeDetail[];
+}
+
+export interface ResizeDetail {
+  id: string;
+  width: number;
 }
 
 export type PresetsArray = IPresetInfo[];

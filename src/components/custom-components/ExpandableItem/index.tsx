@@ -27,6 +27,9 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   expandedHasChanged,
   rowsEmptyArray,
   isDevelopment,
+  columnWidths,
+  setColumnWidths,
+  updateResizeDetails,
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>();
   const { levelTable, levelRows } = getLevelSelectionAndTable(level, allTables, levelSelections);
@@ -100,7 +103,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   const missingCollapseBtn = (isClickable: boolean) => {
     if (!isClickable) {
       return { cursor: 'default', paddingLeft: 24 };
-    }
+    } 
   };
 
   const levelStyleRows = (level: number) => {
@@ -130,11 +133,28 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
             {(isExpanded && <SlArrowDown size={10} />) || <SlArrowRight size={10} />}
           </button>
         )}
-        <p className={styles.custom_expandableItem_name_col}>{item['0000']}</p>
+        <p
+          className={styles.custom_expandableItem_name_col}
+          style={{
+            width: `${
+              columnWidths.find((width: any) => width.id === '0000' + currentTable?.name)?.width ||
+              200
+            }px`,
+          }}>
+          {item['0000']}
+        </p>
         {currentTable?.columns
           .filter((c) => c.name.toLowerCase() !== 'name')
           .map((column) => (
-            <div key={column.key} className={stylesFormatter.formatter_cell}>
+            <div
+              key={column.key}
+              style={{
+                width: `${
+                  columnWidths.find((width: any) => width.id === column.key + column.name)?.width ||
+                  200
+                }px`,
+              }}
+              className={stylesFormatter.formatter_cell}>
               <Formatter
                 column={column}
                 row={item}
@@ -160,6 +180,9 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
               level={level + 1}
               tableName={levelTable?.name}
               levelSelections={levelSelections}
+              columnWidths={columnWidths}
+              setColumnWidths={setColumnWidths}
+              updateResizeDetails={updateResizeDetails}
             />
           )}
           {rows?.map((i: levelRowInfo) => (
@@ -174,6 +197,9 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
               expandedHasChanged={expandedHasChanged}
               rowsEmptyArray={rowsEmptyArray}
               isDevelopment={isDevelopment}
+              columnWidths={columnWidths}
+              setColumnWidths={setColumnWidths}
+              updateResizeDetails={updateResizeDetails}
             />
           ))}
           {!rowsEmptyArray && isLevelSelectionDisabled(level + 1, levelSelections) && (
