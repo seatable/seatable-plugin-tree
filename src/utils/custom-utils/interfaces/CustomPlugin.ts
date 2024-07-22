@@ -1,4 +1,5 @@
 import { IPluginDataStore } from '@/utils/template-utils/interfaces/App.interface';
+import { PresetsArray, ResizeDetail } from '@/utils/template-utils/interfaces/PluginPresets/Presets.interface';
 import { SelectOption } from '@/utils/template-utils/interfaces/PluginSettings.interface';
 import { TableArray, TableColumn } from '@/utils/template-utils/interfaces/Table.interface';
 
@@ -9,6 +10,14 @@ export interface IPluginTLProps {
   activePresetId: string;
   resetDataValue: { t: string; c: number };
   isDevelopment: boolean | undefined;
+  pluginPresets: PresetsArray;
+  activePresetIdx: number;
+  updatePresets: (
+    currentIdx: number,
+    presets: PresetsArray,
+    _pluginDataStore: IPluginDataStore,
+    id: string
+  ) => void;
 }
 
 export interface ILevelSelections {
@@ -43,6 +52,9 @@ export interface HeaderRowProps {
   level: number;
   tableName?: string;
   levelSelections: ILevelSelections;
+  columnWidths: ResizeDetail[];
+  setColumnWidths: React.Dispatch<React.SetStateAction<ResizeDetail[]>>;
+  updateResizeDetails: (resize_details: ResizeDetail[]) => void;
 }
 
 export interface ExpandableItemProps {
@@ -55,6 +67,9 @@ export interface ExpandableItemProps {
   expandedHasChanged: boolean;
   rowsEmptyArray: boolean;
   isDevelopment: boolean | undefined;
+  columnWidths: ResizeDetail[];
+  setColumnWidths: React.Dispatch<React.SetStateAction<ResizeDetail[]>>;
+  updateResizeDetails: (resize_details: ResizeDetail[]) => void;
 }
 
 export type levelsStructureInfo = levelRowInfo[];
@@ -67,4 +82,9 @@ export interface RowExpandedInfo {
   secondLevelRows?: RowExpandedInfo[];
   thirdLevelRows?: RowExpandedInfo[];
   [key: string]: any;
+}
+
+export interface IResizableCell {
+  children: React.ReactNode;
+  handleMouseDown: (event: React.MouseEvent<HTMLDivElement, MouseEvent>, col_id: string, col_name: string) => void;
 }

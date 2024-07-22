@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { useEffect, useState } from 'react';
+import deepCopy from 'deep-copy';
 import ExpandableItem from './ExpandableItem';
 import HeaderRow from './HeaderRow';
 import { TableColumn } from '../../utils/template-utils/interfaces/Table.interface';
@@ -21,6 +22,7 @@ import {
   levelsStructureInfo,
 } from '../../utils/custom-utils/interfaces/CustomPlugin';
 import styles from '../../styles/custom-styles/CustomPlugin.module.scss';
+import { ResizeDetail } from '@/utils/template-utils/interfaces/PluginPresets/Presets.interface';
 
 const PluginTL: React.FC<IPluginTLProps> = ({
   allTables,
@@ -29,10 +31,16 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   activePresetId,
   resetDataValue,
   isDevelopment,
+  activePresetIdx,
+  pluginPresets,
+  updatePresets,
 }) => {
   const [finalResult, setFinalResult] = useState<levelsStructureInfo>([]);
   const [columns, setColumns] = useState<TableColumn[]>([]);
   const [tableName, setTableName] = useState<string>('');
+  const [columnWidths, setColumnWidths] = useState<ResizeDetail[]>(
+    pluginPresets[activePresetIdx].settings?.resize_details || []
+  );
   const [expandedRowsInfo, setExpandedRowsInfo] = useState<RowExpandedInfo[]>(
     pluginDataStore.presets.find((preset) => preset._id === activePresetId)?.expandedRows || []
   );
@@ -115,6 +123,22 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     setExpandedHasChanged(!expandedHasChanged);
   };
 
+  const updateResizeDetails = (resize_details: ResizeDetail[]) => {
+    const newPluginPresets = deepCopy(pluginPresets);
+    const oldPreset = pluginPresets.find((p) => p._id === activePresetId)!;
+    const _idx = pluginPresets.findIndex((p) => p._id === activePresetId);
+    const settings = {
+      ...oldPreset?.settings,
+      resize_details,
+    };
+    const updatedPreset = { ...oldPreset, settings, _id: activePresetId };
+
+    newPluginPresets.splice(_idx, 1, updatedPreset);
+    pluginDataStore.presets = newPluginPresets;
+
+    updatePresets(activePresetIdx, newPluginPresets, pluginDataStore, activePresetId);
+  };
+
   return (
     <>
       <HeaderRow
@@ -122,6 +146,9 @@ const PluginTL: React.FC<IPluginTLProps> = ({
         level={1}
         tableName={tableName}
         levelSelections={levelSelections}
+        columnWidths={columnWidths}
+        setColumnWidths={setColumnWidths}
+        updateResizeDetails={updateResizeDetails}
       />
       {finalResult &&
         finalResult.map((i: levelRowInfo) => (
@@ -136,6 +163,9 @@ const PluginTL: React.FC<IPluginTLProps> = ({
             handleItemClick={handleItemClick}
             expandedRowsInfo={expandedRowsInfo}
             isDevelopment={isDevelopment}
+            columnWidths={columnWidths}
+            setColumnWidths={setColumnWidths}
+            updateResizeDetails={updateResizeDetails}
           />
         ))}
       {levelTable && isLevelSelectionDisabled(1, levelSelections) && (
