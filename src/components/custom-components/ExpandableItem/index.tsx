@@ -103,9 +103,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   const missingCollapseBtn = (isClickable: boolean) => {
     if (!isClickable) {
       return { cursor: 'default', paddingLeft: 24 };
-    } else {
-      return { paddingLeft: 14 };
-    }
+    } 
   };
 
   const levelStyleRows = (level: number) => {

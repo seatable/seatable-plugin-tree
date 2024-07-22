@@ -110,6 +110,7 @@
     border-bottom: 1px solid #eaeaea;
     background-color: $modal-bgColor;
     height: 35px;
+    width: max-content;
 
     &_rows {
       display: flex;
@@ -173,5 +174,16 @@
     box-sizing: border-box;
     height: 35px;
     align-content: center;
+  }
+
+  &_cell_resize_handle {
+    width: 2.5px;
+    cursor: col-resize;
+    height: 70%;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 2px;
   }
 }

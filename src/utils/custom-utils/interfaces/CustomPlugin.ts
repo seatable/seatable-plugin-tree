@@ -86,5 +86,6 @@ export interface RowExpandedInfo {
 
 export interface IResizableCell {
   children: React.ReactNode;
+  onHover: boolean;
   handleMouseDown: (event: React.MouseEvent<HTMLDivElement, MouseEvent>, col_id: string, col_name: string) => void;
 }

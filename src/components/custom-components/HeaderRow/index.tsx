@@ -14,6 +14,8 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
   setColumnWidths,
   updateResizeDetails,
 }) => {
+  const [onHover, setOnHover] = useState<boolean>(false);
+
   const handleMouseDown = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
     col_id: string,
@@ -69,7 +71,7 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
   };
 
   return (
-    <div className={styles.custom_headerRow} style={levelStyleHeader(level)}>
+    <div className={styles.custom_headerRow} style={levelStyleHeader(level)} onMouseEnter={() => setOnHover(true)} onMouseLeave={() => setOnHover(false)}>
       {columns &&
         isLevelSelectionDisabled(level, levelSelections) &&
         columns.map((column, index) => {
@@ -80,6 +82,7 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
           return (
             <ResizableCell
               key={index}
+              onHover={onHover}
               handleMouseDown={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
                 handleMouseDown(e, column.key, column.name)
               }>
