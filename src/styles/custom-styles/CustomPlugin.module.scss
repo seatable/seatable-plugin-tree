@@ -167,6 +167,8 @@
   }
 
   &_headerColumn {
+    white-space: nowrap;
+    overflow: scroll;
     padding: 5px 10px 5px 10px;
     text-align: start;
     background-color: $modal-bgColor;
@@ -174,6 +176,10 @@
     box-sizing: border-box;
     height: 35px;
     align-content: center;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   &_cell_resize_handle {
