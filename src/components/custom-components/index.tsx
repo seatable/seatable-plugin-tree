@@ -46,6 +46,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   );
   const [expandedHasChanged, setExpandedHasChanged] = useState<boolean>(false);
   const [rowsEmptyArray] = useState<boolean>(false);
+  const [minRowWidth, setMinRowWidth] = useState<number>(0);
   const { levelTable } = getLevelSelectionAndTable(0, allTables, levelSelections);
 
   useEffect(() => {
@@ -102,6 +103,18 @@ const PluginTL: React.FC<IPluginTLProps> = ({
       }
     }
   }, [JSON.stringify(allTables), resetDataValue]);
+
+  useEffect(() => {
+    const rows = Array.from(document.querySelectorAll('.expandableItem'));
+    const rowWidths = rows.map((row) => row.clientWidth);
+
+    if (rowWidths.length === finalResult.length) {
+      setMinRowWidth(0);
+      return;
+    }
+
+    setMinRowWidth(Math.max(...rowWidths) || 0);
+  }, [JSON.stringify(expandedRowsInfo), finalResult]);
 
   const handleItemClick = (updatedRow: RowExpandedInfo): void => {
     const updatedRows = updateExpandedState(updatedRow, expandedRowsInfo);
@@ -164,6 +177,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
             expandedRowsInfo={expandedRowsInfo}
             isDevelopment={isDevelopment}
             columnWidths={columnWidths}
+            minRowWidth={minRowWidth}
             setColumnWidths={setColumnWidths}
             updateResizeDetails={updateResizeDetails}
           />
