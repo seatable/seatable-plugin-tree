@@ -109,7 +109,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     const rowWidths = rows.map((row) => row.clientWidth);
 
     if (rowWidths.length === finalResult.length) {
-      setMinRowWidth(0);
+      setMinRowWidth(80);
       return;
     }
 

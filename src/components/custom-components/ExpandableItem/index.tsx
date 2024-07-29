@@ -113,11 +113,15 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
     }
   };
 
+  const minW = minRowWidth - 24 * --level;
   return (
     <div className={styles.custom_expandableItem_rows} style={levelStyleRows(level)}>
       <div
         className={`${styles.custom_expandableItem} expandableItem`}
-        style={{ minWidth: minRowWidth - 24 * --level, ...missingCollapseBtn(isClickable) }}>
+        style={{
+          minWidth: minW === 80 ? `${minW}vw` : `${minW}px`,
+          ...missingCollapseBtn(isClickable),
+        }}>
         {isClickable && (
           <button
             className={styles.custom_expandableItem_collapse_btn}
