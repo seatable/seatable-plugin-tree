@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import styles from '../../../styles/custom-styles/CustomPlugin.module.scss';
 import { HeaderRowProps } from '@/utils/custom-utils/interfaces/CustomPlugin';
 import { isLevelSelectionDisabled } from '../../../utils/custom-utils/utils';
@@ -71,7 +71,11 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
   };
 
   return (
-    <div className={styles.custom_headerRow} style={levelStyleHeader(level)} onMouseEnter={() => setOnHover(true)} onMouseLeave={() => setOnHover(false)}>
+    <div
+      className={styles.custom_headerRow}
+      style={levelStyleHeader(level)}
+      onMouseEnter={() => setOnHover(true)}
+      onMouseLeave={() => setOnHover(false)}>
       {columns &&
         isLevelSelectionDisabled(level, levelSelections) &&
         columns.map((column, index) => {

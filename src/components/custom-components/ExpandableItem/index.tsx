@@ -16,6 +16,7 @@ import stylesFormatter from '../../../styles/template-styles/formatter/Formatter
 import pluginContext from '../../../plugin-context';
 import Formatter from '../../../components/template-components/Elements/Formatter';
 import { SlArrowDown, SlArrowRight } from 'react-icons/sl';
+import { FormulaRowsObj } from '@/utils/template-utils/interfaces/Formatter/File.interface';
 
 const ExpandableItem: React.FC<ExpandableItemProps> = ({
   item,
@@ -75,7 +76,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   };
 
   // Function to get the user common info
-  const getUserCommonInfo = (email: string, avatar_size: any) => {
+  const getUserCommonInfo = (email: string, avatar_size: number) => {
     pluginContext.getUserCommonInfo(email, avatar_size);
   };
 
@@ -85,10 +86,11 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   };
 
   // Get the formula rows of the table
-  let formulaRowsObj: any;
+  let formulaRowsObj: FormulaRowsObj;
   const formulaRows = () => {
     if (levelTable) {
       formulaRowsObj = getTableFormulaRows(levelTable, view as unknown as TableView);
+      console.log({ formulaRowsObj });
       return formulaRowsObj;
     }
   };
@@ -144,8 +146,8 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
           className={styles.custom_expandableItem_name_col}
           style={{
             width: `${
-              columnWidths.find((width: any) => width.id === '0000' + currentTable?.name)?.width ||
-              200
+              columnWidths.find((width: { id: string }) => width.id === '0000' + currentTable?.name)
+                ?.width || 200
             }px`,
           }}>
           {item['0000']}
@@ -157,8 +159,9 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
               key={column.key}
               style={{
                 width: `${
-                  columnWidths.find((width: any) => width.id === column.key + column.name)?.width ||
-                  200
+                  columnWidths.find(
+                    (width: { id: string }) => width.id === column.key + column.name
+                  )?.width || 200
                 }px`,
               }}
               className={stylesFormatter.formatter_cell}>

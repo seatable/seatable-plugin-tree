@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import { AppActiveState, IPluginDataStore } from './interfaces/App.interface';
 import { PresetSettings, PresetsArray } from './interfaces/PluginPresets/Presets.interface';
 import {
+  AssetOptions,
   IActiveTableAndView,
   Table,
   TableArray,
@@ -16,8 +17,10 @@ import {
   POSSIBLE,
   PresetHandleAction,
 } from './constants';
+import { IFile } from './interfaces/Formatter/File.interface';
+import { FileIconMap } from './interfaces/PluginSettings.interface';
 
-export const getFileIconUrl = (filename: any, direntType: any) => {
+export const getFileIconUrl = (filename: string, direntType: string): string => {
   if (typeof direntType === 'string' && direntType === 'dir') {
     return 'assets/folder/' + FILEEXT_ICON_MAP['folder'];
   }
@@ -30,9 +33,12 @@ export const getFileIconUrl = (filename: any, direntType: any) => {
   const file_ext =
     (typeof filename === 'string' && filename.slice(identifierIndex + 1).toLowerCase()) ||
     'default';
-  const iconUrl = FILEEXT_ICON_MAP[file_ext]
-    ? 'assets/file/192/' + FILEEXT_ICON_MAP[file_ext]
-    : 'assets/file/192/' + FILEEXT_ICON_MAP['default'];
+
+  const iconUrl =
+    file_ext in FILEEXT_ICON_MAP
+      ? 'assets/file/192/' + FILEEXT_ICON_MAP[file_ext as keyof FileIconMap]
+      : 'assets/file/192/' + FILEEXT_ICON_MAP['default'];
+
   return iconUrl;
 };
 
@@ -56,7 +62,7 @@ export const downloadFile = (url: string, fileName: string) => {
     .catch((e) => console.error('download error:', e));
 };
 
-export const downloadFiles = (downloadUrlList: any) => {
+export const downloadFiles = (downloadUrlList: string[]): void => {
   const downloadFrame = document.getElementById('downloadFrame');
   if (downloadFrame != null) {
     document.body.removeChild(downloadFrame);
@@ -127,7 +133,7 @@ export const getImageThumbnailUrl = (url: string, size = 256) => {
   return url.replace('/workspace', '/thumbnail/workspace') + '?size=' + size;
 };
 
-export const getFileThumbnailUrl = (file: any) => {
+export const getFileThumbnailUrl = (file: IFile) => {
   const { type: fileType, name: fileName, url: fileUrl } = file;
   if (!fileName) return FILEEXT_ICON_MAP['default'];
   const isImage = imageCheck(fileName);
@@ -153,7 +159,7 @@ export const imageCheck = (filename: string) => {
   return image_exts.includes(file_ext);
 };
 
-export const assetUrlAddParams = (url: string, options: any) => {
+export const assetUrlAddParams = (url: string, options: AssetOptions) => {
   if (typeof url !== 'string') {
     return '';
   }
@@ -220,7 +226,12 @@ export const isValidEmail = (email: string): boolean => {
   return reg.test(email);
 };
 
-export const generateCurrentBaseImageUrl = (op: any) => {
+export const generateCurrentBaseImageUrl = (op: {
+  partUrl: string;
+  server: string;
+  workspaceID: string;
+  dtableUuid: string;
+}) => {
   if (!op.partUrl || typeof op.partUrl !== 'string') return '';
   return `${op.server}/workspace/${op.workspaceID}/asset/${op.dtableUuid}${op.partUrl}`;
 };
@@ -302,7 +313,14 @@ export const isTableEditable = (
 };
 
 export const canCreateRows = (
-  table: { table_permissions?: { add_rows_permission?: any } },
+  table: {
+    table_permissions?: {
+      add_rows_permission?: {
+        permission_type?: string;
+        permitted_users?: string[];
+      };
+    };
+  },
   TABLE_PERMISSION_TYPE: {
     DEFAULT: string;
     ADMINS: string;
@@ -338,11 +356,11 @@ export const checkSVGImage = (url: string): boolean | undefined => {
   return url.substr(-4).toLowerCase() === '.svg';
 };
 
-export const getFileUploadTime = (fileItem: any) => {
+export const getFileUploadTime = (fileItem: { upload_time?: string | number }) => {
   return fileItem.upload_time ? dayjs(fileItem.upload_time).format('YYYY-MM-DD HH:mm') : '';
 };
 
-export const isTargetUrl = (target: any, url: string) => {
+export const isTargetUrl = (target: string, url: string) => {
   if (!url || typeof url !== 'string') return false;
   return target && url ? url.indexOf(target) > -1 : false;
 };

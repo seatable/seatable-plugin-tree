@@ -2,26 +2,23 @@
 import { Table, TableColumn, TableRow } from '@/utils/template-utils/interfaces/Table.interface';
 import React from 'react';
 import { CellType, getNumberDisplayString, getDateDisplayString } from 'dtable-utils';
-import { ILinkProps } from '@/utils/template-utils/interfaces/Formatter/Link.interface';
+import {
+  FormatterLink,
+  ILinkProps,
+} from '@/utils/template-utils/interfaces/Formatter/Link.interface';
 import { levelRowInfo } from '@/utils/custom-utils/interfaces/CustomPlugin';
 import styles from '../../../../styles/template-styles/formatter/LinkFormatter.module.scss';
 
-const LinkFormatter: React.FC<ILinkProps> = ({
-  column,
-  row,
-  currentTableId,
-  linkMetaData,
-  containerClassName,
-}) => {
+const LinkFormatter: React.FC<ILinkProps> = ({ column, row, linkMetaData }) => {
   let linkID: string;
-  const links = window.dtableSDK.getLinks();
 
+  const links: FormatterLink[] = window.dtableSDK.getLinks();
   const getLinkedCellValue = (row: levelRowInfo) => {
     if (!row) return [];
 
     const { link_id } = column.data || {};
     linkID = link_id;
-    const link = links.find((link: any) => link._id === linkID);
+    const link = links.find((link: FormatterLink) => link._id === linkID);
 
     if (!link || (!link.table1_table2_map && !link.table2_table1_map)) {
       return [];

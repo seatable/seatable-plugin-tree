@@ -15,3 +15,14 @@ export interface ILinkProps {
   linkMetaData: IMetaData;
   containerClassName: string;
 }
+
+interface TableMap {
+  [key: string]: string[];
+}
+export interface FormatterLink {
+  _id: string;
+  table1_id: string;
+  table1_table2_map: TableMap;
+  table2_id: string;
+  table2_table1_map: TableMap;
+}

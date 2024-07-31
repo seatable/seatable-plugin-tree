@@ -35,8 +35,9 @@ export function levelSelectionDefaultFallback(
   activePresetId: string,
   allTables: TableArray
 ) {
-  const dataStoreLevelSelections = pluginPresets.find((p) => p._id === activePresetId)
-    ?.customSettings;
+  const dataStoreLevelSelections = pluginPresets.find(
+    (p) => p._id === activePresetId
+  )?.customSettings;
 
   // Check if dataStoreLevelSelections is undefined or its first.selected.value is empty
   if (
@@ -271,7 +272,7 @@ function cleanObjects(
       ? ['0000', '_id', 'expanded', 'secondLevelRows']
       : propertiesToKeep;
   const newCleanedExpandedRowsInfo = a.map((obj) => {
-    const cleanObj: { [key: string]: any } = {};
+    const cleanObj: Partial<RowExpandedInfo> = {};
     propertiesToKeeps.forEach((prop: string) => {
       if (prop in obj) {
         cleanObj[prop as keyof RowExpandedInfo] = obj[prop as keyof levelRowInfo];
@@ -424,12 +425,19 @@ export const addRowItem = (table: Table, isDevelopment?: boolean) => {
   const rows = table?.rows;
   if (rows) {
     const row_id = rows.length > 0 ? rows[rows.length - 1]._id : '';
-    onAddRowItem(view()!, table, row_id);
+    const selectedView = view();
+    if (selectedView) {
+      onAddRowItem(selectedView, table, row_id);
+    } else {
+      console.error('No view available for adding row item.');
+    }
   }
 };
 
-const onInsertRow = (table: Table, view: TableView, rowData: any) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const onInsertRow = (table: Table, view: TableView, rowData: { [key: string]: any }) => {
   const columns = window.dtableSDK.getColumns(table);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const newRowData: { [key: string]: any } = {};
   for (const key in rowData) {
     const column = columns.find((column: TableColumn) => column.name === key);
@@ -439,13 +447,17 @@ const onInsertRow = (table: Table, view: TableView, rowData: any) => {
     switch (column.type) {
       case 'single-select': {
         newRowData[column.name] =
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
           column.data.options.find((item: any) => item.name === rowData[key])?.name || '';
         break;
       }
       case 'multiple-select': {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const multipleSelectNameList: any[] = [];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         rowData[key].forEach((multiItemId: any) => {
           const multiSelectItemName = column.data.options.find(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (multiItem: any) => multiItem.id === multiItemId
           );
           if (multiSelectItemName) {

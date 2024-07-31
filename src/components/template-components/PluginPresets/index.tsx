@@ -36,6 +36,7 @@ import { HiOutlineChevronDoubleLeft } from 'react-icons/hi2';
 import intl from 'react-intl-universal';
 import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';
 import { levelSelectionDefaultFallback } from '../../../utils/custom-utils/utils';
+import { ILevelSelections } from '@/utils/custom-utils/interfaces/CustomPlugin';
 const { [DEFAULT_LOCALE]: d } = AVAILABLE_LOCALES;
 
 const PluginPresets: React.FC<IPresetsProps> = ({
@@ -152,7 +153,11 @@ const PluginPresets: React.FC<IPresetsProps> = ({
   const addPreset = (
     type: string,
     presetName: string,
-    option?: { pId: string; pSettings: PresetSettings; pCustomSettings: any }
+    option?: {
+      pId: string;
+      pSettings: PresetSettings;
+      pCustomSettings: ILevelSelections | undefined;
+    }
   ) => {
     const _presetSettings: PresetSettings =
       type === PresetHandleAction.new

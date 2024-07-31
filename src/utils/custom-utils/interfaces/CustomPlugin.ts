@@ -1,5 +1,8 @@
 import { IPluginDataStore } from '@/utils/template-utils/interfaces/App.interface';
-import { PresetsArray, ResizeDetail } from '@/utils/template-utils/interfaces/PluginPresets/Presets.interface';
+import {
+  PresetsArray,
+  ResizeDetail,
+} from '@/utils/template-utils/interfaces/PluginPresets/Presets.interface';
 import { SelectOption } from '@/utils/template-utils/interfaces/PluginSettings.interface';
 import { TableArray, TableColumn } from '@/utils/template-utils/interfaces/Table.interface';
 
@@ -88,5 +91,10 @@ export interface RowExpandedInfo {
 export interface IResizableCell {
   children: React.ReactNode;
   onHover: boolean;
-  handleMouseDown: (event: React.MouseEvent<HTMLDivElement, MouseEvent>, col_id: string, col_name: string) => void;
+  handleMouseDown: (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    col_id: string,
+    col_name: string
+  ) => void;
 }
+
