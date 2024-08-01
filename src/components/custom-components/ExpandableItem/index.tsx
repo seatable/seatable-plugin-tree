@@ -28,6 +28,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   rowsEmptyArray,
   isDevelopment,
   columnWidths,
+  minRowWidth,
   setColumnWidths,
   updateResizeDetails,
 }) => {
@@ -103,7 +104,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   const missingCollapseBtn = (isClickable: boolean) => {
     if (!isClickable) {
       return { cursor: 'default', paddingLeft: 24 };
-    } 
+    }
   };
 
   const levelStyleRows = (level: number) => {
@@ -112,9 +113,15 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
     }
   };
 
+  const minW = minRowWidth - 24 * --level;
   return (
     <div className={styles.custom_expandableItem_rows} style={levelStyleRows(level)}>
-      <div className={styles.custom_expandableItem} style={missingCollapseBtn(isClickable)}>
+      <div
+        className={`${styles.custom_expandableItem} expandableItem`}
+        style={{
+          minWidth: minW === 80 ? `${minW}vw` : `${minW}px`,
+          ...missingCollapseBtn(isClickable),
+        }}>
         {isClickable && (
           <button
             className={styles.custom_expandableItem_collapse_btn}
@@ -198,6 +205,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
               rowsEmptyArray={rowsEmptyArray}
               isDevelopment={isDevelopment}
               columnWidths={columnWidths}
+              minRowWidth={minRowWidth}
               setColumnWidths={setColumnWidths}
               updateResizeDetails={updateResizeDetails}
             />

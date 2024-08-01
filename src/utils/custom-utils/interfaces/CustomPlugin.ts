@@ -67,6 +67,7 @@ export interface ExpandableItemProps {
   expandedHasChanged: boolean;
   rowsEmptyArray: boolean;
   isDevelopment: boolean | undefined;
+  minRowWidth: number;
   columnWidths: ResizeDetail[];
   setColumnWidths: React.Dispatch<React.SetStateAction<ResizeDetail[]>>;
   updateResizeDetails: (resize_details: ResizeDetail[]) => void;
