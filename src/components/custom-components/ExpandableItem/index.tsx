@@ -140,7 +140,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
           {item['0000']}
         </p>
         {currentTable?.columns
-          .filter((c) => c.name.toLowerCase() !== 'name')
+          .filter((c) => c.name.toLowerCase() !== 'name' && c.key !== '0000')
           .map((column) => (
             <div
               key={column.key}
