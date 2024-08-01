@@ -3,7 +3,10 @@ import info from '../../../plugin-config/info.json';
 // Interfaces
 import { PresetSettings } from '../../template-utils/interfaces/PluginPresets/Presets.interface';
 import { AppActiveState, AppIsShowState } from '../../template-utils/interfaces/App.interface';
-import { FileIconMap, IActivePresetSettings } from '../../template-utils/interfaces/PluginSettings.interface';
+import {
+  FileIconMap,
+  IActivePresetSettings,
+} from '../../template-utils/interfaces/PluginSettings.interface';
 
 // Constants
 const POSSIBLE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz0123456789';

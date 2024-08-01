@@ -83,7 +83,6 @@ export interface IActiveTableAndView {
 export type TableViewArray = TableView[];
 export type TableArray = Table[];
 
-
 interface Page {
   id: string;
 }

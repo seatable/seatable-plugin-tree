@@ -447,7 +447,7 @@ const onInsertRow = (table: Table, view: TableView, rowData: { [key: string]: an
     switch (column.type) {
       case 'single-select': {
         newRowData[column.name] =
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           column.data.options.find((item: any) => item.name === rowData[key])?.name || '';
         break;
       }

@@ -21,5 +21,3 @@ interface RowItem {
   row_id: string;
   display_value: string;
 }
-
-

@@ -15,7 +15,7 @@ const FormulaFormatter: React.FC<Omit<ICollaboratorProps, 'collaborators'>> = ({
     return (
       <div className={`${containerClassName}`}>
         {value.map((v: string) => (
-          <p>{v}</p>
+          <p key={v}>{v}</p>
         ))}
       </div>
     );

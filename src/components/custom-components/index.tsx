@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import deepCopy from 'deep-copy';
 import ExpandableItem from './ExpandableItem';
 import HeaderRow from './HeaderRow';
@@ -47,41 +47,81 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   const [expandedHasChanged, setExpandedHasChanged] = useState<boolean>(false);
   const [rowsEmptyArray] = useState<boolean>(false);
   const [minRowWidth, setMinRowWidth] = useState<number>(0);
+
   const { levelTable } = getLevelSelectionAndTable(0, allTables, levelSelections);
 
+  const firstLevelTable = useMemo(
+    () => allTables.find((t) => t._id === levelSelections.first.selected.value),
+    [allTables, levelSelections.first.selected.value]
+  );
+
+  const handleItemClick = useCallback(
+    (updatedRow: RowExpandedInfo): void => {
+      const updatedRows = updateExpandedState(updatedRow, expandedRowsInfo);
+      setExpandedRowsInfo(updatedRows);
+
+      window.dtableSDK.updatePluginSettings(PLUGIN_NAME, {
+        ...pluginDataStore,
+        presets: pluginDataStore.presets.map((preset) => {
+          if (preset._id === activePresetId) {
+            return {
+              ...preset,
+              expandedRows: updatedRows,
+            };
+          }
+          return preset;
+        }),
+      });
+
+      setExpandedHasChanged((prev) => !prev);
+    },
+    [expandedRowsInfo, pluginDataStore, activePresetId]
+  );
+
+  const updateResizeDetails = useCallback(
+    (resize_details: ResizeDetail[]) => {
+      const newPluginPresets = deepCopy(pluginPresets);
+      const oldPreset = pluginPresets.find((p) => p._id === activePresetId)!;
+      const _idx = pluginPresets.findIndex((p) => p._id === activePresetId);
+      const settings = {
+        ...oldPreset?.settings,
+        resize_details,
+      };
+      const updatedPreset = { ...oldPreset, settings, _id: activePresetId };
+
+      newPluginPresets.splice(_idx, 1, updatedPreset);
+      pluginDataStore.presets = newPluginPresets;
+
+      updatePresets(activePresetIdx, newPluginPresets, pluginDataStore, activePresetId);
+    },
+    [pluginPresets, activePresetId, pluginDataStore, updatePresets, activePresetIdx]
+  );
+
   useEffect(() => {
+    // Set initial expanded rows from plugin data store
     const newRowsExpandedInfo = pluginDataStore.presets.find(
       (preset) => preset._id === activePresetId
     )?.expandedRows;
-    if (newRowsExpandedInfo === undefined) return;
-    setExpandedRowsInfo(newRowsExpandedInfo);
-    setExpandedHasChanged(!expandedHasChanged);
-  }, [activePresetId]);
+    if (newRowsExpandedInfo !== undefined) {
+      setExpandedRowsInfo(newRowsExpandedInfo);
+    }
+  }, [activePresetId, pluginDataStore.presets]);
 
   useEffect(() => {
-    const firstLevelTable = allTables.find((t) => t._id === levelSelections.first.selected.value);
-    if (firstLevelTable !== undefined && firstLevelTable.columns !== undefined) {
+    if (firstLevelTable && firstLevelTable.columns) {
       setColumns(firstLevelTable.columns);
       setTableName(firstLevelTable.name);
     }
-  }, []);
+  }, [firstLevelTable]);
 
-  useEffect(() => {
-    const firstLevelTable = allTables.find((t) => t._id === levelSelections.first.selected.value);
-    if (
-      firstLevelTable !== undefined &&
-      resetDataValue.t === 'DTChanged' &&
-      levelSelections !== undefined
-    ) {
-      setColumns(firstLevelTable.columns);
-      setTableName(firstLevelTable.name);
-    }
+  const firstRows = useMemo(() => {
+    return getRowsByTableId(levelSelections.first.selected.value, allTables);
+  }, [allTables, levelSelections.first.selected.value]);
 
-    const firstRows = getRowsByTableId(levelSelections.first.selected.value, allTables);
-    if (firstRows !== undefined) {
+  const memoizedOutputLevelsInfo = useMemo(() => {
+    if (firstRows && firstLevelTable) {
       const firstTableId = levelSelections.first.selected.value;
-
-      const r = outputLevelsInfo(
+      return outputLevelsInfo(
         levelSelections,
         firstTableId,
         firstRows,
@@ -90,67 +130,47 @@ const PluginTL: React.FC<IPluginTLProps> = ({
         allTables,
         levelSelections?.third?.selected.value
       );
-
-      setFinalResult(r.cleanFinalResult);
-      if (isArraysEqual(expandedRowsInfo, r.cleanExpandedRowsObj)) {
-        setExpandedRowsInfo(
-          pluginDataStore.presets.find((preset) => preset._id === activePresetId)?.expandedRows ||
-            []
-        );
-        return;
-      } else {
-        setExpandedRowsInfo(r.cleanExpandedRowsObj);
-      }
     }
-  }, [JSON.stringify(allTables), resetDataValue]);
+    return null;
+  }, [
+    levelSelections,
+    firstRows,
+    expandedRowsInfo,
+    allTables,
+    levelSelections?.third?.selected.value,
+    firstLevelTable,
+  ]);
 
   useEffect(() => {
+    if (memoizedOutputLevelsInfo) {
+      setFinalResult(memoizedOutputLevelsInfo.cleanFinalResult);
+      setExpandedRowsInfo((prevExpandedRowsInfo) => {
+        const newExpandedRows = isArraysEqual(
+          prevExpandedRowsInfo,
+          memoizedOutputLevelsInfo.cleanExpandedRowsObj
+        )
+          ? prevExpandedRowsInfo
+          : memoizedOutputLevelsInfo.cleanExpandedRowsObj;
+
+        return prevExpandedRowsInfo !== newExpandedRows ? newExpandedRows : prevExpandedRowsInfo;
+      });
+    }
+  }, [memoizedOutputLevelsInfo]);
+
+  const calculateRowWidths = useCallback(() => {
     const rows = Array.from(document.querySelectorAll('.expandableItem'));
-    const rowWidths = rows.map((row) => row.clientWidth);
+    return rows.map((row) => row.clientWidth);
+  }, []);
+
+  useEffect(() => {
+    const rowWidths = calculateRowWidths();
 
     if (rowWidths.length === finalResult.length) {
-      setMinRowWidth(80);
-      return;
+      setMinRowWidth(0);
+    } else {
+      setMinRowWidth(Math.max(...rowWidths) || 0);
     }
-
-    setMinRowWidth(Math.max(...rowWidths) || 0);
-  }, [JSON.stringify(expandedRowsInfo), finalResult]);
-
-  const handleItemClick = (updatedRow: RowExpandedInfo): void => {
-    const updatedRows = updateExpandedState(updatedRow, expandedRowsInfo);
-    setExpandedRowsInfo(updatedRows);
-
-    window.dtableSDK.updatePluginSettings(PLUGIN_NAME, {
-      ...pluginDataStore,
-      presets: pluginDataStore.presets.map((preset) => {
-        if (preset._id === activePresetId) {
-          return {
-            ...preset,
-            expandedRows: updatedRows,
-          };
-        }
-        return preset;
-      }),
-    });
-
-    setExpandedHasChanged(!expandedHasChanged);
-  };
-
-  const updateResizeDetails = (resize_details: ResizeDetail[]) => {
-    const newPluginPresets = deepCopy(pluginPresets);
-    const oldPreset = pluginPresets.find((p) => p._id === activePresetId)!;
-    const _idx = pluginPresets.findIndex((p) => p._id === activePresetId);
-    const settings = {
-      ...oldPreset?.settings,
-      resize_details,
-    };
-    const updatedPreset = { ...oldPreset, settings, _id: activePresetId };
-
-    newPluginPresets.splice(_idx, 1, updatedPreset);
-    pluginDataStore.presets = newPluginPresets;
-
-    updatePresets(activePresetIdx, newPluginPresets, pluginDataStore, activePresetId);
-  };
+  }, [finalResult, calculateRowWidths]);
 
   return (
     <>

@@ -97,4 +97,3 @@ export interface IResizableCell {
     col_name: string
   ) => void;
 }
-
