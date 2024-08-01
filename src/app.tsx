@@ -419,8 +419,10 @@ const App: React.FC<IAppProps> = (props) => {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onInsertRow = (table: Table, view: TableView, rowData: any) => {
     const columns = window.dtableSDK.getColumns(table);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const newRowData: { [key: string]: any } = {};
 
     for (const key in rowData) {
@@ -432,13 +434,17 @@ const App: React.FC<IAppProps> = (props) => {
       switch (column.type) {
         case 'single-select': {
           newRowData[column.name] =
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             column.data.options.find((item: any) => item.name === rowData[key])?.name || '';
           break;
         }
         case 'multiple-select': {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const multipleSelectNameList: any[] = [];
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           rowData[key].forEach((multiItemId: any) => {
             const multiSelectItemName = column.data.options.find(
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               (multiItem: any) => multiItem.id === multiItemId
             );
             if (multiSelectItemName) {

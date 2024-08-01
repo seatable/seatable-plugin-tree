@@ -52,8 +52,9 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   const [levelSelections, setLevelSelections] = useState<ILevelSelections>(activeLevelSelections);
 
   useEffect(() => {
-    const activeLevelSelections = pluginPresets.find((p) => p._id === appActiveState.activePresetId)
-      ?.customSettings;
+    const activeLevelSelections = pluginPresets.find(
+      (p) => p._id === appActiveState.activePresetId
+    )?.customSettings;
 
     if (activeLevelSelections) {
       setFirstLevelSelectedOption(activeLevelSelections?.first?.selected);

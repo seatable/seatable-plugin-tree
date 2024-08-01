@@ -82,3 +82,34 @@ export interface IActiveTableAndView {
 
 export type TableViewArray = TableView[];
 export type TableArray = Table[];
+
+interface Page {
+  id: string;
+}
+
+interface Column {
+  key: string;
+}
+
+interface Row {
+  _id: string;
+}
+
+interface Block {
+  id: string;
+}
+
+export interface AssetOptions {
+  page?: Page;
+  column?: Column;
+  row?: Row;
+  block?: Block;
+  otherColumn?: Column;
+  otherRow?: Row;
+  pageId?: string;
+  columnKey?: string;
+  rowId?: string;
+  blockId?: string;
+  otherColumnKey?: string;
+  otherRowId?: string;
+}

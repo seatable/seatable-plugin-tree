@@ -25,5 +25,48 @@ interface SelectOption {
 interface IActivePresetSettings extends PresetSettings {
   activePresetId: string;
 }
+type FileExtension =
+  | 'md'
+  | 'txt'
+  | 'pdf'
+  | 'doc'
+  | 'docx'
+  | 'odt'
+  | 'fodt'
+  | 'ppt'
+  | 'pptx'
+  | 'odp'
+  | 'fodp'
+  | 'xls'
+  | 'xlsx'
+  | 'ods'
+  | 'fods'
+  | 'mp4'
+  | 'ogv'
+  | 'webm'
+  | 'mov'
+  | 'flv'
+  | 'wmv'
+  | 'rmvb'
+  | 'mp3'
+  | 'oga'
+  | 'ogg'
+  | 'flac'
+  | 'aac'
+  | 'ac3'
+  | 'wma'
+  | 'jpg'
+  | 'jpeg'
+  | 'png'
+  | 'svg'
+  | 'gif'
+  | 'bmp'
+  | 'ico'
+  | 'folder'
+  | 'default';
 
-export type { IPluginSettingsProps, SelectOption, IActivePresetSettings };
+type FileIconMap = {
+  [key in FileExtension]: string;
+};
+
+export type { IPluginSettingsProps, SelectOption, IActivePresetSettings, FileIconMap };

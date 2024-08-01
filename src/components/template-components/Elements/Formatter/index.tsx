@@ -82,7 +82,7 @@ const Formatter: React.FC<IFormatterProps> = ({
     }
 
     getUserCommonInfo(value, null)
-      .then((res: any) => {
+      .then((res: { data: ICollaborator }) => {
         collaborator = res.data;
         setIsDataLoaded(true);
         setCollaborator(collaborator);

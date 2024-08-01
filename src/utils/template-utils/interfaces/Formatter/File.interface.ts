@@ -12,3 +12,12 @@ export interface FileFormatterProps {
   containerClassName?: string;
   renderItem?: (item: React.ReactNode) => React.ReactNode;
 }
+
+export interface FormulaRowsObj {
+  [key: string]: RowItem[] | null;
+}
+
+interface RowItem {
+  row_id: string;
+  display_value: string;
+}
