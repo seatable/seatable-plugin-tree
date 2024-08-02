@@ -111,11 +111,15 @@
     background-color: $modal-bgColor;
     height: 35px;
     width: max-content;
+    :hover {
+      background-color: $light-gray;
+    }
 
     &_rows {
       display: flex;
       flex-direction: column;
       width: 100%;
+      user-select: none;
     }
 
     &_collapse_btn {
@@ -151,6 +155,11 @@
       display: none;
     }
   }
+
+  &_expandableItem:hover {
+    background-color: $light-gray;
+  }
+
   &_p {
     all: unset;
     cursor: pointer;
