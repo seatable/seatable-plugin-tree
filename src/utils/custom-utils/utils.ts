@@ -401,7 +401,14 @@ const getInsertedRowInitData = (view: TableView, table: Table, rowID: string) =>
 };
 
 // functions for add row functionality
-const onAddRowItem = (view: TableView, table: Table, rowID: string) => {
+export const onAddRowItem = (
+  view: TableView,
+  table: Table,
+  rowID: string,
+  isDevelopment?: boolean
+) => {
+  if (isDevelopment) return;
+
   const rowData = getInsertedRowInitData(view, table, rowID);
   onInsertRow(table, view, rowData);
 };

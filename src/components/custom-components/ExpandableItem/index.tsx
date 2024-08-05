@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { ExpandableItemProps, levelRowInfo } from '@/utils/custom-utils/interfaces/CustomPlugin';
 import { getTableById, getRowsByIds, getLinkCellValue } from 'dtable-utils';
 import HeaderRow from '../HeaderRow';
-import { Table, TableView } from '@/utils/template-utils/interfaces/Table.interface';
+import { Table, TableRow, TableView } from '@/utils/template-utils/interfaces/Table.interface';
 import {
   addRowItem,
   expandTheItem,
@@ -104,9 +104,17 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
 
   const minW = minRowWidth - 24 * --level;
 
+  const onRowExpand = () => {
+    if (isDevelopment) return;
+
+    const row = currentTable?.rows.find((r: TableRow) => r._id === item._id);
+    pluginContext.expandRow(row, currentTable);
+  };
+
   return (
     <div className={styles.custom_expandableItem_rows} style={levelStyleRows(level)}>
       <div
+        onClick={onRowExpand}
         className={`${styles.custom_expandableItem} expandableItem`}
         style={{
           minWidth: minW === 80 ? `${minW}vw` : `${minW}px`,

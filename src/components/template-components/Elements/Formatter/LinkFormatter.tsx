@@ -36,6 +36,9 @@ const LinkFormatter: React.FC<ILinkProps> = ({ column, row, linkMetaData }) => {
     const linkedColumn: TableColumn = linkedTable.columns.find(
       (column) => column.key === displayColumnKey
     )!;
+
+    if (!linkedColumn) return;
+
     const { type, data } = linkedColumn;
 
     switch (type) {

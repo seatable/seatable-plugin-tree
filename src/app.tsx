@@ -506,7 +506,9 @@ const App: React.FC<IAppProps> = (props) => {
         updatePresets={updatePresets}
         updateActiveData={updateActiveData}
       />
-      <div className={styles.plugin}>
+      <div
+        className={styles.plugin}
+        style={{ width: isShowPresets ? 'calc(100% - 350px)' : '100%' }}>
         <Header
           presetName={findPresetName(pluginPresets, activePresetId)}
           isShowPresets={isShowPresets}
