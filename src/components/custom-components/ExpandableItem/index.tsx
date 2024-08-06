@@ -4,8 +4,8 @@ import { getTableById, getRowsByIds, getLinkCellValue } from 'dtable-utils';
 import HeaderRow from '../HeaderRow';
 import { Table, TableRow, TableView } from '@/utils/template-utils/interfaces/Table.interface';
 import {
-  addRowItem,
   expandTheItem,
+  generateUniqueRowId,
   getLevelSelectionAndTable,
   isLevelSelectionDisabled,
   paddingAddBtn,
@@ -32,11 +32,15 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   updateResizeDetails,
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [isAdding, setIsAdding] = useState<boolean>(false);
+  const [newItemName, setNewItemName] = useState<string>('');
 
   const { levelTable, levelRows } = getLevelSelectionAndTable(level, allTables, levelSelections);
   const rows = item[levelRows];
   const isClickable = level !== 3 && rows?.length !== 0 && item[levelRows] !== undefined;
   const currentTable = allTables.find((table) => table.name === item._name);
+
+  console.log(isClickable, item);
 
   const viewObj = useMemo(() => {
     if (currentTable && currentTable.views && currentTable.views.length > 0) {
@@ -111,13 +115,45 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
     pluginContext.expandRow(row, currentTable);
   };
 
+  const addNewRowToTable = () => {
+    setIsAdding(false);
+
+    if (!newItemName) {
+      setNewItemName('');
+      return;
+    }
+
+    const tableIndex = allTables.findIndex((t: Table) => t._id === levelTable?._id);
+    const rowId = generateUniqueRowId();
+    const newRow = {
+      _participants: [],
+      _creator: collaborators[0].email,
+      _ctime: new Date().toISOString(),
+      _last_modifier: collaborators[0].email,
+      _mtime: new Date().toISOString(),
+      _id: rowId,
+      '0000': newItemName,
+    };
+
+    // create new row in appropriate table
+    const lastRowId = levelTable?.rows[levelTable.rows.length - 1]._id;
+    window.dtableSDK.dtableStore.insertRow(tableIndex, lastRowId, 'insert_below', newRow);
+
+    // add link to newly created row
+    const linkID = item[levelRows]?.[0]?.columns.find((c) => c.data.table_id === currentTable?._id)
+      ?.data.link_id;
+    window.dtableSDK.addLink(linkID, levelTable?._id, currentTable?._id, rowId, item._id);
+
+    setNewItemName('');
+  };
+
   return (
     <div className={styles.custom_expandableItem_rows} style={levelStyleRows(level)}>
       <div
         onClick={onRowExpand}
         className={`${styles.custom_expandableItem} expandableItem`}
         style={{
-          minWidth: minW === 80 ? `${minW}vw` : `${minW}px`,
+          minWidth: minRowWidth === 100 ? '100%' : `${minW}px`,
           ...missingCollapseBtn(isClickable),
         }}>
         {isClickable && (
@@ -125,7 +161,8 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
             className={styles.custom_expandableItem_collapse_btn}
             onClick={
               isClickable
-                ? () => {
+                ? (e) => {
+                    e.stopPropagation();
                     handleItemClick({
                       '0000': item['0000'],
                       _id: item._id,
@@ -138,15 +175,17 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
             {isExpanded ? <SlArrowDown size={10} /> : <SlArrowRight size={10} />}
           </button>
         )}
-        <p
-          className={styles.custom_expandableItem_name_col}
-          style={{
-            width: `${
-              columnWidths.find((width) => width.id === '0000' + currentTable?.name)?.width || 200
-            }px`,
-          }}>
-          {item['0000']}
-        </p>
+        {
+          <p
+            className={styles.custom_expandableItem_name_col}
+            style={{
+              width: `${
+                columnWidths.find((width) => width.id === '0000' + currentTable?.name)?.width || 200
+              }px`,
+            }}>
+            {item['0000']}
+          </p>
+        }
         {currentTable?.columns
           .filter((c) => c.name.toLowerCase() !== 'name' && c.key !== '0000')
           .map((column) => (
@@ -180,7 +219,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
           {!rowsEmptyArray && (
             <HeaderRow
               columns={levelTable?.columns}
-              level={level + 1}
+              level={++level}
               tableName={levelTable?.name}
               levelSelections={levelSelections}
               columnWidths={columnWidths}
@@ -206,13 +245,36 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
               updateResizeDetails={updateResizeDetails}
             />
           ))}
+          {isAdding && (
+            <div className={styles.custom_expandableItem_rows}>
+              <div
+                className={`${styles.custom_expandableItem} expandableItem`}
+                style={{
+                  width: '100%',
+                  ...levelStyleRows(level + 2),
+                }}>
+                <input
+                  className={styles.new_row_input}
+                  autoFocus={isAdding}
+                  onBlur={addNewRowToTable}
+                  value={newItemName}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      addNewRowToTable();
+                    }
+                  }}
+                  onChange={(e) => setNewItemName(e.target.value)}
+                />
+              </div>
+            </div>
+          )}
           {!rowsEmptyArray &&
             isLevelSelectionDisabled(level + 1, levelSelections) &&
             levelTable && (
               <button
                 className={styles.custom_p}
                 style={paddingAddBtn(level)}
-                onClick={() => addRowItem(levelTable, isDevelopment)}>
+                onClick={() => setIsAdding(true)}>
                 + add {levelTable?.name.toLowerCase()}
               </button>
             )}
