@@ -38,10 +38,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   pluginPresets,
 }) => {
   // State variables for table and view options
-  const [tableOptions, setTableOptions] = useState<SelectOption[]>();
-  const [viewOptions, setViewOptions] = useState<SelectOption[]>();
-  const [tableSelectedOption, setTableSelectedOption] = useState<SelectOption>();
-  const [viewSelectedOption, setViewSelectedOption] = useState<SelectOption>();
   const [firstLevelOptions, setFirstLevelOptions] = useState<SelectOption[]>();
   const [secondLevelOptions, setSecondLevelOptions] = useState<SelectOption[]>();
   const [thirdLevelOptions, setThirdLevelOptions] = useState<SelectOption[]>();
@@ -55,6 +51,8 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     const activeLevelSelections = pluginPresets.find(
       (p) => p._id === appActiveState.activePresetId
     )?.customSettings;
+    console.log({ ID: appActiveState.activePresetId });
+    console.log({ activeLevelSelections });
 
     if (activeLevelSelections) {
       setFirstLevelSelectedOption(activeLevelSelections?.first?.selected);
@@ -63,39 +61,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       onLevelSelectionChange(activeLevelSelections);
     }
   }, [appActiveState.activePresetId]);
-
-  // Change options when active table or view changes
-  useEffect(() => {
-    const { activeTableView } = appActiveState;
-
-    // Create options for tables
-    const tableOptions = allTables.map((item) => {
-      const value = item._id;
-      const label = truncateTableName(item.name);
-      return { value, label };
-    });
-
-    // Create options for views
-    const viewOptions = activeTableViews.map((item) => {
-      const value = item._id;
-      const label = truncateTableName(item.name);
-      return { value, label };
-    });
-
-    const tableSelectedOption = {
-      // eslint-disable-next-line
-      value: appActiveState?.activeTable?._id!,
-      label: appActiveState.activeTableName,
-    };
-    const viewSelectedOption = viewOptions.find((item) => item.value === activeTableView?._id);
-
-    // Update state with new options and selected values
-    setTableOptions(tableOptions);
-    setTableSelectedOption(tableSelectedOption);
-    setViewOptions(viewOptions);
-    setViewSelectedOption(viewSelectedOption);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [appActiveState]);
 
   useEffect(() => {
     const FIRST_LEVEL_TABLES = findFirstLevelTables(allTables);
@@ -250,34 +215,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
           </button>
         </div>
         <div>
-          {activeComponents.settingsDropDowns && (
-            <div className={stylesPSettings.settings_dropdowns}>
-              <div>
-                <p className="d-inline-block mb-2">{intl.get('table').d(`${d.table}`)}</p>
-                {/* Toggle table view */}
-                <DtableSelect
-                  value={tableSelectedOption}
-                  options={tableOptions}
-                  onChange={(selectedOption: SelectOption) => {
-                    const type = 'table' as SettingsOption;
-                    onTableOrViewChange(type, selectedOption);
-                  }}
-                />
-              </div>
-              <div>
-                <p className="d-inline-block mb-2 mt-3">{intl.get('view').d(`${d.view}/`)}</p>
-                {/* Toggle table view */}
-                <DtableSelect
-                  value={viewSelectedOption}
-                  options={viewOptions}
-                  onChange={(selectedOption: SelectOption) => {
-                    const type = 'view' satisfies SettingsOption;
-                    onTableOrViewChange(type, selectedOption);
-                  }}
-                />
-              </div>
-            </div>
-          )}
           {/* CUSTOM SETTINGS */}
           <div className={stylesPSettings.settings_dropdowns}>
             <div>

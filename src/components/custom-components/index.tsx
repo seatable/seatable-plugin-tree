@@ -55,28 +55,25 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     [allTables, levelSelections.first.selected.value]
   );
 
-  const handleItemClick = useCallback(
-    (updatedRow: RowExpandedInfo): void => {
-      const updatedRows = updateExpandedState(updatedRow, expandedRowsInfo);
-      setExpandedRowsInfo(updatedRows);
+  const handleItemClick = (updatedRow: RowExpandedInfo): void => {
+    const updatedRows = updateExpandedState(updatedRow, expandedRowsInfo);
+    setExpandedRowsInfo(updatedRows);
 
-      window.dtableSDK.updatePluginSettings(PLUGIN_NAME, {
-        ...pluginDataStore,
-        presets: pluginDataStore.presets.map((preset) => {
-          if (preset._id === activePresetId) {
-            return {
-              ...preset,
-              expandedRows: updatedRows,
-            };
-          }
-          return preset;
-        }),
-      });
+    window.dtableSDK.updatePluginSettings(PLUGIN_NAME, {
+      ...pluginDataStore,
+      presets: pluginDataStore.presets.map((preset) => {
+        if (preset._id === activePresetId) {
+          return {
+            ...preset,
+            expandedRows: updatedRows,
+          };
+        }
+        return preset;
+      }),
+    });
 
-      setExpandedHasChanged((prev) => !prev);
-    },
-    [expandedRowsInfo, pluginDataStore, activePresetId]
-  );
+    setExpandedHasChanged(!expandedHasChanged);
+  };
 
   const updateResizeDetails = useCallback(
     (resize_details: ResizeDetail[]) => {

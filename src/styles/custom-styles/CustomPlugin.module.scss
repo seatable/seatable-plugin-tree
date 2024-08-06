@@ -111,9 +111,6 @@
     background-color: $modal-bgColor;
     height: 35px;
     width: max-content;
-    :hover {
-      background-color: $light-gray;
-    }
 
     &_rows {
       display: flex;
@@ -157,7 +154,7 @@
   }
 
   &_expandableItem:hover {
-    background-color: $light-gray;
+    background-color: $lighter-gray;
   }
 
   &_p {

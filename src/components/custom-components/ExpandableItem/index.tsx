@@ -118,7 +118,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
             onClick={
               isClickable
                 ? () => {
-                    handleItemClick({
+                    handleItemClick({ 
                       '0000': item['0000'],
                       _id: item._id,
                       expanded: !isExpanded,
@@ -172,7 +172,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
           {!rowsEmptyArray && (
             <HeaderRow
               columns={levelTable?.columns}
-              level={level + 1}
+              level={++level}
               tableName={levelTable?.name}
               levelSelections={levelSelections}
               columnWidths={columnWidths}
