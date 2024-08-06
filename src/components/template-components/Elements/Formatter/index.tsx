@@ -263,7 +263,7 @@ const Formatter: React.FC<IFormatterProps> = ({
       }
       case CellType.FORMULA:
       case CellType.LINK_FORMULA: {
-        const formulaValue = formulaRows[row!._id] ? formulaRows[row!._id][columnKey] : '';
+        const formulaValue = formulaRows?.[row!._id] ? formulaRows[row!._id][columnKey] : '';
         let formulaFormatter;
         if (!formulaValue) {
           formulaFormatter = <div></div>;

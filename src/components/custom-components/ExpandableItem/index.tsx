@@ -40,8 +40,6 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   const isClickable = level !== 3 && rows?.length !== 0 && item[levelRows] !== undefined;
   const currentTable = allTables.find((table) => table.name === item._name);
 
-  console.log(isClickable, item);
-
   const viewObj = useMemo(() => {
     if (currentTable && currentTable.views && currentTable.views.length > 0) {
       return currentTable.views[0];
