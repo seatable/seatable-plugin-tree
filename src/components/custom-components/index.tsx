@@ -51,8 +51,8 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   const { levelTable } = getLevelSelectionAndTable(0, allTables, levelSelections);
 
   const firstLevelTable = useMemo(
-    () => allTables.find((t) => t._id === levelSelections.first.selected.value),
-    [allTables, levelSelections.first.selected.value]
+    () => allTables.find((t) => t._id === levelSelections.first.selected?.value),
+    [allTables, levelSelections.first.selected?.value]
   );
 
   const handleItemClick = (updatedRow: RowExpandedInfo): void => {
@@ -112,20 +112,20 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   }, [firstLevelTable]);
 
   const firstRows = useMemo(() => {
-    return getRowsByTableId(levelSelections.first.selected.value, allTables);
-  }, [allTables, levelSelections.first.selected.value]);
+    return getRowsByTableId(levelSelections.first.selected?.value, allTables);
+  }, [allTables, levelSelections.first.selected?.value]);
 
   const memoizedOutputLevelsInfo = useMemo(() => {
     if (firstRows && firstLevelTable) {
-      const firstTableId = levelSelections.first.selected.value;
+      const firstTableId = levelSelections.first.selected?.value;
       return outputLevelsInfo(
         levelSelections,
         firstTableId,
         firstRows,
         expandedRowsInfo,
-        levelSelections.second.selected.value,
+        levelSelections.second.selected?.value,
         allTables,
-        levelSelections?.third?.selected.value
+        levelSelections?.third?.selected?.value
       );
     }
     return null;
@@ -134,7 +134,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     firstRows,
     expandedRowsInfo,
     allTables,
-    levelSelections?.third?.selected.value,
+    levelSelections?.third?.selected?.value,
     firstLevelTable,
   ]);
 

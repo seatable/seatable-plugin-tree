@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
+
 // React and Related Libraries
 import React, { useCallback, useEffect, useState } from 'react';
 import deepCopy from 'deep-copy';
@@ -53,11 +55,11 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   const [levelSelections, setLevelSelections] = useState<ILevelSelections>(activeLevelSelections);
 
   const _activeLevelSelections = pluginPresets.find((p) => p._id === appActiveState.activePresetId)
-  ?.customSettings;
+    ?.customSettings;
 
   const updateLevelSelections = useCallback(
     (levelSelections: ILevelSelections) => {
-      console.log("hey")
+      console.log('hey');
       const _id = appActiveState.activePresetId;
       const newPluginPresets = deepCopy(pluginPresets);
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -96,6 +98,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   }, [JSON.stringify(allTables), appActiveState.activePresetId]);
 
   useEffect(() => {
+    console.log('hi');
     let secondLevelOptions: SelectOption[] = [];
     if (firstLevelSelectedOption) {
       const SECOND_LEVEL_TABLES = findSecondLevelTables(allTables, firstLevelSelectedOption);
@@ -107,8 +110,15 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       });
       // handleLevelSelection(secondLevelOptions[0], 'second');
     }
+    const isSelectedInOptions = secondLevelOptions
+      .map((i) => i.value)
+      .includes(activeLevelSelections.second?.selected?.value);
     setSecondLevelOptions(secondLevelOptions);
-    setSecondLevelSelectedOption(_activeLevelSelections?.second?.selected || secondLevelOptions[0]);
+    setSecondLevelSelectedOption(
+      isSelectedInOptions
+        ? _activeLevelSelections?.second?.selected || secondLevelOptions[0]
+        : secondLevelOptions[0]
+    );
   }, [firstLevelSelectedOption, firstLevelOptions]);
 
   useEffect(() => {
@@ -127,8 +137,16 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       );
       // handleLevelSelection(thirdLevelOptions[0], 'third');
     }
+
+    const isSelectedInOptions = thirdLevelOptions
+      .map((i) => i.value)
+      .includes(activeLevelSelections.third?.selected?.value!);
     setThirdLevelOptions(thirdLevelOptions);
-    setThirdLevelSelectedOption(_activeLevelSelections?.third?.selected || thirdLevelOptions[0]);
+    setThirdLevelSelectedOption(
+      isSelectedInOptions
+        ? _activeLevelSelections?.third?.selected || thirdLevelOptions[0]
+        : thirdLevelOptions[0]
+    );
   }, [secondLevelSelectedOption, secondLevelOptions]);
 
   // useEffect(() => {
