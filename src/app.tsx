@@ -55,7 +55,7 @@ import pluginContext from './plugin-context';
 import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';
 import { ILevelSelections } from './utils/custom-utils/interfaces/CustomPlugin';
 import { LEVEL_SEL_DEFAULT } from './utils/custom-utils/constants';
-import { levelSelectionDefaultFallback } from './utils/custom-utils/utils';
+// import { levelSelectionDefaultFallback } from './utils/custom-utils/utils';
 
 const App: React.FC<IAppProps> = (props) => {
   const { isDevelopment, lang } = props;
@@ -79,10 +79,6 @@ const App: React.FC<IAppProps> = (props) => {
   // Custom component state
   const [activeLevelSelections, setActiveLevelSelections] =
     useState<ILevelSelections>(LEVEL_SEL_DEFAULT);
-
-  useEffect(() => {
-    console.log({ pluginPresets });
-  }, [pluginPresets]);
 
   useEffect(() => {
     initPluginDTableData();
@@ -130,6 +126,7 @@ const App: React.FC<IAppProps> = (props) => {
   };
 
   const resetData = (on: string) => {
+    console.log('** resetData **');
     setResetDataValue({ t: on, c: resetDataValue.c + 1 });
     const allTables: TableArray = window.dtableSDK.getTables(); // All the Tables of the Base
     const activeTable: Table = window.dtableSDK.getActiveTable(); // How is the ActiveTable Set? allTables[0]?
@@ -154,16 +151,21 @@ const App: React.FC<IAppProps> = (props) => {
         pluginPresets,
         allTables
       );
-      const levelSelectionsDatabase = levelSelectionDefaultFallback(
-        pluginPresets,
-        pluginDataStore.activePresetId,
-        allTables
-      );
-
-      setActiveLevelSelections(levelSelectionsDatabase);
 
       onSelectPreset(pluginDataStore.activePresetId, appActiveState);
+      const activePresetLevelSelections = pluginPresets.find((p) => {
+        return p._id === pluginDataStore.activePresetId;
+      })?.customSettings;
+      if (activePresetLevelSelections) {
+        setActiveLevelSelections(activePresetLevelSelections);
+      }
       return;
+
+      // const levelSelectionsDatabase = levelSelectionDefaultFallback(
+      //   pluginPresets,
+      //   pluginDataStore.activePresetId,
+      //   allTables
+      // );
     } else {
       // If there are no presets, the default one is created
       if (pluginPresets.length === 0) {
@@ -208,16 +210,39 @@ const App: React.FC<IAppProps> = (props) => {
    * Handles the selection of a preset, updating the active state and associated data accordingly.
    */
   const onSelectPreset = (presetId: string, newPresetActiveState?: AppActiveState) => {
+    console.log('preset Id is:', presetId, 'the active id is:', activePresetId);
+    setAppActiveState((prevState) => ({
+      ...prevState,
+      activePresetId: presetId,
+    }));
+    console.log('and the newPresetActiveState is:', newPresetActiveState);
     let updatedActiveState: AppActiveState;
     let updatedActiveTableViews: TableView[];
     const _activePresetIdx = pluginPresets.findIndex((preset) => preset._id === presetId);
+
     if (newPresetActiveState !== undefined) {
+      console.log('*** the preset active state is not undefined');
+      // console.log(
+      //   'the state of pluginDataStore first level is:',
+      //   pluginDataStore.presets[1]?.customSettings?.first.selected.label || ''
+      // );
+      console.log(
+        'the DB first level is',
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        getPluginDataStore(activeTable!, PLUGIN_NAME).presets[1].customSettings?.first.selected
+          .label
+      );
       updatedActiveState = {
         ...newPresetActiveState,
       };
       // eslint-disable-next-line
       updatedActiveTableViews = newPresetActiveState?.activeTable?.views!;
     } else {
+      console.log('the preset active state is undefined');
+      console.log(
+        'the state of pluginDataStore first level is:',
+        pluginDataStore.presets[1].customSettings?.first.selected.label
+      );
       const activePreset = pluginPresets.find((preset) => preset._id === presetId);
 
       const selectedTable = activePreset?.settings?.selectedTable;
@@ -265,6 +290,7 @@ const App: React.FC<IAppProps> = (props) => {
     activePresetId: string
     // callBack: any = null
   ) => {
+    console.log('updatePresets');
     const _pluginDataStore = {
       ...pluginDataStore,
       activePresetId: activePresetId,
@@ -281,6 +307,7 @@ const App: React.FC<IAppProps> = (props) => {
 
   // Update plugin data store (old plugin settings)
   const updatePluginDataStore = (pluginDataStore: IPluginDataStore) => {
+    console.log('updatePluginDataStore');
     window.dtableSDK.updatePluginSettings(PLUGIN_NAME, pluginDataStore);
   };
 
@@ -290,6 +317,7 @@ const App: React.FC<IAppProps> = (props) => {
    * data from the available tables, and updates the active state accordingly.
    */
   const updateActiveData = () => {
+    console.log('updateActiveData');
     const allTables: TableArray = window.dtableSDK.getTables();
     const tableOfPresetOne = pluginPresets[0].settings?.selectedTable || {
       value: allTables[0]._id,
@@ -338,6 +366,7 @@ const App: React.FC<IAppProps> = (props) => {
    * Handles the change of the active table or view, updating the application state and presets accordingly.
    */
   const onTableOrViewChange = (type: SettingsOption, option: SelectOption) => {
+    console.log('onTableOrViewChange');
     let _activeViewRows: TableRow[];
     let updatedPluginPresets: PresetsArray;
 
@@ -425,6 +454,7 @@ const App: React.FC<IAppProps> = (props) => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onInsertRow = (table: Table, view: TableView, rowData: any) => {
+    console.log('onInsertRow');
     const columns = window.dtableSDK.getColumns(table);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const newRowData: { [key: string]: any } = {};
@@ -478,6 +508,8 @@ const App: React.FC<IAppProps> = (props) => {
 
   // HANDLERS FOR CUSTOM COMPONENTS
   const handleLevelSelectionApp = (levelSelections: ILevelSelections) => {
+    console.log('handleLevelSelectionApp');
+    setActiveLevelSelections(levelSelections);
     window.dtableSDK.updatePluginSettings(PLUGIN_NAME, {
       ...pluginDataStore,
       presets: pluginDataStore.presets.map((preset) => {
@@ -490,7 +522,6 @@ const App: React.FC<IAppProps> = (props) => {
         return preset;
       }),
     });
-    setActiveLevelSelections(levelSelections);
   };
 
   return isLoading ? (
@@ -521,7 +552,7 @@ const App: React.FC<IAppProps> = (props) => {
         />
         {/* main body  */}
         <div
-          className={`d-flex position-relative`}
+          className={'d-flex position-relative'}
           style={{ height: '100%', width: '100%', backgroundColor: '#fff' }}>
           <div id={PLUGIN_ID} className={styles.body}>
             {/* Note: The CustomPlugin component serves as a placeholder and should be replaced with your custom plugin component. */}

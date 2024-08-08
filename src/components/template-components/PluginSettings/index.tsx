@@ -51,8 +51,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     const activeLevelSelections = pluginPresets.find(
       (p) => p._id === appActiveState.activePresetId
     )?.customSettings;
-    console.log({ ID: appActiveState.activePresetId });
-    console.log({ activeLevelSelections });
 
     if (activeLevelSelections) {
       setFirstLevelSelectedOption(activeLevelSelections?.first?.selected);

@@ -118,7 +118,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
             onClick={
               isClickable
                 ? () => {
-                    handleItemClick({ 
+                    handleItemClick({
                       '0000': item['0000'],
                       _id: item._id,
                       expanded: !isExpanded,

@@ -89,6 +89,7 @@ const PresetItem: React.FC<IPresetItemProps> = ({
     if (e.detail === 2) {
       onToggleSettings();
     } else {
+      console.log('this is the preset id', p?._id);
       onSelectPreset(p?._id);
     }
   };
