@@ -1,5 +1,6 @@
 // React and Related Libraries
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import deepCopy from 'deep-copy';
 // Components
 import DtableSelect from '../Elements/dtable-select';
 // Styles
@@ -10,7 +11,7 @@ import {
   SelectOption,
   IPluginSettingsProps,
 } from '@/utils/template-utils/interfaces/PluginSettings.interface';
-import { CustomSettingsOption, SettingsOption } from '@/utils/types';
+import { CustomSettingsOption } from '@/utils/types';
 import { ILevelSelections } from '@/utils/custom-utils/interfaces/CustomPlugin';
 // Utilities
 import { truncateTableName } from 'utils/template-utils/utils';
@@ -21,6 +22,7 @@ import { HiOutlineChevronDoubleRight } from 'react-icons/hi2';
 // Localization
 import intl from 'react-intl-universal';
 import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';
+import { PresetsArray } from '@/utils/template-utils/interfaces/PluginPresets/Presets.interface';
 
 const { [DEFAULT_LOCALE]: d } = AVAILABLE_LOCALES;
 
@@ -34,10 +36,13 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   onTableOrViewChange,
   activeComponents,
   activeLevelSelections,
-  onLevelSelectionChange,
+  // onLevelSelectionChange,
+  pluginDataStore,
   pluginPresets,
+  updatePresets,
 }) => {
   // State variables for table and view options
+  // let _activePresetId = '';
   const [firstLevelOptions, setFirstLevelOptions] = useState<SelectOption[]>();
   const [secondLevelOptions, setSecondLevelOptions] = useState<SelectOption[]>();
   const [thirdLevelOptions, setThirdLevelOptions] = useState<SelectOption[]>();
@@ -47,18 +52,45 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   const [thirdLevelExists, setThirdLevelExists] = useState<boolean>(true);
   const [levelSelections, setLevelSelections] = useState<ILevelSelections>(activeLevelSelections);
 
-  useEffect(() => {
-    const activeLevelSelections = pluginPresets.find(
-      (p) => p._id === appActiveState.activePresetId
-    )?.customSettings;
+  // useEffect(() => {
+  //   const activeLevelSelections = pluginPresets.find(
+  //     (p) => p._id === appActiveState.activePresetId
+  //   )?.customSettings;
 
-    if (activeLevelSelections) {
-      setFirstLevelSelectedOption(activeLevelSelections?.first?.selected);
-      setSecondLevelSelectedOption(activeLevelSelections?.second?.selected);
-      setThirdLevelSelectedOption(activeLevelSelections?.third?.selected);
-      onLevelSelectionChange(activeLevelSelections);
-    }
-  }, [appActiveState.activePresetId]);
+  //   if (activeLevelSelections) {
+  //     setFirstLevelSelectedOption(activeLevelSelections?.first?.selected);
+  //     setSecondLevelSelectedOption(activeLevelSelections?.second?.selected);
+  //     setThirdLevelSelectedOption(activeLevelSelections?.third?.selected);
+  //     onLevelSelectionChange(activeLevelSelections);
+  //   }
+  // }, [appActiveState.activePresetId]);
+
+  const updateLevelSelections = useCallback(
+    (levelSelections: ILevelSelections) => {
+      const _id = appActiveState.activePresetId;
+      const newPluginPresets = deepCopy(pluginPresets);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const oldPreset = pluginPresets.find((p) => p._id === _id)!;
+      const _idx = pluginPresets.findIndex((p) => p._id === _id);
+
+      const updatedPreset = {
+        ...oldPreset,
+        customSettings: levelSelections,
+      };
+
+      newPluginPresets.splice(_idx, 1, updatedPreset);
+      pluginDataStore.presets = newPluginPresets;
+
+      updatePresets(appActiveState.activePresetIdx, newPluginPresets, pluginDataStore, _id);
+    },
+    [
+      pluginPresets,
+      appActiveState.activePresetId,
+      pluginDataStore,
+      updatePresets,
+      appActiveState.activePresetIdx,
+    ]
+  );
 
   useEffect(() => {
     const FIRST_LEVEL_TABLES = findFirstLevelTables(allTables);
@@ -152,7 +184,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
         }) satisfies ILevelSelections
     );
 
-    onLevelSelectionChange({
+    updateLevelSelections({
       ...levelSelections,
       [level]: {
         selected: selectedOption,
@@ -194,7 +226,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     }
 
     setLevelSelections(newLevelSelections);
-    onLevelSelectionChange(newLevelSelections);
+    updateLevelSelections(newLevelSelections);
   };
 
   return (

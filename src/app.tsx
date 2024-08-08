@@ -151,7 +151,14 @@ const App: React.FC<IAppProps> = (props) => {
         pluginPresets,
         allTables
       );
-
+      console.log(
+        'at the beginning of resetData the activePresetId is:',
+        pluginDataStore.activePresetId
+      );
+      console.log(
+        'calling onSelectPreset',
+        pluginDataStore.presets[1].customSettings?.first.selected.label
+      );
       onSelectPreset(pluginDataStore.activePresetId, appActiveState);
       const activePresetLevelSelections = pluginPresets.find((p) => {
         return p._id === pluginDataStore.activePresetId;
@@ -506,24 +513,6 @@ const App: React.FC<IAppProps> = (props) => {
     return null;
   }
 
-  // HANDLERS FOR CUSTOM COMPONENTS
-  const handleLevelSelectionApp = (levelSelections: ILevelSelections) => {
-    console.log('handleLevelSelectionApp');
-    setActiveLevelSelections(levelSelections);
-    window.dtableSDK.updatePluginSettings(PLUGIN_NAME, {
-      ...pluginDataStore,
-      presets: pluginDataStore.presets.map((preset) => {
-        if (preset._id === activePresetId) {
-          return {
-            ...preset,
-            customSettings: levelSelections,
-          };
-        }
-        return preset;
-      }),
-    });
-  };
-
   return isLoading ? (
     <div></div>
   ) : (
@@ -588,7 +577,8 @@ const App: React.FC<IAppProps> = (props) => {
             pluginPresets={pluginPresets}
             onTableOrViewChange={onTableOrViewChange}
             onToggleSettings={toggleSettings}
-            onLevelSelectionChange={handleLevelSelectionApp}
+            pluginDataStore={pluginDataStore}
+            updatePresets={updatePresets}
             activeLevelSelections={activeLevelSelections}
           />
         </div>
