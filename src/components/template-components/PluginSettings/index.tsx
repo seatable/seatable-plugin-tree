@@ -3,7 +3,10 @@ import deepCopy from 'deep-copy';
 import DtableSelect from '../Elements/dtable-select';
 import stylesPSettings from 't_styles/PluginSettings.module.scss';
 import stylesPresets from 't_styles/PluginPresets.module.scss';
-import { SelectOption, IPluginSettingsProps } from '@/utils/template-utils/interfaces/PluginSettings.interface';
+import {
+  SelectOption,
+  IPluginSettingsProps,
+} from '@/utils/template-utils/interfaces/PluginSettings.interface';
 import { CustomSettingsOption } from '@/utils/types';
 import { ILevelSelections } from '@/utils/custom-utils/interfaces/CustomPlugin';
 import { truncateTableName } from 'utils/template-utils/utils';
@@ -35,7 +38,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   const [levelSelections, setLevelSelections] = useState<ILevelSelections>(activeLevelSelections);
 
   const _activeLevelSelections = useMemo(
-    () => pluginPresets.find(p => p._id === appActiveState.activePresetId)?.customSettings,
+    () => pluginPresets.find((p) => p._id === appActiveState.activePresetId)?.customSettings,
     [pluginPresets, appActiveState.activePresetId]
   );
 
@@ -43,8 +46,11 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     (levelSelections: ILevelSelections) => {
       const _id = appActiveState.activePresetId;
       const newPluginPresets = deepCopy(pluginPresets);
-      const oldPreset = newPluginPresets.find(p => p._id === _id)!;
-      const _idx = newPluginPresets.findIndex(p => p._id === _id);
+      const oldPreset = newPluginPresets.find((p) => p._id === _id);
+      if (!oldPreset) {
+        throw new Error('Preset not found');
+      }
+      const _idx = newPluginPresets.findIndex((p) => p._id === _id);
 
       const updatedPreset = {
         ...oldPreset,
@@ -56,11 +62,17 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
 
       updatePresets(appActiveState.activePresetIdx, newPluginPresets, pluginDataStore, _id);
     },
-    [pluginPresets, appActiveState.activePresetId, pluginDataStore, updatePresets, appActiveState.activePresetIdx]
+    [
+      pluginPresets,
+      appActiveState.activePresetId,
+      pluginDataStore,
+      updatePresets,
+      appActiveState.activePresetIdx,
+    ]
   );
 
   const firstLevelOptions = useMemo(() => {
-    return findFirstLevelTables(allTables).map(item => ({
+    return findFirstLevelTables(allTables).map((item) => ({
       value: item._id,
       label: truncateTableName(item.name),
     }));
@@ -74,14 +86,16 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     if (!firstLevelSelectedOption) return [];
     const SECOND_LEVEL_TABLES = findSecondLevelTables(allTables, firstLevelSelectedOption);
 
-    return SECOND_LEVEL_TABLES.map(item => ({
+    return SECOND_LEVEL_TABLES.map((item) => ({
       value: item._id,
       label: truncateTableName(item.name),
     }));
   }, [allTables, firstLevelSelectedOption]);
 
   useEffect(() => {
-    const isSelectedInOptions = secondLevelOptions.some(i => i.value === activeLevelSelections.second?.selected?.value);
+    const isSelectedInOptions = secondLevelOptions.some(
+      (i) => i.value === activeLevelSelections.second?.selected?.value
+    );
     setSecondLevelSelectedOption(
       isSelectedInOptions
         ? _activeLevelSelections?.second?.selected || secondLevelOptions[0]
@@ -94,18 +108,20 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
 
     const THIRD_LEVEL_TABLES = findSecondLevelTables(allTables, secondLevelSelectedOption);
 
-    return THIRD_LEVEL_TABLES.map(item => ({
+    return THIRD_LEVEL_TABLES.map((item) => ({
       value: item._id,
       label: truncateTableName(item.name),
     })).filter(
-      item =>
+      (item) =>
         item.label !== firstLevelSelectedOption.label &&
         item.value !== secondLevelSelectedOption.value
     );
   }, [allTables, firstLevelSelectedOption, secondLevelSelectedOption]);
 
   useEffect(() => {
-    const isSelectedInOptions = thirdLevelOptions.some(i => i.value === activeLevelSelections.third?.selected?.value);
+    const isSelectedInOptions = thirdLevelOptions.some(
+      (i) => i.value === activeLevelSelections.third?.selected?.value
+    );
     setThirdLevelSelectedOption(
       isSelectedInOptions
         ? _activeLevelSelections?.third?.selected || thirdLevelOptions[0]
@@ -124,7 +140,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
 
       setSelectedOptionFunctions[level](selectedOption);
 
-      setLevelSelections(prevState => ({
+      setLevelSelections((prevState) => ({
         ...prevState,
         [level]: { selected: selectedOption, isDisabled: levelSelections[level]?.isDisabled },
       }));

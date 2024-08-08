@@ -32,7 +32,6 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   updateResizeDetails,
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-
   const { levelTable, levelRows } = getLevelSelectionAndTable(level, allTables, levelSelections);
   const rows = item[levelRows];
   const isClickable = level !== 3 && rows?.length !== 0 && item[levelRows] !== undefined;
@@ -99,7 +98,24 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   };
 
   const levelStyleRows = (level: number) => {
-    return level === 2 ? { paddingLeft: 24 } : undefined;
+    switch (level) {
+      case 0:
+        return undefined;
+      case 1:
+        return { paddingLeft: 14 };
+      case 2:
+        return { paddingLeft: 14 };
+    }
+  };
+  const fontStyleRows = (level: number) => {
+    switch (level) {
+      case 0:
+        return '18px';
+      case 1:
+        return '16px';
+      case 2:
+        return '15px';
+    }
   };
 
   const minW = minRowWidth - 24 * --level;
@@ -133,9 +149,8 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
         <p
           className={styles.custom_expandableItem_name_col}
           style={{
-            width: `${
-              columnWidths.find((width) => width.id === '0000' + currentTable?.name)?.width || 200
-            }px`,
+            width: `${columnWidths.find((width) => width.id === '0000' + currentTable?.name)?.width || 200}px`,
+            fontSize: fontStyleRows(level),
           }}>
           {item['0000']}
         </p>
@@ -172,7 +187,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
           {!rowsEmptyArray && (
             <HeaderRow
               columns={levelTable?.columns}
-              level={++level}
+              level={++level + 1}
               tableName={levelTable?.name}
               levelSelections={levelSelections}
               columnWidths={columnWidths}

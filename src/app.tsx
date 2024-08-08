@@ -126,7 +126,6 @@ const App: React.FC<IAppProps> = (props) => {
   };
 
   const resetData = (on: string) => {
-    console.log('** resetData **');
     setResetDataValue({ t: on, c: resetDataValue.c + 1 });
     const allTables: TableArray = window.dtableSDK.getTables(); // All the Tables of the Base
     const activeTable: Table = window.dtableSDK.getActiveTable(); // How is the ActiveTable Set? allTables[0]?
@@ -150,14 +149,6 @@ const App: React.FC<IAppProps> = (props) => {
         pluginDataStore,
         pluginPresets,
         allTables
-      );
-      console.log(
-        'at the beginning of resetData the activePresetId is:',
-        pluginDataStore.activePresetId
-      );
-      console.log(
-        'calling onSelectPreset',
-        pluginDataStore.presets[1].customSettings?.first.selected.label
       );
       onSelectPreset(pluginDataStore.activePresetId, appActiveState);
       const activePresetLevelSelections = pluginPresets.find((p) => {
@@ -217,39 +208,21 @@ const App: React.FC<IAppProps> = (props) => {
    * Handles the selection of a preset, updating the active state and associated data accordingly.
    */
   const onSelectPreset = (presetId: string, newPresetActiveState?: AppActiveState) => {
-    console.log('preset Id is:', presetId, 'the active id is:', activePresetId);
     setAppActiveState((prevState) => ({
       ...prevState,
       activePresetId: presetId,
     }));
-    console.log('and the newPresetActiveState is:', newPresetActiveState);
     let updatedActiveState: AppActiveState;
     let updatedActiveTableViews: TableView[];
     const _activePresetIdx = pluginPresets.findIndex((preset) => preset._id === presetId);
 
     if (newPresetActiveState !== undefined) {
-      console.log('*** the preset active state is not undefined');
-      // console.log(
-      //   'the state of pluginDataStore first level is:',
-      //   pluginDataStore.presets[1]?.customSettings?.first.selected.label || ''
-      // );
-      console.log(
-        'the DB first level is',
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        getPluginDataStore(activeTable!, PLUGIN_NAME).presets[1].customSettings?.first.selected
-          .label
-      );
       updatedActiveState = {
         ...newPresetActiveState,
       };
       // eslint-disable-next-line
       updatedActiveTableViews = newPresetActiveState?.activeTable?.views!;
     } else {
-      console.log('the preset active state is undefined');
-      console.log(
-        'the state of pluginDataStore first level is:',
-        pluginDataStore.presets[1].customSettings?.first.selected.label
-      );
       const activePreset = pluginPresets.find((preset) => preset._id === presetId);
 
       const selectedTable = activePreset?.settings?.selectedTable;
@@ -297,7 +270,6 @@ const App: React.FC<IAppProps> = (props) => {
     activePresetId: string
     // callBack: any = null
   ) => {
-    console.log('updatePresets');
     const _pluginDataStore = {
       ...pluginDataStore,
       activePresetId: activePresetId,
@@ -314,7 +286,6 @@ const App: React.FC<IAppProps> = (props) => {
 
   // Update plugin data store (old plugin settings)
   const updatePluginDataStore = (pluginDataStore: IPluginDataStore) => {
-    console.log('updatePluginDataStore');
     window.dtableSDK.updatePluginSettings(PLUGIN_NAME, pluginDataStore);
   };
 
@@ -324,7 +295,6 @@ const App: React.FC<IAppProps> = (props) => {
    * data from the available tables, and updates the active state accordingly.
    */
   const updateActiveData = () => {
-    console.log('updateActiveData');
     const allTables: TableArray = window.dtableSDK.getTables();
     const tableOfPresetOne = pluginPresets[0].settings?.selectedTable || {
       value: allTables[0]._id,
@@ -373,7 +343,6 @@ const App: React.FC<IAppProps> = (props) => {
    * Handles the change of the active table or view, updating the application state and presets accordingly.
    */
   const onTableOrViewChange = (type: SettingsOption, option: SelectOption) => {
-    console.log('onTableOrViewChange');
     let _activeViewRows: TableRow[];
     let updatedPluginPresets: PresetsArray;
 
@@ -461,7 +430,6 @@ const App: React.FC<IAppProps> = (props) => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onInsertRow = (table: Table, view: TableView, rowData: any) => {
-    console.log('onInsertRow');
     const columns = window.dtableSDK.getColumns(table);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const newRowData: { [key: string]: any } = {};

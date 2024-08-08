@@ -200,7 +200,6 @@ const PluginPresets: React.FC<IPresetsProps> = ({
       activeTableName: newPresetsArray[_activePresetIdx]?.settings?.selectedTable?.label!,
       activeTableView: _activeTableAndView.view,
     };
-    console.log('selecting the NEW preset', _id);
     onSelectPreset(_id, newPresetActiveState);
   };
 
