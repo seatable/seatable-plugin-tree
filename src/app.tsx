@@ -159,12 +159,6 @@ const App: React.FC<IAppProps> = (props) => {
         setActiveLevelSelections(activePresetLevelSelections);
       }
       return;
-
-      // const levelSelectionsDatabase = levelSelectionDefaultFallback(
-      //   pluginPresets,
-      //   pluginDataStore.activePresetId,
-      //   allTables
-      // );
     } else {
       // If there are no presets, the default one is created
       if (pluginPresets.length === 0) {

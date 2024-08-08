@@ -130,6 +130,7 @@ export const outputLevelsInfo = (
   thirdLevelId?: string,
   keyName?: string
 ) => {
+  console.log({ utils: expandedRowsInfo[0].expanded });
   const testDisablingLevels = {
     second: levelSelections.second.isDisabled,
     third: levelSelections.third ? levelSelections.third.isDisabled : true,
@@ -311,6 +312,7 @@ function isLevelDisabled(
   finalResult: levelsStructureInfo,
   testDisablingLevels: { second: boolean; third: boolean }
 ) {
+  console.log('first');
   const newResult = _.cloneDeep(finalResult);
 
   newResult.forEach((r) => {
@@ -325,7 +327,7 @@ function isLevelDisabled(
       }
     }
   });
-
+  console.log({ newResult });
   return newResult;
 }
 

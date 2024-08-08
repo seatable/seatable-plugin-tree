@@ -158,6 +158,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
 
   const handleLevelDisabled = useCallback(
     (level: 'second' | 'third') => {
+      console.log('handleLevelDisabled');
       let newLevelSelections;
       const thirdSelected = activeLevelSelections.third
         ? activeLevelSelections.third.selected
