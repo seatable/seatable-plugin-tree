@@ -102,19 +102,22 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
       case 0:
         return undefined;
       case 1:
-        return { paddingLeft: 14 };
+        return { paddingLeft: 10 };
       case 2:
-        return { paddingLeft: 14 };
+        return { paddingLeft: 10 };
     }
   };
   const fontStyleRows = (level: number) => {
+    const style = {
+      width: `${columnWidths.find((width) => width.id === '0000' + currentTable?.name)?.width || 200}px`,
+    };
     switch (level) {
       case 0:
-        return '18px';
+        return { ...style, fontSize: '18px' };
       case 1:
-        return '16px';
+        return { ...style, fontSize: '16px' };
       case 2:
-        return '15px';
+        return { ...style, fontSize: '15px', fontWeight: 'normal' };
     }
   };
 
@@ -146,12 +149,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
             {isExpanded ? <SlArrowDown size={10} /> : <SlArrowRight size={10} />}
           </button>
         )}
-        <p
-          className={styles.custom_expandableItem_name_col}
-          style={{
-            width: `${columnWidths.find((width) => width.id === '0000' + currentTable?.name)?.width || 200}px`,
-            fontSize: fontStyleRows(level),
-          }}>
+        <p className={styles.custom_expandableItem_name_col} style={fontStyleRows(level)}>
           {item['0000']}
         </p>
         {currentTable?.columns

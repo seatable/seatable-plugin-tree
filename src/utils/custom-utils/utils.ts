@@ -485,6 +485,6 @@ export const paddingAddBtn = (level: number) => {
   if (level === 0 || level === 2) {
     return { paddingLeft: 34, paddingBottom: 20 };
   } else if (level === 1) {
-    return { paddingLeft: 58, paddingBottom: 20 };
+    return { paddingLeft: 34, paddingBottom: 20 };
   }
 };

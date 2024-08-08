@@ -63,9 +63,9 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
       case 1:
         return { paddingLeft: 24 };
       case 2:
-        return { paddingLeft: 38 };
+        return { paddingLeft: 34 };
       case 3:
-        return { paddingLeft: 38 };
+        return { paddingLeft: 34 };
     }
   };
 
