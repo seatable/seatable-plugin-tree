@@ -50,9 +50,13 @@ const PluginTL: React.FC<IPluginTLProps> = ({
 
   const { levelTable } = getLevelSelectionAndTable(0, allTables, levelSelections);
 
+  useEffect(() => {
+    console.log(allTables);
+  }, [JSON.stringify(allTables)]);
+
   const firstLevelTable = useMemo(
     () => allTables.find((t) => t._id === levelSelections.first.selected?.value),
-    [allTables, levelSelections.first.selected?.value]
+    [JSON.stringify(allTables), levelSelections.first.selected?.value]
   );
 
   const handleItemClick = (updatedRow: RowExpandedInfo): void => {
@@ -113,7 +117,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
 
   const firstRows = useMemo(() => {
     return getRowsByTableId(levelSelections.first.selected?.value, allTables);
-  }, [allTables, levelSelections.first.selected?.value]);
+  }, [JSON.stringify(allTables), levelSelections.first.selected?.value]);
 
   const memoizedOutputLevelsInfo = useMemo(() => {
     if (firstRows && firstLevelTable) {
@@ -133,7 +137,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     levelSelections,
     firstRows,
     expandedRowsInfo,
-    allTables,
+    JSON.stringify(allTables),
     levelSelections?.third?.selected?.value,
     firstLevelTable,
   ]);
