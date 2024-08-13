@@ -6,7 +6,7 @@ import intl from 'react-intl-universal';
 
 const SeaTablePlugin = {
   execute: () => {
-    let lang =
+    const lang =
       window.dtable && Object.keys(AVAILABLE_LOCALES).includes(window.dtable.lang)
         ? window.dtable.lang
         : DEFAULT_LOCALE;

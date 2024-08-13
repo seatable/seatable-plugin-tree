@@ -15,7 +15,6 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
   updateResizeDetails,
 }) => {
   const [onHover, setOnHover] = useState<boolean>(false);
-
   const handleMouseDown = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
     col_id: string,
@@ -64,9 +63,9 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
       case 1:
         return { paddingLeft: 24 };
       case 2:
-        return { paddingLeft: 48 };
+        return { paddingLeft: 34 };
       case 3:
-        return { paddingLeft: 24 };
+        return { paddingLeft: 34 };
     }
   };
 

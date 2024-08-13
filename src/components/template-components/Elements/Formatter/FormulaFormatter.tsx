@@ -5,7 +5,7 @@ const FormulaFormatter: React.FC<Omit<ICollaboratorProps, 'collaborators'>> = ({
   value,
   containerClassName,
 }) => {
-  if (typeof value === 'string') {
+  if (typeof value === 'string' || typeof value === 'number') {
     return (
       <div className={`${containerClassName}`}>
         <p>{value}</p>

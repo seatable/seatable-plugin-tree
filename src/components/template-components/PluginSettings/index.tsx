@@ -1,30 +1,23 @@
-// React and Related Libraries
-import React, { useEffect, useState } from 'react';
-// Components
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import deepCopy from 'deep-copy';
 import DtableSelect from '../Elements/dtable-select';
-// Styles
 import stylesPSettings from 't_styles/PluginSettings.module.scss';
 import stylesPresets from 't_styles/PluginPresets.module.scss';
-// Interfaces and Types
 import {
   SelectOption,
   IPluginSettingsProps,
 } from '@/utils/template-utils/interfaces/PluginSettings.interface';
-import { CustomSettingsOption, SettingsOption } from '@/utils/types';
+import { CustomSettingsOption } from '@/utils/types';
 import { ILevelSelections } from '@/utils/custom-utils/interfaces/CustomPlugin';
-// Utilities
 import { truncateTableName } from 'utils/template-utils/utils';
 import { findFirstLevelTables, findSecondLevelTables } from '../../../utils/custom-utils/utils';
 import { LEVEL_DATA_DEFAULT } from '../../../utils/custom-utils/constants';
-// Icons
 import { HiOutlineChevronDoubleRight } from 'react-icons/hi2';
-// Localization
 import intl from 'react-intl-universal';
 import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';
 
 const { [DEFAULT_LOCALE]: d } = AVAILABLE_LOCALES;
 
-// PluginSettings component for managing table and view options
 const PluginSettings: React.FC<IPluginSettingsProps> = ({
   allTables,
   appActiveState,
@@ -34,205 +27,172 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   onTableOrViewChange,
   activeComponents,
   activeLevelSelections,
-  onLevelSelectionChange,
+  pluginDataStore,
   pluginPresets,
+  updatePresets,
 }) => {
-  // State variables for table and view options
-  const [tableOptions, setTableOptions] = useState<SelectOption[]>();
-  const [viewOptions, setViewOptions] = useState<SelectOption[]>();
-  const [tableSelectedOption, setTableSelectedOption] = useState<SelectOption>();
-  const [viewSelectedOption, setViewSelectedOption] = useState<SelectOption>();
-  const [firstLevelOptions, setFirstLevelOptions] = useState<SelectOption[]>();
-  const [secondLevelOptions, setSecondLevelOptions] = useState<SelectOption[]>();
-  const [thirdLevelOptions, setThirdLevelOptions] = useState<SelectOption[]>();
   const [firstLevelSelectedOption, setFirstLevelSelectedOption] = useState<SelectOption>();
   const [secondLevelSelectedOption, setSecondLevelSelectedOption] = useState<SelectOption>();
   const [thirdLevelSelectedOption, setThirdLevelSelectedOption] = useState<SelectOption>();
   const [thirdLevelExists, setThirdLevelExists] = useState<boolean>(true);
   const [levelSelections, setLevelSelections] = useState<ILevelSelections>(activeLevelSelections);
 
-  useEffect(() => {
-    const activeLevelSelections = pluginPresets.find(
-      (p) => p._id === appActiveState.activePresetId
-    )?.customSettings;
+  const _activeLevelSelections = useMemo(
+    () => pluginPresets.find((p) => p._id === appActiveState.activePresetId)?.customSettings,
+    [pluginPresets, appActiveState.activePresetId]
+  );
 
-    if (activeLevelSelections) {
-      setFirstLevelSelectedOption(activeLevelSelections?.first?.selected);
-      setSecondLevelSelectedOption(activeLevelSelections?.second?.selected);
-      setThirdLevelSelectedOption(activeLevelSelections?.third?.selected);
-      onLevelSelectionChange(activeLevelSelections);
-    }
-  }, [appActiveState.activePresetId]);
+  const updateLevelSelections = useCallback(
+    (levelSelections: ILevelSelections) => {
+      const _id = appActiveState.activePresetId;
+      const newPluginPresets = deepCopy(pluginPresets);
+      const oldPreset = newPluginPresets.find((p) => p._id === _id);
+      if (!oldPreset) {
+        throw new Error('Preset not found');
+      }
+      const _idx = newPluginPresets.findIndex((p) => p._id === _id);
 
-  // Change options when active table or view changes
-  useEffect(() => {
-    const { activeTableView } = appActiveState;
+      const updatedPreset = {
+        ...oldPreset,
+        customSettings: levelSelections,
+      };
 
-    // Create options for tables
-    const tableOptions = allTables.map((item) => {
-      const value = item._id;
-      const label = truncateTableName(item.name);
-      return { value, label };
-    });
+      newPluginPresets.splice(_idx, 1, updatedPreset);
+      pluginDataStore.presets = newPluginPresets;
 
-    // Create options for views
-    const viewOptions = activeTableViews.map((item) => {
-      const value = item._id;
-      const label = truncateTableName(item.name);
-      return { value, label };
-    });
+      updatePresets(appActiveState.activePresetIdx, newPluginPresets, pluginDataStore, _id);
+    },
+    [
+      pluginPresets,
+      appActiveState.activePresetId,
+      pluginDataStore,
+      updatePresets,
+      appActiveState.activePresetIdx,
+    ]
+  );
 
-    const tableSelectedOption = {
-      // eslint-disable-next-line
-      value: appActiveState?.activeTable?._id!,
-      label: appActiveState.activeTableName,
-    };
-    const viewSelectedOption = viewOptions.find((item) => item.value === activeTableView?._id);
-
-    // Update state with new options and selected values
-    setTableOptions(tableOptions);
-    setTableSelectedOption(tableSelectedOption);
-    setViewOptions(viewOptions);
-    setViewSelectedOption(viewSelectedOption);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [appActiveState]);
+  const firstLevelOptions = useMemo(() => {
+    return findFirstLevelTables(allTables).map((item) => ({
+      value: item._id,
+      label: truncateTableName(item.name),
+    }));
+  }, [allTables]);
 
   useEffect(() => {
-    const FIRST_LEVEL_TABLES = findFirstLevelTables(allTables);
-    const firstLevelOptions = FIRST_LEVEL_TABLES.map((item) => {
-      const value = item._id;
-      const label = truncateTableName(item.name);
-      return { value, label };
-    });
+    setFirstLevelSelectedOption(_activeLevelSelections?.first?.selected || firstLevelOptions[0]);
+  }, [firstLevelOptions, _activeLevelSelections]);
 
-    setFirstLevelOptions(firstLevelOptions);
-  }, [JSON.stringify(allTables)]);
+  const secondLevelOptions = useMemo(() => {
+    if (!firstLevelSelectedOption) return [];
+    const SECOND_LEVEL_TABLES = findSecondLevelTables(allTables, firstLevelSelectedOption);
 
-  useEffect(() => {
-    let secondLevelOptions: SelectOption[] = [];
-    if (firstLevelSelectedOption) {
-      const SECOND_LEVEL_TABLES = findSecondLevelTables(allTables, firstLevelSelectedOption);
-
-      secondLevelOptions = SECOND_LEVEL_TABLES.map((item) => {
-        const value = item._id;
-        const label = truncateTableName(item.name);
-        return { value, label };
-      });
-      handleLevelSelection(secondLevelOptions[0], 'second');
-    }
-    setSecondLevelOptions(secondLevelOptions);
-    setSecondLevelSelectedOption(secondLevelOptions[0]);
-  }, [firstLevelSelectedOption, firstLevelOptions]);
+    return SECOND_LEVEL_TABLES.map((item) => ({
+      value: item._id,
+      label: truncateTableName(item.name),
+    }));
+  }, [allTables, firstLevelSelectedOption]);
 
   useEffect(() => {
-    let thirdLevelOptions: SelectOption[] = [];
-    if (firstLevelSelectedOption && secondLevelSelectedOption) {
-      // Finding the third level tables, using the findSecondLevelTables function
-      // Using this function is correct as the third level tables are the second level tables of the second level table
-      const THIRD_LEVEL_TABLES = findSecondLevelTables(allTables, secondLevelSelectedOption);
-
-      // Creating options for the third level tables and filtering out the selected options from the first and second levels
-      thirdLevelOptions = THIRD_LEVEL_TABLES.map((item) => {
-        const value = item._id;
-        const label = truncateTableName(item.name);
-        return { value, label };
-      }).filter(
-        (item) =>
-          item.label !== firstLevelSelectedOption.label &&
-          item.value !== secondLevelSelectedOption.value
-      );
-    }
-
-    // Checking if the third level options are empty
-    const activeThirdLevelSelectedOption = thirdLevelOptions.find(
-      (i) => i.value === activeLevelSelections.third?.selected.value
-    )
-      ? activeLevelSelections.third?.selected
-      : thirdLevelOptions[0];
-
-    const isEmpty = thirdLevelOptions.length === 0;
-
-    const thirdLevelSelectedOptionLastCheck = isEmpty
-      ? LEVEL_DATA_DEFAULT
-      : activeThirdLevelSelectedOption;
-
-    setThirdLevelExists(!isEmpty);
-    setThirdLevelOptions(thirdLevelOptions);
-    setThirdLevelSelectedOption(thirdLevelSelectedOptionLastCheck);
-    if (
-      firstLevelSelectedOption &&
-      secondLevelSelectedOption &&
-      thirdLevelSelectedOptionLastCheck
-    ) {
-      handleLevelSelection(thirdLevelSelectedOptionLastCheck, 'third');
-    }
-  }, [secondLevelSelectedOption, secondLevelOptions, firstLevelOptions, firstLevelSelectedOption]);
-
-  const handleLevelSelection = (selectedOption: SelectOption, level: CustomSettingsOption) => {
-    const setSelectedOptionFunctions: Record<
-      CustomSettingsOption,
-      React.Dispatch<React.SetStateAction<SelectOption | undefined>>
-    > = {
-      first: setFirstLevelSelectedOption,
-      second: setSecondLevelSelectedOption,
-      third: setThirdLevelSelectedOption,
-    };
-
-    const setSelectedOption = setSelectedOptionFunctions[level];
-    setSelectedOption(selectedOption);
-
-    setLevelSelections(
-      (prevState) =>
-        ({
-          ...prevState,
-          [level]: { selected: selectedOption, isDisabled: levelSelections[level]?.isDisabled },
-        }) satisfies ILevelSelections
+    const isSelectedInOptions = secondLevelOptions.some(
+      (i) => i.value === activeLevelSelections.second?.selected?.value
     );
+    setSecondLevelSelectedOption(
+      isSelectedInOptions
+        ? _activeLevelSelections?.second?.selected || secondLevelOptions[0]
+        : secondLevelOptions[0]
+    );
+  }, [secondLevelOptions, activeLevelSelections, _activeLevelSelections]);
 
-    onLevelSelectionChange({
-      ...levelSelections,
-      [level]: {
-        selected: selectedOption,
-        isDisabled: levelSelections[level]?.isDisabled,
-      },
-    });
-  };
+  const thirdLevelOptions = useMemo(() => {
+    if (!firstLevelSelectedOption || !secondLevelSelectedOption) return [];
 
-  const handleLevelDisabled = (level: 'second' | 'third') => {
-    let newLevelSelections;
-    const thirdSelected = activeLevelSelections.third
-      ? activeLevelSelections.third.selected
-      : LEVEL_DATA_DEFAULT;
+    const THIRD_LEVEL_TABLES = findSecondLevelTables(allTables, secondLevelSelectedOption);
 
-    switch (level) {
-      case 'second':
-        newLevelSelections = {
-          ...activeLevelSelections,
-          second: {
-            selected: activeLevelSelections.second.selected,
-            isDisabled: !activeLevelSelections.second.isDisabled,
-          },
-          third: {
-            selected: thirdSelected,
-            isDisabled: !activeLevelSelections.second.isDisabled,
-          },
-        };
+    return THIRD_LEVEL_TABLES.map((item) => ({
+      value: item._id,
+      label: truncateTableName(item.name),
+    })).filter(
+      (item) =>
+        item.label !== firstLevelSelectedOption.label &&
+        item.value !== secondLevelSelectedOption.value
+    );
+  }, [allTables, firstLevelSelectedOption, secondLevelSelectedOption]);
 
-        break;
-      case 'third':
-        newLevelSelections = {
-          ...levelSelections,
-          third: {
-            selected: thirdSelected,
-            isDisabled: !activeLevelSelections?.third?.isDisabled,
-          },
-        };
-        break;
-    }
+  useEffect(() => {
+    const isSelectedInOptions = thirdLevelOptions.some(
+      (i) => i.value === activeLevelSelections.third?.selected?.value
+    );
+    setThirdLevelSelectedOption(
+      isSelectedInOptions
+        ? _activeLevelSelections?.third?.selected || thirdLevelOptions[0]
+        : thirdLevelOptions[0]
+    );
+    setThirdLevelExists(thirdLevelOptions.length > 0);
+  }, [thirdLevelOptions, activeLevelSelections, _activeLevelSelections]);
 
-    setLevelSelections(newLevelSelections);
-    onLevelSelectionChange(newLevelSelections);
-  };
+  const handleLevelSelection = useCallback(
+    (selectedOption: SelectOption, level: CustomSettingsOption) => {
+      const setSelectedOptionFunctions = {
+        first: setFirstLevelSelectedOption,
+        second: setSecondLevelSelectedOption,
+        third: setThirdLevelSelectedOption,
+      };
+
+      setSelectedOptionFunctions[level](selectedOption);
+
+      setLevelSelections((prevState) => ({
+        ...prevState,
+        [level]: { selected: selectedOption, isDisabled: levelSelections[level]?.isDisabled },
+      }));
+
+      updateLevelSelections({
+        ...levelSelections,
+        [level]: {
+          selected: selectedOption,
+          isDisabled: levelSelections[level]?.isDisabled,
+        },
+      });
+    },
+    [levelSelections, updateLevelSelections]
+  );
+
+  const handleLevelDisabled = useCallback(
+    (level: 'second' | 'third') => {
+      let newLevelSelections;
+      const thirdSelected = activeLevelSelections.third
+        ? activeLevelSelections.third.selected
+        : LEVEL_DATA_DEFAULT;
+
+      switch (level) {
+        case 'second':
+          newLevelSelections = {
+            ...activeLevelSelections,
+            second: {
+              selected: activeLevelSelections.second.selected,
+              isDisabled: !activeLevelSelections.second.isDisabled,
+            },
+            third: {
+              selected: thirdSelected,
+              isDisabled: !activeLevelSelections.second.isDisabled,
+            },
+          };
+          break;
+        case 'third':
+          newLevelSelections = {
+            ...levelSelections,
+            third: {
+              selected: thirdSelected,
+              isDisabled: !activeLevelSelections?.third?.isDisabled,
+            },
+          };
+          break;
+      }
+
+      setLevelSelections(newLevelSelections);
+      updateLevelSelections(newLevelSelections);
+    },
+    [activeLevelSelections, levelSelections, updateLevelSelections]
+  );
 
   return (
     <div
@@ -250,35 +210,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
           </button>
         </div>
         <div>
-          {activeComponents.settingsDropDowns && (
-            <div className={stylesPSettings.settings_dropdowns}>
-              <div>
-                <p className="d-inline-block mb-2">{intl.get('table').d(`${d.table}`)}</p>
-                {/* Toggle table view */}
-                <DtableSelect
-                  value={tableSelectedOption}
-                  options={tableOptions}
-                  onChange={(selectedOption: SelectOption) => {
-                    const type = 'table' as SettingsOption;
-                    onTableOrViewChange(type, selectedOption);
-                  }}
-                />
-              </div>
-              <div>
-                <p className="d-inline-block mb-2 mt-3">{intl.get('view').d(`${d.view}/`)}</p>
-                {/* Toggle table view */}
-                <DtableSelect
-                  value={viewSelectedOption}
-                  options={viewOptions}
-                  onChange={(selectedOption: SelectOption) => {
-                    const type = 'view' satisfies SettingsOption;
-                    onTableOrViewChange(type, selectedOption);
-                  }}
-                />
-              </div>
-            </div>
-          )}
-          {/* CUSTOM SETTINGS */}
           <div className={stylesPSettings.settings_dropdowns}>
             <div>
               <p className="d-inline-block mb-2">
@@ -309,7 +240,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                         handleLevelDisabled('second');
                       }}
                       className={`${
-                        levelSelections.second.isDisabled
+                        activeLevelSelections.second.isDisabled
                           ? stylesPSettings.settings_toggle_btns_active
                           : stylesPSettings.settings_toggle_btns
                       } `}></button>
@@ -319,7 +250,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
               <DtableSelect
                 value={secondLevelSelectedOption}
                 options={secondLevelOptions}
-                isDisabled={levelSelections.second.isDisabled}
+                isDisabled={activeLevelSelections.second.isDisabled}
                 onChange={(selectedOption: SelectOption) => {
                   handleLevelSelection(selectedOption, 'second');
                 }}
@@ -338,12 +269,12 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                         .d(`${d.customSettings.ScnLevelDisabled}`)}
                     </p>
                     <button
-                      disabled={!thirdLevelExists || levelSelections.second.isDisabled}
+                      disabled={!thirdLevelExists || activeLevelSelections.second.isDisabled}
                       onClick={() => {
                         handleLevelDisabled('third');
                       }}
                       className={`${
-                        !thirdLevelExists || levelSelections.third?.isDisabled
+                        !thirdLevelExists || activeLevelSelections.third?.isDisabled
                           ? stylesPSettings.settings_toggle_btns_active
                           : stylesPSettings.settings_toggle_btns
                       } `}></button>
@@ -355,8 +286,8 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                 options={thirdLevelOptions}
                 isDisabled={
                   !thirdLevelExists ||
-                  levelSelections.second.isDisabled ||
-                  levelSelections.third?.isDisabled
+                  activeLevelSelections.second.isDisabled ||
+                  activeLevelSelections.third?.isDisabled
                 }
                 onChange={(selectedOption: SelectOption) => {
                   handleLevelSelection(selectedOption, 'third');

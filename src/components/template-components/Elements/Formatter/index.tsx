@@ -263,7 +263,11 @@ const Formatter: React.FC<IFormatterProps> = ({
       }
       case CellType.FORMULA:
       case CellType.LINK_FORMULA: {
-        const formulaValue = formulaRows[row!._id] ? formulaRows[row!._id][columnKey] : '';
+        if (!row || !row._id) return <div></div>;
+
+        const formulaRow = formulaRows ? formulaRows[row._id] : undefined;
+        const formulaValue = formulaRow ? formulaRow[columnKey] : '';
+
         let formulaFormatter;
         if (!formulaValue) {
           formulaFormatter = <div></div>;
@@ -274,6 +278,7 @@ const Formatter: React.FC<IFormatterProps> = ({
         }
         return formulaFormatter;
       }
+
       case CellType.LINK: {
         const linkMetaData = {
           getLinkedCellValue: function (

@@ -32,7 +32,6 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   updateResizeDetails,
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-
   const { levelTable, levelRows } = getLevelSelectionAndTable(level, allTables, levelSelections);
   const rows = item[levelRows];
   const isClickable = level !== 3 && rows?.length !== 0 && item[levelRows] !== undefined;
@@ -99,7 +98,27 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   };
 
   const levelStyleRows = (level: number) => {
-    return level === 2 ? { paddingLeft: 24 } : undefined;
+    switch (level) {
+      case 0:
+        return undefined;
+      case 1:
+        return { paddingLeft: 10 };
+      case 2:
+        return { paddingLeft: 10 };
+    }
+  };
+  const fontStyleRows = (level: number) => {
+    const style = {
+      width: `${columnWidths.find((width) => width.id === '0000' + currentTable?.name)?.width || 200}px`,
+    };
+    switch (level) {
+      case 0:
+        return { ...style, fontSize: '18px' };
+      case 1:
+        return { ...style, fontSize: '16px' };
+      case 2:
+        return { ...style, fontSize: '15px', fontWeight: 'normal' };
+    }
   };
 
   const minW = minRowWidth - 24 * --level;
@@ -130,13 +149,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
             {isExpanded ? <SlArrowDown size={10} /> : <SlArrowRight size={10} />}
           </button>
         )}
-        <p
-          className={styles.custom_expandableItem_name_col}
-          style={{
-            width: `${
-              columnWidths.find((width) => width.id === '0000' + currentTable?.name)?.width || 200
-            }px`,
-          }}>
+        <p className={styles.custom_expandableItem_name_col} style={fontStyleRows(level)}>
           {item['0000']}
         </p>
         {currentTable?.columns
@@ -172,7 +185,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
           {!rowsEmptyArray && (
             <HeaderRow
               columns={levelTable?.columns}
-              level={level + 1}
+              level={++level + 1}
               tableName={levelTable?.name}
               levelSelections={levelSelections}
               columnWidths={columnWidths}
