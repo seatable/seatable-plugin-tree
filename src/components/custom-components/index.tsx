@@ -24,11 +24,6 @@ import {
 import styles from '../../styles/custom-styles/CustomPlugin.module.scss';
 import { ResizeDetail } from '@/utils/template-utils/interfaces/PluginPresets/Presets.interface';
 
-// Debugging helper function
-const logStateChange = (label: any, value: any) => {
-  console.log(`${label}:`, JSON.stringify(value, null, 2));
-};
-
 const PluginTL: React.FC<IPluginTLProps> = ({
   allTables,
   levelSelections,
@@ -55,11 +50,6 @@ const PluginTL: React.FC<IPluginTLProps> = ({
 
   const { levelTable } = getLevelSelectionAndTable(0, allTables, levelSelections);
 
-  // Log the initial state after it's set
-  useEffect(() => {
-    logStateChange('Initial expandedRowsInfo', expandedRowsInfo);
-  }, []);
-
   const firstLevelTable = useMemo(
     () => allTables.find((t) => t._id === levelSelections.first.selected?.value),
     [JSON.stringify(allTables), levelSelections.first.selected?.value]
@@ -67,21 +57,20 @@ const PluginTL: React.FC<IPluginTLProps> = ({
 
   const handleItemClick = (updatedRow: RowExpandedInfo): void => {
     const updatedRows = updateExpandedState(updatedRow, expandedRowsInfo);
-    logStateChange('Before handleItemClick setExpandedRowsInfo', expandedRowsInfo);
     setExpandedRowsInfo(updatedRows);
-    logStateChange('After handleItemClick setExpandedRowsInfo', updatedRows);
+    const presets = pluginDataStore.presets.map((preset) => {
+      if (preset._id === activePresetId) {
+        return {
+          ...preset,
+          expandedRows: updatedRows,
+        };
+      }
+      return preset;
+    });
 
     window.dtableSDK.updatePluginSettings(PLUGIN_NAME, {
       ...pluginDataStore,
-      presets: pluginDataStore.presets.map((preset) => {
-        if (preset._id === activePresetId) {
-          return {
-            ...preset,
-            expandedRows: updatedRows,
-          };
-        }
-        return preset;
-      }),
+      presets,
     });
 
     setExpandedHasChanged(!expandedHasChanged);
@@ -115,9 +104,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
       newRowsExpandedInfo !== undefined &&
       !isArraysEqual(newRowsExpandedInfo, expandedRowsInfo)
     ) {
-      logStateChange('Before setExpandedRowsInfo in useEffect', expandedRowsInfo);
       setExpandedRowsInfo(newRowsExpandedInfo);
-      logStateChange('After setExpandedRowsInfo in useEffect', newRowsExpandedInfo);
     }
   }, [activePresetId, pluginDataStore.presets]);
 
@@ -129,13 +116,10 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   }, [firstLevelTable]);
 
   const firstRows = useMemo(() => {
-    logStateChange('firstRows useMemo expandedRowsInfo', expandedRowsInfo);
     return getRowsByTableId(levelSelections.first.selected?.value, allTables);
   }, [JSON.stringify(allTables), levelSelections.first.selected?.value]);
 
   const memoizedOutputLevelsInfo = useMemo(() => {
-    logStateChange('memoizedOutputLevelsInfo useMemo expandedRowsInfo', expandedRowsInfo);
-
     if (firstRows && firstLevelTable) {
       const firstTableId = levelSelections.first.selected?.value;
       return outputLevelsInfo(
@@ -157,17 +141,10 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     levelSelections?.third?.selected?.value,
     firstLevelTable,
   ]);
+
   useEffect(() => {
     if (memoizedOutputLevelsInfo) {
-      // Log the current state before any changes
-      logStateChange('Before setExpandedRowsInfo in useEffectSecond', expandedRowsInfo);
-
-      // Log the memoized output levels info
-      logStateChange(
-        'memoizedOutputLevelsInfo.cleanExpandedRowsObj',
-        memoizedOutputLevelsInfo.cleanExpandedRowsObj
-      );
-
+      setFinalResult(memoizedOutputLevelsInfo.cleanFinalResult);
       // Check if the new expanded rows are different from the current ones
       setExpandedRowsInfo((prevExpandedRowsInfo) => {
         const newExpandedRows = isArraysEqual(
@@ -176,10 +153,6 @@ const PluginTL: React.FC<IPluginTLProps> = ({
         )
           ? prevExpandedRowsInfo
           : memoizedOutputLevelsInfo.cleanExpandedRowsObj;
-
-        // Log after the change
-        logStateChange('After setExpandedRowsInfo in useEffectSecond', newExpandedRows);
-
         return prevExpandedRowsInfo !== newExpandedRows ? newExpandedRows : prevExpandedRowsInfo;
       });
     }
@@ -199,8 +172,6 @@ const PluginTL: React.FC<IPluginTLProps> = ({
       setMinRowWidth(Math.max(...rowWidths) || 0);
     }
   }, [finalResult, calculateRowWidths]);
-
-  logStateChange('Before return in render', expandedRowsInfo);
 
   return (
     <>

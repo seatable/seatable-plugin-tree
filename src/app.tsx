@@ -471,10 +471,7 @@ const App: React.FC<IAppProps> = (props) => {
       pluginContext.expandRow(insertedRow, table);
     }
   };
-  console.log(
-    'before return',
-    pluginDataStore.presets.find((preset) => preset._id === activePresetId)?.expandedRows
-  );
+
   if (!isShowPlugin) {
     return null;
   }

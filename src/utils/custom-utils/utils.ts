@@ -130,7 +130,6 @@ export const outputLevelsInfo = (
   thirdLevelId?: string,
   keyName?: string
 ) => {
-  console.log({ utils: expandedRowsInfo[0].expanded });
   const testDisablingLevels = {
     second: levelSelections.second.isDisabled,
     third: levelSelections.third ? levelSelections.third.isDisabled : true,
@@ -175,7 +174,7 @@ export const outputLevelsInfo = (
       ...r,
       columns: linkedColumns,
       '0000': String(r['0000'] || ''),
-      expanded: expandedRowsInfo.find((obj) => obj.id === r._id)?.exp || false,
+      expanded: expandedRowsInfo.find((obj) => obj._id === r._id)?.expanded || false,
       uniqueId: '',
       [keyName ? keyName : 'secondLevelRows']: secondLevelRows,
     } satisfies levelRowInfo);
@@ -312,7 +311,6 @@ function isLevelDisabled(
   finalResult: levelsStructureInfo,
   testDisablingLevels: { second: boolean; third: boolean }
 ) {
-  console.log('first');
   const newResult = _.cloneDeep(finalResult);
 
   newResult.forEach((r) => {
@@ -327,7 +325,6 @@ function isLevelDisabled(
       }
     }
   });
-  console.log({ newResult });
   return newResult;
 }
 
