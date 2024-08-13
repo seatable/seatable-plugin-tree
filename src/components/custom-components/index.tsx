@@ -3,10 +3,10 @@ import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import deepCopy from 'deep-copy';
 import ExpandableItem from './ExpandableItem';
 import HeaderRow from './HeaderRow';
-import { TableColumn } from '../../utils/template-utils/interfaces/Table.interface';
+import { Table, TableColumn } from '../../utils/template-utils/interfaces/Table.interface';
 import { PLUGIN_NAME } from '../../utils/template-utils/constants';
 import {
-  addRowItem,
+  generateUniqueRowId,
   getLevelSelectionAndTable,
   getRowsByTableId,
   isArraysEqual,
@@ -38,6 +38,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   const [finalResult, setFinalResult] = useState<levelsStructureInfo>([]);
   const [columns, setColumns] = useState<TableColumn[]>([]);
   const [tableName, setTableName] = useState<string>('');
+  const [isAdding, setIsAdding] = useState<boolean>(false);
   const [columnWidths, setColumnWidths] = useState<ResizeDetail[]>(
     pluginPresets[activePresetIdx].settings?.resize_details || []
   );
@@ -46,8 +47,10 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   );
   const [expandedHasChanged, setExpandedHasChanged] = useState<boolean>(false);
   const [rowsEmptyArray] = useState<boolean>(false);
-  const [minRowWidth, setMinRowWidth] = useState<number>(0);
+  const [minRowWidth, setMinRowWidth] = useState<number>(100);
+  const [newItemName, setNewItemName] = useState<string>('');
 
+  const collaborators = window.app.state.collaborators;
   const { levelTable } = getLevelSelectionAndTable(0, allTables, levelSelections);
 
   const firstLevelTable = useMemo(
@@ -167,11 +170,37 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     const rowWidths = calculateRowWidths();
 
     if (rowWidths.length === finalResult.length) {
-      setMinRowWidth(0);
+      setMinRowWidth(100);
     } else {
-      setMinRowWidth(Math.max(...rowWidths) || 0);
+      setMinRowWidth(Math.max(...rowWidths) || 100);
     }
   }, [finalResult, calculateRowWidths]);
+
+  const addNewRowToTable = () => {
+    setIsAdding(false);
+
+    if (!newItemName) {
+      setNewItemName('');
+      return;
+    }
+
+    const tableIndex = allTables.findIndex((t: Table) => t._id === levelTable?._id);
+    const rowId = generateUniqueRowId();
+    const newRow = {
+      _participants: [],
+      _creator: collaborators[0].email,
+      _ctime: new Date().toISOString(),
+      _last_modifier: collaborators[0].email,
+      _mtime: new Date().toISOString(),
+      _id: rowId,
+      '0000': newItemName,
+    };
+
+    // create new row in appropriate table
+    const lastRowId = levelTable?.rows[levelTable.rows.length - 1]._id;
+    window.dtableSDK.dtableStore.insertRow(tableIndex, lastRowId, 'insert_below', newRow);
+    setNewItemName('');
+  };
 
   return (
     <>
@@ -203,11 +232,34 @@ const PluginTL: React.FC<IPluginTLProps> = ({
             updateResizeDetails={updateResizeDetails}
           />
         ))}
+      {isAdding && (
+        <div className={styles.custom_expandableItem_rows}>
+          <div
+            className={`${styles.custom_expandableItem} expandableItem`}
+            style={{
+              width: '100%',
+              paddingLeft: 24,
+            }}>
+            <input
+              className={styles.new_row_input}
+              autoFocus={isAdding}
+              onBlur={addNewRowToTable}
+              value={newItemName}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  addNewRowToTable();
+                }
+              }}
+              onChange={(e) => setNewItemName(e.target.value)}
+            />
+          </div>
+        </div>
+      )}
       {levelTable && isLevelSelectionDisabled(1, levelSelections) && (
         <button
           className={styles.custom_p}
           style={paddingAddBtn(0)}
-          onClick={() => addRowItem(levelTable!, isDevelopment)}>
+          onClick={() => setIsAdding(true)}>
           + add {levelTable?.name.toLowerCase()}
         </button>
       )}

@@ -400,7 +400,14 @@ const getInsertedRowInitData = (view: TableView, table: Table, rowID: string) =>
 };
 
 // functions for add row functionality
-const onAddRowItem = (view: TableView, table: Table, rowID: string) => {
+export const onAddRowItem = (
+  view: TableView,
+  table: Table,
+  rowID: string,
+  isDevelopment?: boolean
+) => {
+  if (isDevelopment) return;
+
   const rowData = getInsertedRowInitData(view, table, rowID);
   onInsertRow(table, view, rowData);
 };
@@ -486,4 +493,16 @@ export const paddingAddBtn = (level: number) => {
   } else if (level === 1) {
     return { paddingLeft: 34, paddingBottom: 20 };
   }
+};
+
+export const generateUniqueRowId = (length = 22) => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  const charactersLength = characters.length;
+
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+
+  return result;
 };
