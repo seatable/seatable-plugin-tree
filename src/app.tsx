@@ -217,6 +217,7 @@ const App: React.FC<IAppProps> = (props) => {
       };
       // eslint-disable-next-line
       updatedActiveTableViews = newPresetActiveState?.activeTable?.views!;
+      console.log('newPresetActiveState', newPresetActiveState);
     } else {
       const activePreset = pluginPresets.find((preset) => preset._id === presetId);
 
@@ -253,6 +254,7 @@ const App: React.FC<IAppProps> = (props) => {
 
     setActiveTableViews(updatedActiveTableViews);
     setAppActiveState({ ...updatedActiveState, activeViewRows });
+    console.log("updatedActiveState", updatedActiveState)
   };
 
   /**
@@ -340,6 +342,7 @@ const App: React.FC<IAppProps> = (props) => {
   const onTableOrViewChange = (type: SettingsOption, option: SelectOption) => {
     let _activeViewRows: TableRow[];
     let updatedPluginPresets: PresetsArray;
+
 
     switch (type) {
       case 'table':
@@ -472,6 +475,12 @@ const App: React.FC<IAppProps> = (props) => {
     }
   };
 
+  useEffect(() => {
+    console.log('appActiveState', appActiveState);
+  },[
+    appActiveState
+  ])
+
   if (!isShowPlugin) {
     return null;
   }
@@ -519,6 +528,7 @@ const App: React.FC<IAppProps> = (props) => {
               isDevelopment={isDevelopment}
               pluginPresets={pluginPresets}
               activePresetIdx={activePresetIdx}
+              appActiveState={appActiveState}
               updatePresets={updatePresets}
             />
             {activeComponents.add_row_button && (

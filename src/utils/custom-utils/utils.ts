@@ -222,7 +222,7 @@ export function getLevelSelectionAndTable(
 
   const levelTable = allTables.find((t) => t._id === levelSelection?.selected?.value);
 
-  return { levelTable, levelRows };
+  return { levelTable, levelRows, levelSelectionIdx };
 }
 
 export const isArraysEqual = (a: RowExpandedInfo[], b: RowExpandedInfo[]) => {
@@ -506,3 +506,27 @@ export const generateUniqueRowId = (length = 22) => {
 
   return result;
 };
+
+export const getViewRows = (result: levelsStructureInfo, activeViewRows: TableRow[]) => {
+  const _arr = [];
+
+  for(let i = 0; i < activeViewRows.length; i++) {
+    for(let j = 0; j < result.length; j++) {
+      if(activeViewRows[i]._id === result[j]._id) {
+        _arr.push(result[j]);
+      }
+    }
+  }
+
+  return _arr;
+}
+
+export const sortRowsAlphabetically = (rows: levelRowInfo[], sort = false) => {
+  if (!sort) return rows;
+
+  return rows.sort((a, b) => {
+    if (a['0000'].toLowerCase() < b['0000'].toLowerCase()) return -1;
+    if (a['0000'].toLowerCase() > b['0000'].toLowerCase()) return 1;
+    return 0;
+  });
+}

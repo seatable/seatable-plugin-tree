@@ -18,14 +18,12 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
   const handleMouseDown = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
     col_id: string,
-    col_name: string
   ) => {
     const initialX = event.clientX;
-    const columnName = col_name === 'Name' ? tableName : col_name;
     const prevWidth =
-      columnWidths.find((width: ResizeDetail) => width.id === col_id + columnName)?.width || 200;
+      columnWidths.find((width: ResizeDetail) => width.id === col_id + tableName)?.width || 200;
     const otherWidths = columnWidths.filter(
-      (width: ResizeDetail) => width.id !== col_id + columnName
+      (width: ResizeDetail) => width.id !== col_id + tableName
     );
     let widthChange = 0;
 
@@ -34,14 +32,14 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
 
       setColumnWidths([
         ...otherWidths,
-        { id: col_id + columnName, width: prevWidth + widthChange },
-      ]);
+        { id: col_id + tableName, width: prevWidth + widthChange },
+      ]);  
     };
 
     const handleMouseUp = () => {
       updateResizeDetails([
         ...otherWidths,
-        { id: col_id + columnName, width: prevWidth + widthChange },
+        { id: col_id + tableName, width: prevWidth + widthChange },
       ]);
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
@@ -78,16 +76,15 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
       {columns &&
         isLevelSelectionDisabled(level, levelSelections) &&
         columns.map((column, index) => {
-          const columnName = column.name === 'Name' ? tableName : column.name;
           const width =
-            columnWidths.find((width: ResizeDetail) => width.id === column.key + columnName)
+            columnWidths.find((width: ResizeDetail) => width.id === column.key + tableName)
               ?.width || 200;
           return (
             <ResizableCell
               key={index}
               onHover={onHover}
               handleMouseDown={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
-                handleMouseDown(e, column.key, column.name)
+                handleMouseDown(e, column.key)
               }>
               <div style={{ width }} className={styles.custom_headerColumn}>
                 {getColumnDisplayName(column.name)}

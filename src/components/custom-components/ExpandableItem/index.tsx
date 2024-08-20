@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { ExpandableItemProps, levelRowInfo } from '@/utils/custom-utils/interfaces/CustomPlugin';
 import { getTableById, getRowsByIds, getLinkCellValue } from 'dtable-utils';
@@ -9,6 +10,7 @@ import {
   getLevelSelectionAndTable,
   isLevelSelectionDisabled,
   paddingAddBtn,
+  sortRowsAlphabetically,
 } from '../../../utils/custom-utils/utils';
 import styles from '../../../styles/custom-styles/CustomPlugin.module.scss';
 import stylesFormatter from '../../../styles/template-styles/formatter/Formatter.module.scss';
@@ -35,7 +37,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [newItemName, setNewItemName] = useState<string>('');
 
-  const { levelTable, levelRows } = getLevelSelectionAndTable(level, allTables, levelSelections);
+  const { levelTable, levelRows, levelSelectionIdx } = getLevelSelectionAndTable(level, allTables, levelSelections);
   const rows = item[levelRows];
   const isClickable = level !== 3 && rows?.length !== 0 && item[levelRows] !== undefined;
   const currentTable = allTables.find((table) => table.name === item._name);
@@ -112,7 +114,9 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   };
   const fontStyleRows = (level: number) => {
     const style = {
-      width: `${columnWidths.find((width) => width.id === '0000' + currentTable?.name)?.width || 200}px`,
+      width: `${
+        columnWidths.find((width) => width.id === '0000' + currentTable?.name)?.width || 200
+      }px`,
     };
     switch (level) {
       case 0:
@@ -150,7 +154,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
       _last_modifier: collaborators[0].email,
       _mtime: new Date().toISOString(),
       _id: rowId,
-      '0000': newItemName,
+      [currentTable?.columns[0].key!]: newItemName,
     };
 
     // create new row in appropriate table
@@ -158,8 +162,9 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
     window.dtableSDK.dtableStore.insertRow(tableIndex, lastRowId, 'insert_below', newRow);
 
     // add link to newly created row
-    const linkID = item[levelRows]?.[0]?.columns.find((c) => c.data.table_id === currentTable?._id)
-      ?.data.link_id;
+    const linkID = item[levelRows]?.[0]?.columns.find(
+      (c) => c.data.other_table_id === currentTable?._id
+    )?.data.link_id;
     window.dtableSDK.addLink(linkID, levelTable?._id, currentTable?._id, rowId, item._id);
 
     setNewItemName('');
@@ -198,10 +203,31 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
             className={styles.custom_expandableItem_name_col}
             style={{
               width: `${
-                columnWidths.find((width) => width.id === '0000' + currentTable?.name)?.width || 200
+                columnWidths.find(
+                  (width) =>
+                    width.id === (currentTable?.columns[0].key || '0000') + currentTable?.name
+                )?.width || 200
               }px`,
             }}>
-            {item['0000']}
+            <Formatter
+              column={
+                currentTable?.columns.find(
+                  (c) => c.name.toLowerCase() === 'name' || c.key == currentTable?.columns[0].key
+                )!
+              }
+              row={item}
+              table={levelTable}
+              displayColumnName={false}
+              getLinkCellValue={_getLinkCellValue}
+              getTableById={_getTableById}
+              getRowsByID={getRowsByID}
+              selectedView={viewObj}
+              collaborators={collaborators}
+              getUserCommonInfo={getUserCommonInfo}
+              getMediaUrl={getMediaUrl}
+              formulaRows={formulaRows}
+            />
+            {/* {item['0000']} */}
           </p>
         }
         {currentTable?.columns
@@ -211,7 +237,8 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
               key={column.key}
               style={{
                 width: `${
-                  columnWidths.find((width) => width.id === column.key + column.name)?.width || 200
+                  columnWidths.find((width) => width.id === column.key + currentTable.name)
+                    ?.width || 200
                 }px`,
               }}
               className={stylesFormatter.formatter_cell}>
@@ -245,7 +272,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
               updateResizeDetails={updateResizeDetails}
             />
           )}
-          {rows?.map((i: levelRowInfo) => (
+          {sortRowsAlphabetically(rows || [], levelSelections[levelSelectionIdx!]?.isSorted)?.map((i: levelRowInfo) => (
             <ExpandableItem
               key={i._id}
               item={i}

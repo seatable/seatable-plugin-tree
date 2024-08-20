@@ -1,4 +1,4 @@
-import { IPluginDataStore } from '@/utils/template-utils/interfaces/App.interface';
+import { AppActiveState, IPluginDataStore } from '@/utils/template-utils/interfaces/App.interface';
 import {
   PresetsArray,
   ResizeDetail,
@@ -15,6 +15,7 @@ export interface IPluginTLProps {
   isDevelopment: boolean | undefined;
   pluginPresets: PresetsArray;
   activePresetIdx: number;
+  appActiveState: AppActiveState;
   updatePresets: (
     currentIdx: number,
     presets: PresetsArray,
@@ -32,6 +33,7 @@ export interface ILevelSelections {
 export interface LevelSelection {
   selected: SelectOption;
   isDisabled: boolean;
+  isSorted?: boolean;
 }
 
 export interface levelRowInfo {

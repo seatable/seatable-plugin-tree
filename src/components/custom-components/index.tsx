@@ -3,12 +3,13 @@ import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import deepCopy from 'deep-copy';
 import ExpandableItem from './ExpandableItem';
 import HeaderRow from './HeaderRow';
-import { Table, TableColumn } from '../../utils/template-utils/interfaces/Table.interface';
+import { Table, TableColumn, TableRow } from '../../utils/template-utils/interfaces/Table.interface';
 import { PLUGIN_NAME } from '../../utils/template-utils/constants';
 import {
   generateUniqueRowId,
   getLevelSelectionAndTable,
   getRowsByTableId,
+  getViewRows,
   isArraysEqual,
   isLevelSelectionDisabled,
   outputLevelsInfo,
@@ -29,6 +30,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   levelSelections,
   pluginDataStore,
   activePresetId,
+  appActiveState,
   resetDataValue,
   isDevelopment,
   activePresetIdx,
@@ -147,7 +149,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
 
   useEffect(() => {
     if (memoizedOutputLevelsInfo) {
-      setFinalResult(memoizedOutputLevelsInfo.cleanFinalResult);
+      setFinalResult(getViewRows(memoizedOutputLevelsInfo.cleanFinalResult, (appActiveState.activeViewRows || [])));
       // Check if the new expanded rows are different from the current ones
       setExpandedRowsInfo((prevExpandedRowsInfo) => {
         const newExpandedRows = isArraysEqual(
