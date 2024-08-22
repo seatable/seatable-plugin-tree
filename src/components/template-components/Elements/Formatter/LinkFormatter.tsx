@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { Table, TableColumn, TableRow } from '@/utils/template-utils/interfaces/Table.interface';
+import { TableColumn, TableRow } from '@/utils/template-utils/interfaces/Table.interface';
 import React from 'react';
 import { CellType, getNumberDisplayString, getDateDisplayString } from 'dtable-utils';
 import {
@@ -31,15 +31,9 @@ const LinkFormatter: React.FC<ILinkProps> = ({ column, row, linkMetaData }) => {
 
   const rowIds = getLinkedCellValue(row);
 
-  const getDisplayValue = (linkedTable: Table, row: TableRow, displayColumnKey: string) => {
+  const getDisplayValue = (row: TableRow, displayColumnKey: string) => {
     const value = row[displayColumnKey];
-    const linkedColumn: TableColumn = linkedTable.columns.find(
-      (column) => column.key === displayColumnKey
-    )!;
-
-    if (!linkedColumn) return;
-
-    const { type, data } = linkedColumn;
+    const { array_type: type, array_data: data } = column.data;
 
     switch (type) {
       case CellType.NUMBER: {
@@ -48,6 +42,11 @@ const LinkFormatter: React.FC<ILinkProps> = ({ column, row, linkMetaData }) => {
       case CellType.DATE: {
         const { format } = data;
         return getDateDisplayString(value, format);
+        // return value;
+      }
+      case CellType.SINGLE_SELECT: {
+        const option = data.options.find((item: any) => item.id === value || item.name === value);
+        return option ? option.name : null;
       }
       default:
         return value;
@@ -56,15 +55,24 @@ const LinkFormatter: React.FC<ILinkProps> = ({ column, row, linkMetaData }) => {
 
   const getDisplayValues = () => {
     if (rowIds && Array.isArray(rowIds) && rowIds.length > 0) {
-      const linkedTable =
-        linkMetaData.getLinkedTable(column.data.table_id) ||
-        linkMetaData.getLinkedTable(column.data.other_table_id);
+      const { display_column_key: displayColumnKey } = column.data;
+
+      let linkedTable = linkMetaData.getLinkedTable(column.data.table_id);
+      const linkedColumn: TableColumn = linkedTable.columns.find(
+        (column: TableColumn) => column.key === displayColumnKey
+      )!;
+
+      const { type, data } = linkedColumn;
+
+      if (data && type === CellType.SINGLE_SELECT) {
+        linkedTable = linkMetaData.getLinkedTable(column.data.other_table_id);
+      }
+
       const linkedRows = linkMetaData.getLinkedRows(column.data.table_id, rowIds)[0]
         ? linkMetaData.getLinkedRows(column.data.table_id, rowIds)
         : linkMetaData.getLinkedRows(column.data.other_table_id, rowIds);
       const result = linkedRows.map((row: TableRow, index: number) => {
-        const { display_column_key: displayColumnKey } = column.data;
-        const displayValue = getDisplayValue(linkedTable, row, displayColumnKey);
+        const displayValue = getDisplayValue(row, displayColumnKey);
         return (
           <div key={index} className={styles.linkFormatter_linkItem}>
             <div className={styles.linkFormatter_linkName}>{displayValue}</div>

@@ -11,7 +11,7 @@ const MultipleSelectFormatter: React.FC<IMultipleSelectProps> = ({ value, option
   return (
     <div>
       {_options.map((op: IMultipleSelectOptions) => (
-        <SelectItem option={op} />
+        <SelectItem key={op.id} option={op} />
       ))}
     </div>
   );

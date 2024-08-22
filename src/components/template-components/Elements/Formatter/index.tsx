@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 import React, { useEffect } from 'react';
-import { CellType } from 'dtable-utils';
+import { CellType, getDateDisplayString } from 'dtable-utils';
 import { isValidEmail } from '../../../../utils/template-utils/utils';
 import TextFormatter from '../Formatter/TextFormatter';
 import CollaboratorFormatter from '../Formatter/CollaboratorFormatter';
@@ -110,7 +110,6 @@ const Formatter: React.FC<IFormatterProps> = ({
       case CellType.TEXT:
       case CellType.NUMBER:
       case CellType.AUTO_NUMBER:
-      case CellType.DATE:
       case CellType.EMAIL: {
         let textFormatter;
         if (!_row) {
@@ -119,6 +118,22 @@ const Formatter: React.FC<IFormatterProps> = ({
           const value: string = _row as string;
           textFormatter = (
             <TextFormatter value={value} containerClassName={'ptl-text-editor'} url={false} />
+          );
+        }
+        return textFormatter;
+      }
+      case CellType.DATE: {
+        let textFormatter;
+        if (!_row) {
+          textFormatter = <div></div>;
+        } else {
+          const value: string = _row as string;
+          textFormatter = (
+            <TextFormatter
+              value={getDateDisplayString(value, column.data.format)}
+              containerClassName={'ptl-text-editor'}
+              url={false}
+            />
           );
         }
         return textFormatter;

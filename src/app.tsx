@@ -126,7 +126,6 @@ const App: React.FC<IAppProps> = (props) => {
   };
 
   const resetData = (on: string) => {
-    console.log('resetData');
     setResetDataValue({ t: on, c: resetDataValue.c + 1 });
     const allTables: TableArray = window.dtableSDK.getTables(); // All the Tables of the Base
     const activeTable: Table = window.dtableSDK.getActiveTable(); // How is the ActiveTable Set? allTables[0]?
@@ -217,7 +216,6 @@ const App: React.FC<IAppProps> = (props) => {
       };
       // eslint-disable-next-line
       updatedActiveTableViews = newPresetActiveState?.activeTable?.views!;
-      console.log('newPresetActiveState', newPresetActiveState);
     } else {
       const activePreset = pluginPresets.find((preset) => preset._id === presetId);
 
@@ -254,7 +252,6 @@ const App: React.FC<IAppProps> = (props) => {
 
     setActiveTableViews(updatedActiveTableViews);
     setAppActiveState({ ...updatedActiveState, activeViewRows });
-    console.log("updatedActiveState", updatedActiveState)
   };
 
   /**
@@ -339,10 +336,9 @@ const App: React.FC<IAppProps> = (props) => {
   /**
    * Handles the change of the active table or view, updating the application state and presets accordingly.
    */
-  const onTableOrViewChange = (type: SettingsOption, option: SelectOption) => {
+  const onTableOrViewChange = (type: SettingsOption, option: SelectOption, table: Table) => {
     let _activeViewRows: TableRow[];
     let updatedPluginPresets: PresetsArray;
-
 
     switch (type) {
       case 'table':
@@ -377,12 +373,14 @@ const App: React.FC<IAppProps> = (props) => {
 
       case 'view':
         const _activeTableView =
-          activeTableViews.find((s) => s._id === option.value) || activeTableViews[0];
+          table?.views.find((s) => s._id === option.value) || table?.views[0];
         _activeViewRows = window.dtableSDK.getViewRows(_activeTableView, activeTable);
         setAppActiveState((prevState) => ({
           ...prevState,
           activeTableView: _activeTableView,
           activeViewRows: _activeViewRows,
+          activeTable: table,
+          activeTableName: table.name,
         }));
 
         updatedPluginPresets = pluginPresets.map((preset) =>
@@ -391,6 +389,7 @@ const App: React.FC<IAppProps> = (props) => {
                 ...preset,
                 settings: {
                   ...preset.settings,
+                  selectedTable: { value: table._id, label: table.name },
                   selectedView: { value: _activeTableView._id, label: _activeTableView.name },
                 },
               }
@@ -474,12 +473,6 @@ const App: React.FC<IAppProps> = (props) => {
       pluginContext.expandRow(insertedRow, table);
     }
   };
-
-  useEffect(() => {
-    console.log('appActiveState', appActiveState);
-  },[
-    appActiveState
-  ])
 
   if (!isShowPlugin) {
     return null;

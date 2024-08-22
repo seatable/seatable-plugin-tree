@@ -2,14 +2,14 @@ import { ILevelSelections } from '@/utils/custom-utils/interfaces/CustomPlugin';
 import { SettingsOption } from '../../types';
 import { AppActiveState, IActiveComponents, IPluginDataStore } from './App.interface';
 import { PresetSettings, PresetsArray } from './PluginPresets/Presets.interface';
-import { TableArray, TableViewArray } from './Table.interface';
+import { Table, TableArray, TableViewArray } from './Table.interface';
 
 interface IPluginSettingsProps {
   allTables: TableArray;
   appActiveState: AppActiveState;
   activeTableViews: TableViewArray;
   pluginPresets: PresetsArray;
-  onTableOrViewChange: (type: SettingsOption, option: SelectOption) => void;
+  onTableOrViewChange: (type: SettingsOption, option: SelectOption, table: Table) => void;
   onToggleSettings: () => void;
   isShowSettings: boolean;
   activeComponents: IActiveComponents;

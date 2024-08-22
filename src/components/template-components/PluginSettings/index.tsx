@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import deepCopy from 'deep-copy';
 import DtableSelect from '../Elements/dtable-select';
@@ -94,7 +95,8 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       value: item._id,
       label: truncateTableName(item.name),
     }));
-    const viewSelectedOption = viewOptions.find((item) => item.value === activeTableView?._id) || viewOptions[0];
+    const viewSelectedOption =
+      viewOptions.find((item) => item.value === activeTableView?._id) || viewOptions[0];
 
     setViewOptions(viewOptions);
     setViewSelectedOption(viewSelectedOption);
@@ -176,10 +178,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
         return;
       }
 
-      if(level === 'first'){
-        onTableOrViewChange('table', selectedOption);
-      }
-
       const setSelectedOptionFunctions = {
         first: setFirstLevelSelectedOption,
         second: setSecondLevelSelectedOption,
@@ -219,7 +217,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
               selected: activeLevelSelections.second.selected,
               isDisabled: activeLevelSelections.second.isDisabled,
               isSorted: !activeLevelSelections.second.isSorted,
-            }
+            },
           };
           break;
         case 'third':
@@ -281,7 +279,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     [activeLevelSelections, levelSelections, updateLevelSelections]
   );
 
-  console.log(appActiveState);
   return (
     <div
       className={`bg-white ${
@@ -319,7 +316,11 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                   value={viewSelectedOption}
                   options={viewOptions}
                   onChange={(selectedOption: SelectOption) => {
-                    onTableOrViewChange('view', selectedOption);
+                    onTableOrViewChange(
+                      'view',
+                      selectedOption,
+                      allTables.find((t) => t._id === firstLevelSelectedOption?.value)!
+                    );
                   }}
                 />
               </div>
@@ -333,9 +334,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                   </p>
                   <div className="d-flex align-items-center">
                     <p className="d-inline-block mb-2 mt-3">
-                      {intl
-                        .get('customSettings.LevelSorted')
-                        .d(`${d.customSettings.LevelSorted}`)}
+                      {intl.get('customSettings.LevelSorted').d(`${d.customSettings.LevelSorted}`)}
                     </p>
                     <button
                       onClick={() => {
@@ -369,9 +368,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                   </p>
                   <div className="d-flex align-items-center">
                     <p className="d-inline-block mb-2 mt-3">
-                      {intl
-                        .get('customSettings.LevelSorted')
-                        .d(`${d.customSettings.LevelSorted}`)}
+                      {intl.get('customSettings.LevelSorted').d(`${d.customSettings.LevelSorted}`)}
                     </p>
                     <button
                       onClick={() => {
@@ -394,9 +391,10 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                     : thirdLevelSelectedOption
                 }
                 options={
-                  ((!thirdLevelExists ||
-                  activeLevelSelections.second.isDisabled ||
-                  activeLevelSelections.third?.isDisabled) && activeLevelSelections.second?.isDisabled)
+                  (!thirdLevelExists ||
+                    activeLevelSelections.second.isDisabled ||
+                    activeLevelSelections.third?.isDisabled) &&
+                  activeLevelSelections.second?.isDisabled
                     ? [thirdLevelOptions[0]]
                     : thirdLevelOptions
                 }

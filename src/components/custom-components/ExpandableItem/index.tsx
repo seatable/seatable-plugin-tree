@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { ExpandableItemProps, levelRowInfo } from '@/utils/custom-utils/interfaces/CustomPlugin';
 import { getTableById, getRowsByIds, getLinkCellValue } from 'dtable-utils';
@@ -112,6 +113,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
         return { paddingLeft: 10 };
     }
   };
+
   const fontStyleRows = (level: number) => {
     const style = {
       width: `${
@@ -199,7 +201,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
           </button>
         )}
         {
-          <p
+          <div
             className={styles.custom_expandableItem_name_col}
             style={{
               width: `${
@@ -212,7 +214,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
             <Formatter
               column={
                 currentTable?.columns.find(
-                  (c) => c.name.toLowerCase() === 'name' || c.key == currentTable?.columns[0].key
+                  (c) => c.name.toLowerCase() === 'name' || c.key === currentTable?.columns[0].key
                 )!
               }
               row={item}
@@ -227,8 +229,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
               getMediaUrl={getMediaUrl}
               formulaRows={formulaRows}
             />
-            {/* {item['0000']} */}
-          </p>
+          </div>
         }
         {currentTable?.columns
           .filter((c) => c.name.toLowerCase() !== 'name' && c.key !== '0000')

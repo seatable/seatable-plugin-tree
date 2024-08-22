@@ -3,7 +3,10 @@ import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import deepCopy from 'deep-copy';
 import ExpandableItem from './ExpandableItem';
 import HeaderRow from './HeaderRow';
-import { Table, TableColumn, TableRow } from '../../utils/template-utils/interfaces/Table.interface';
+import {
+  Table,
+  TableColumn,
+} from '../../utils/template-utils/interfaces/Table.interface';
 import { PLUGIN_NAME } from '../../utils/template-utils/constants';
 import {
   generateUniqueRowId,
@@ -148,8 +151,14 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   ]);
 
   useEffect(() => {
+    const activeTableOne = allTables.find((t) => t._id === levelSelections.first.selected?.value);
+    const viewTableOne =
+      activeTableOne?.views.find((v) => v._id === appActiveState.activeTableView?._id) ||
+      activeTableOne?.views[0];
+    const activeViewRows = window.dtableSDK.getViewRows(viewTableOne, activeTableOne);
+
     if (memoizedOutputLevelsInfo) {
-      setFinalResult(getViewRows(memoizedOutputLevelsInfo.cleanFinalResult, (appActiveState.activeViewRows || [])));
+      setFinalResult(getViewRows(memoizedOutputLevelsInfo.cleanFinalResult, activeViewRows || []));
       // Check if the new expanded rows are different from the current ones
       setExpandedRowsInfo((prevExpandedRowsInfo) => {
         const newExpandedRows = isArraysEqual(

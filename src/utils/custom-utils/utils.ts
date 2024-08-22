@@ -519,7 +519,7 @@ export const getViewRows = (result: levelsStructureInfo, activeViewRows: TableRo
   }
 
   return _arr;
-}
+};
 
 export const sortRowsAlphabetically = (rows: levelRowInfo[], sort = false) => {
   if (!sort) return rows;
@@ -529,4 +529,4 @@ export const sortRowsAlphabetically = (rows: levelRowInfo[], sort = false) => {
     if (a['0000'].toLowerCase() > b['0000'].toLowerCase()) return 1;
     return 0;
   });
-}
+};
