@@ -381,7 +381,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                       } `}></button>
                   </div>
                 </div>
-              </div>
+              </div> 
               <DtableSelect
                 value={
                   !thirdLevelExists ||

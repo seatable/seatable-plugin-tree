@@ -4,9 +4,10 @@ import Select, { components } from 'react-select';
 
 const MenuSelectStyle = {
   option: (provided, state) => {
-    const { isDisabled, isSelected, isFocused } = state;
+    const { isDisabled, isSelected, isFocused, value } = state;
     return {
       ...provided,
+      color: value === '00000' ? '#999999' : '#333',
       cursor: isDisabled ? 'default' : 'pointer',
       backgroundColor: isSelected ? '#20a0ff' : isFocused ? '#f5f5f5' : '#fff',
       '.header-icon .dtable-font': {
@@ -22,6 +23,13 @@ const MenuSelectStyle = {
   }),
   menuPortal: (base) => ({ ...base, zIndex: 9999 }),
   indicatorSeparator: () => {},
+  singleValue: (provided, state) => {
+    const value = state.getValue()[0].label;
+    return {
+      ...provided,
+      color: value === 'Not used' ? '#999999' : '#333',
+    };
+  },
 };
 
 const DropdownIndicator = (props) => {
@@ -73,7 +81,7 @@ class DtableSelect extends React.Component {
     menuPortalTarget: PropTypes.string,
     menuPosition: PropTypes.string,
     noOptionsMessage: PropTypes.func,
-    isDisabled: PropTypes.bool, // Add isDisabled prop type
+    isDisabled: PropTypes.bool,
   };
 
   static defaultProps = {
