@@ -130,7 +130,7 @@ export const outputLevelsInfo = (
   thirdLevelId?: string,
   keyName?: string
 ) => {
-  const testDisablingLevels = {
+  const disablingLevels = {
     second: levelSelections.second.isDisabled,
     third: levelSelections.third ? levelSelections.third.isDisabled : true,
   };
@@ -182,8 +182,8 @@ export const outputLevelsInfo = (
 
   const cleanExpandedRowsObj = cleanObjects(finalResult, undefined, 1, undefined);
   let cleanFinalResult;
-  if (testDisablingLevels.second || testDisablingLevels.third) {
-    cleanFinalResult = isLevelDisabled(finalResult, testDisablingLevels);
+  if (disablingLevels.second || disablingLevels.third) {
+    cleanFinalResult = isLevelDisabled(finalResult, disablingLevels);
   } else cleanFinalResult = finalResult;
   return { cleanFinalResult, cleanExpandedRowsObj };
 };

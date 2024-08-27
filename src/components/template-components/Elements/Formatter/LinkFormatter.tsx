@@ -58,9 +58,13 @@ const LinkFormatter: React.FC<ILinkProps> = ({ column, row, linkMetaData }) => {
       const { display_column_key: displayColumnKey } = column.data;
 
       let linkedTable = linkMetaData.getLinkedTable(column.data.table_id);
-      const linkedColumn: TableColumn = linkedTable.columns.find(
+      const linkedColumn: TableColumn | undefined = linkedTable.columns.find(
         (column: TableColumn) => column.key === displayColumnKey
-      )!;
+      );
+
+      if (!linkedColumn) {
+        return null;
+      }
 
       const { type, data } = linkedColumn;
 

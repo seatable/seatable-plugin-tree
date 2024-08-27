@@ -3,10 +3,7 @@ import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import deepCopy from 'deep-copy';
 import ExpandableItem from './ExpandableItem';
 import HeaderRow from './HeaderRow';
-import {
-  Table,
-  TableColumn,
-} from '../../utils/template-utils/interfaces/Table.interface';
+import { Table, TableColumn } from '../../utils/template-utils/interfaces/Table.interface';
 import { PLUGIN_NAME } from '../../utils/template-utils/constants';
 import {
   generateUniqueRowId,
@@ -51,7 +48,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     pluginDataStore.presets.find((preset) => preset._id === activePresetId)?.expandedRows || []
   );
   const [expandedHasChanged, setExpandedHasChanged] = useState<boolean>(false);
-  const [rowsEmptyArray] = useState<boolean>(false);
+  const [rowsEmptyArray, setRowsEmptyArray] = useState<boolean>(false);
   const [minRowWidth, setMinRowWidth] = useState<number>(100);
   const [newItemName, setNewItemName] = useState<string>('');
 
@@ -158,11 +155,14 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     const activeViewRows = window.dtableSDK.getViewRows(viewTableOne, activeTableOne);
 
     if (memoizedOutputLevelsInfo) {
+      setRowsEmptyArray(
+        memoizedOutputLevelsInfo?.cleanFinalResult[0]?.secondLevelRows?.length === 0
+      );
       setFinalResult(getViewRows(memoizedOutputLevelsInfo.cleanFinalResult, activeViewRows || []));
       // Check if the new expanded rows are different from the current ones
       setExpandedRowsInfo((prevExpandedRowsInfo) => {
         const newExpandedRows = isArraysEqual(
-          prevExpandedRowsInfo,
+          prevExpandedRowsInfo, 
           memoizedOutputLevelsInfo.cleanExpandedRowsObj
         )
           ? prevExpandedRowsInfo

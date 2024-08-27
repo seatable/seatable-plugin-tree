@@ -38,7 +38,11 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [newItemName, setNewItemName] = useState<string>('');
 
-  const { levelTable, levelRows, levelSelectionIdx } = getLevelSelectionAndTable(level, allTables, levelSelections);
+  const { levelTable, levelRows, levelSelectionIdx } = getLevelSelectionAndTable(
+    level,
+    allTables,
+    levelSelections
+  );
   const rows = item[levelRows];
   const isClickable = level !== 3 && rows?.length !== 0 && item[levelRows] !== undefined;
   const currentTable = allTables.find((table) => table.name === item._name);
@@ -273,24 +277,26 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
               updateResizeDetails={updateResizeDetails}
             />
           )}
-          {sortRowsAlphabetically(rows || [], levelSelections[levelSelectionIdx!]?.isSorted)?.map((i: levelRowInfo) => (
-            <ExpandableItem
-              key={i._id}
-              item={i}
-              expandedRowsInfo={expandedRowsInfo}
-              handleItemClick={handleItemClick}
-              allTables={allTables}
-              levelSelections={levelSelections}
-              level={level + 1}
-              expandedHasChanged={expandedHasChanged}
-              rowsEmptyArray={rowsEmptyArray}
-              isDevelopment={isDevelopment}
-              columnWidths={columnWidths}
-              minRowWidth={minRowWidth}
-              setColumnWidths={setColumnWidths}
-              updateResizeDetails={updateResizeDetails}
-            />
-          ))}
+          {sortRowsAlphabetically(rows || [], levelSelections[levelSelectionIdx!]?.isSorted)?.map(
+            (i: levelRowInfo) => (
+              <ExpandableItem
+                key={i._id}
+                item={i}
+                expandedRowsInfo={expandedRowsInfo}
+                handleItemClick={handleItemClick}
+                allTables={allTables}
+                levelSelections={levelSelections}
+                level={level + 1}
+                expandedHasChanged={expandedHasChanged}
+                rowsEmptyArray={rowsEmptyArray}
+                isDevelopment={isDevelopment}
+                columnWidths={columnWidths}
+                minRowWidth={minRowWidth}
+                setColumnWidths={setColumnWidths}
+                updateResizeDetails={updateResizeDetails}
+              />
+            )
+          )}
           {isAdding && (
             <div className={styles.custom_expandableItem_rows}>
               <div
