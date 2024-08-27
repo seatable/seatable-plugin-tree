@@ -145,6 +145,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     JSON.stringify(allTables),
     levelSelections?.third?.selected?.value,
     firstLevelTable,
+    resetDataValue,
   ]);
 
   useEffect(() => {
@@ -162,7 +163,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
       // Check if the new expanded rows are different from the current ones
       setExpandedRowsInfo((prevExpandedRowsInfo) => {
         const newExpandedRows = isArraysEqual(
-          prevExpandedRowsInfo, 
+          prevExpandedRowsInfo,
           memoizedOutputLevelsInfo.cleanExpandedRowsObj
         )
           ? prevExpandedRowsInfo

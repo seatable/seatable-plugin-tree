@@ -11,7 +11,7 @@ export interface IPluginTLProps {
   levelSelections: ILevelSelections;
   pluginDataStore: IPluginDataStore;
   activePresetId: string;
-  resetDataValue: { t: string; c: number };
+  resetDataValue: { t: string };
   isDevelopment: boolean | undefined;
   pluginPresets: PresetsArray;
   activePresetIdx: number;
