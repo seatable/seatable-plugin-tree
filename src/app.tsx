@@ -60,7 +60,7 @@ import { LEVEL_SEL_DEFAULT } from './utils/custom-utils/constants';
 const App: React.FC<IAppProps> = (props) => {
   const { isDevelopment, lang } = props;
   const { [DEFAULT_LOCALE]: d } = AVAILABLE_LOCALES;
-  const [resetDataValue, setResetDataValue] = useState<{ t: string; c: number }>({ t: '', c: 0 });
+  const [resetDataValue, setResetDataValue] = useState<{ t: string }>({ t: '' });
 
   // Boolean state to show/hide the plugin's components
   const [isShowState, setIsShowState] = useState<AppIsShowState>(INITIAL_IS_SHOW_STATE);
@@ -123,10 +123,10 @@ const App: React.FC<IAppProps> = (props) => {
 
   const onDTableChanged = () => {
     resetData('DTChanged');
+    setResetDataValue({ t: 'DTChanged' });
   };
 
   const resetData = (on: string) => {
-    setResetDataValue({ t: on, c: resetDataValue.c + 1 });
     const allTables: TableArray = window.dtableSDK.getTables(); // All the Tables of the Base
     const activeTable: Table = window.dtableSDK.getActiveTable(); // How is the ActiveTable Set? allTables[0]?
     const activeTableViews: TableViewArray = activeTable.views; // All the Views of the specific Active Table
