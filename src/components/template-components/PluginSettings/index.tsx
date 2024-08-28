@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import deepCopy from 'deep-copy';
 import DtableSelect from '../Elements/dtable-select';
@@ -31,11 +32,14 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   pluginPresets,
   updatePresets,
 }) => {
+  const { activeTableView } = appActiveState;
   const [firstLevelSelectedOption, setFirstLevelSelectedOption] = useState<SelectOption>();
   const [secondLevelSelectedOption, setSecondLevelSelectedOption] = useState<SelectOption>();
   const [thirdLevelSelectedOption, setThirdLevelSelectedOption] = useState<SelectOption>();
   const [thirdLevelExists, setThirdLevelExists] = useState<boolean>(true);
   const [levelSelections, setLevelSelections] = useState<ILevelSelections>(activeLevelSelections);
+  const [viewOptions, setViewOptions] = useState<SelectOption[]>();
+  const [viewSelectedOption, setViewSelectedOption] = useState<SelectOption>();
 
   const _activeLevelSelections = useMemo(
     () => pluginPresets.find((p) => p._id === appActiveState.activePresetId)?.customSettings,
@@ -80,16 +84,35 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
 
   useEffect(() => {
     setFirstLevelSelectedOption(_activeLevelSelections?.first?.selected || firstLevelOptions[0]);
+    const _table = allTables.find(
+      (table) =>
+        table._id === (_activeLevelSelections?.first?.selected?.value || firstLevelOptions[0].value)
+    );
+    const _views = _table?.views || [];
+
+    // Create options for views
+    const viewOptions = _views.map((item) => ({
+      value: item._id,
+      label: truncateTableName(item.name),
+    }));
+    const viewSelectedOption =
+      viewOptions.find((item) => item.value === activeTableView?._id) || viewOptions[0];
+
+    setViewOptions(viewOptions);
+    setViewSelectedOption(viewSelectedOption);
   }, [firstLevelOptions, _activeLevelSelections]);
 
   const secondLevelOptions = useMemo(() => {
     if (!firstLevelSelectedOption) return [];
     const SECOND_LEVEL_TABLES = findSecondLevelTables(allTables, firstLevelSelectedOption);
 
-    return SECOND_LEVEL_TABLES.map((item) => ({
-      value: item._id,
-      label: truncateTableName(item.name),
-    }));
+    return [
+      { value: '00000', label: 'Not used' },
+      ...SECOND_LEVEL_TABLES.map((item) => ({
+        value: item._id,
+        label: truncateTableName(item.name),
+      })),
+    ];
   }, [allTables, firstLevelSelectedOption]);
 
   useEffect(() => {
@@ -108,10 +131,13 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
 
     const THIRD_LEVEL_TABLES = findSecondLevelTables(allTables, secondLevelSelectedOption);
 
-    return THIRD_LEVEL_TABLES.map((item) => ({
-      value: item._id,
-      label: truncateTableName(item.name),
-    })).filter(
+    return [
+      { value: '00000', label: 'Not used' },
+      ...THIRD_LEVEL_TABLES.map((item) => ({
+        value: item._id,
+        label: truncateTableName(item.name),
+      })),
+    ].filter(
       (item) =>
         item.label !== firstLevelSelectedOption.label &&
         item.value !== secondLevelSelectedOption.value
@@ -132,6 +158,26 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
 
   const handleLevelSelection = useCallback(
     (selectedOption: SelectOption, level: CustomSettingsOption) => {
+      if (selectedOption.value === '00000') {
+        if (level === 'second') {
+          if (activeLevelSelections.second.isDisabled) return;
+          handleLevelDisabled('second');
+        } else {
+          if (activeLevelSelections.third?.isDisabled) return;
+          handleLevelDisabled('third');
+        }
+
+        return;
+      }
+
+      if (level === 'second' && activeLevelSelections.second.isDisabled) {
+        handleLevelDisabled('second');
+        return;
+      } else if (level === 'third' && activeLevelSelections.third?.isDisabled) {
+        handleLevelDisabled('third');
+        return;
+      }
+
       const setSelectedOptionFunctions = {
         first: setFirstLevelSelectedOption,
         second: setSecondLevelSelectedOption,
@@ -156,6 +202,42 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     [levelSelections, updateLevelSelections]
   );
 
+  const handleLevelSorting = useCallback(
+    (level: 'second' | 'third') => {
+      let newLevelSelections;
+      const thirdSelected = activeLevelSelections.third
+        ? activeLevelSelections.third.selected
+        : LEVEL_DATA_DEFAULT;
+
+      switch (level) {
+        case 'second':
+          newLevelSelections = {
+            ...activeLevelSelections,
+            second: {
+              selected: activeLevelSelections.second.selected,
+              isDisabled: activeLevelSelections.second.isDisabled,
+              isSorted: !activeLevelSelections.second.isSorted,
+            },
+          };
+          break;
+        case 'third':
+          newLevelSelections = {
+            ...levelSelections,
+            third: {
+              selected: thirdSelected,
+              isDisabled: activeLevelSelections.third!.isDisabled,
+              isSorted: !activeLevelSelections?.third?.isSorted,
+            },
+          };
+          break;
+      }
+
+      setLevelSelections(newLevelSelections);
+      updateLevelSelections(newLevelSelections);
+    },
+    [activeLevelSelections, levelSelections, updateLevelSelections]
+  );
+
   const handleLevelDisabled = useCallback(
     (level: 'second' | 'third') => {
       let newLevelSelections;
@@ -170,10 +252,12 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
             second: {
               selected: activeLevelSelections.second.selected,
               isDisabled: !activeLevelSelections.second.isDisabled,
+              isSorted: activeLevelSelections.second.isSorted,
             },
             third: {
               selected: thirdSelected,
               isDisabled: !activeLevelSelections.second.isDisabled,
+              isSorted: activeLevelSelections.third?.isSorted,
             },
           };
           break;
@@ -183,6 +267,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
             third: {
               selected: thirdSelected,
               isDisabled: !activeLevelSelections?.third?.isDisabled,
+              isSorted: activeLevelSelections.third?.isSorted,
             },
           };
           break;
@@ -210,19 +295,37 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
           </button>
         </div>
         <div>
-          <div className={stylesPSettings.settings_dropdowns}>
-            <div>
-              <p className="d-inline-block mb-2">
-                {intl.get('customSettings.1stLevel').d(`${d.table}`)}
-              </p>
-              <DtableSelect
-                value={firstLevelSelectedOption}
-                options={firstLevelOptions}
-                onChange={(selectedOption: SelectOption) => {
-                  handleLevelSelection(selectedOption, 'first');
-                }}
-              />
+          <div className={stylesPSettings.settings_dropdowns} style={{ border: 'none' }}>
+            <div className={stylesPSettings.settings_dropdowns}>
+              <div>
+                <p className="d-inline-block mb-2">
+                  {intl.get('customSettings.1stLevel').d(`${d.table}`)}
+                </p>
+                <DtableSelect
+                  value={firstLevelSelectedOption}
+                  options={firstLevelOptions}
+                  onChange={(selectedOption: SelectOption) => {
+                    handleLevelSelection(selectedOption, 'first');
+                  }}
+                />
+              </div>
+              <div>
+                <p className="d-inline-block mb-2 mt-3">{intl.get('view').d(`${d.view}`)}</p>
+                {/* Toggle table view */}
+                <DtableSelect
+                  value={viewSelectedOption}
+                  options={viewOptions}
+                  onChange={(selectedOption: SelectOption) => {
+                    onTableOrViewChange(
+                      'view',
+                      selectedOption,
+                      allTables.find((t) => t._id === firstLevelSelectedOption?.value)!
+                    );
+                  }}
+                />
+              </div>
             </div>
+
             <div>
               <div className={'mt-2'}>
                 <div className="mt-2 d-flex align-items-center justify-content-between">
@@ -231,16 +334,14 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                   </p>
                   <div className="d-flex align-items-center">
                     <p className="d-inline-block mb-2 mt-3">
-                      {intl
-                        .get('customSettings.ScnLevelDisabled')
-                        .d(`${d.customSettings.ScnLevelDisabled}`)}
+                      {intl.get('customSettings.LevelSorted').d(`${d.customSettings.LevelSorted}`)}
                     </p>
                     <button
                       onClick={() => {
-                        handleLevelDisabled('second');
+                        handleLevelSorting('second');
                       }}
                       className={`${
-                        activeLevelSelections.second.isDisabled
+                        activeLevelSelections.second.isSorted
                           ? stylesPSettings.settings_toggle_btns_active
                           : stylesPSettings.settings_toggle_btns
                       } `}></button>
@@ -248,9 +349,12 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                 </div>
               </div>
               <DtableSelect
-                value={secondLevelSelectedOption}
+                value={
+                  activeLevelSelections.second.isDisabled
+                    ? secondLevelOptions[0]
+                    : secondLevelSelectedOption
+                }
                 options={secondLevelOptions}
-                isDisabled={activeLevelSelections.second.isDisabled}
                 onChange={(selectedOption: SelectOption) => {
                   handleLevelSelection(selectedOption, 'second');
                 }}
@@ -264,30 +368,35 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                   </p>
                   <div className="d-flex align-items-center">
                     <p className="d-inline-block mb-2 mt-3">
-                      {intl
-                        .get('customSettings.ScnLevelDisabled')
-                        .d(`${d.customSettings.ScnLevelDisabled}`)}
+                      {intl.get('customSettings.LevelSorted').d(`${d.customSettings.LevelSorted}`)}
                     </p>
                     <button
-                      disabled={!thirdLevelExists || activeLevelSelections.second.isDisabled}
                       onClick={() => {
-                        handleLevelDisabled('third');
+                        handleLevelSorting('third');
                       }}
                       className={`${
-                        !thirdLevelExists || activeLevelSelections.third?.isDisabled
+                        activeLevelSelections.third?.isSorted
                           ? stylesPSettings.settings_toggle_btns_active
                           : stylesPSettings.settings_toggle_btns
                       } `}></button>
                   </div>
                 </div>
-              </div>
+              </div> 
               <DtableSelect
-                value={thirdLevelSelectedOption}
-                options={thirdLevelOptions}
-                isDisabled={
+                value={
                   !thirdLevelExists ||
                   activeLevelSelections.second.isDisabled ||
                   activeLevelSelections.third?.isDisabled
+                    ? thirdLevelOptions[0]
+                    : thirdLevelSelectedOption
+                }
+                options={
+                  (!thirdLevelExists ||
+                    activeLevelSelections.second.isDisabled ||
+                    activeLevelSelections.third?.isDisabled) &&
+                  activeLevelSelections.second?.isDisabled
+                    ? [thirdLevelOptions[0]]
+                    : thirdLevelOptions
                 }
                 onChange={(selectedOption: SelectOption) => {
                   handleLevelSelection(selectedOption, 'third');

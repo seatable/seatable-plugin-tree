@@ -130,7 +130,7 @@ export const outputLevelsInfo = (
   thirdLevelId?: string,
   keyName?: string
 ) => {
-  const testDisablingLevels = {
+  const disablingLevels = {
     second: levelSelections.second.isDisabled,
     third: levelSelections.third ? levelSelections.third.isDisabled : true,
   };
@@ -182,8 +182,8 @@ export const outputLevelsInfo = (
 
   const cleanExpandedRowsObj = cleanObjects(finalResult, undefined, 1, undefined);
   let cleanFinalResult;
-  if (testDisablingLevels.second || testDisablingLevels.third) {
-    cleanFinalResult = isLevelDisabled(finalResult, testDisablingLevels);
+  if (disablingLevels.second || disablingLevels.third) {
+    cleanFinalResult = isLevelDisabled(finalResult, disablingLevels);
   } else cleanFinalResult = finalResult;
   return { cleanFinalResult, cleanExpandedRowsObj };
 };
@@ -222,7 +222,7 @@ export function getLevelSelectionAndTable(
 
   const levelTable = allTables.find((t) => t._id === levelSelection?.selected?.value);
 
-  return { levelTable, levelRows };
+  return { levelTable, levelRows, levelSelectionIdx };
 }
 
 export const isArraysEqual = (a: RowExpandedInfo[], b: RowExpandedInfo[]) => {
@@ -488,10 +488,10 @@ const onInsertRow = (table: Table, view: TableView, rowData: { [key: string]: an
 };
 
 export const paddingAddBtn = (level: number) => {
-  if (level === 0 || level === 2) {
+  if (level === 0) {
     return { paddingLeft: 34, paddingBottom: 20 };
-  } else if (level === 1) {
-    return { paddingLeft: 34, paddingBottom: 20 };
+  } else if (level === 1 || level === 2) {
+    return { paddingLeft: 44, paddingBottom: 20 };
   }
 };
 
@@ -505,4 +505,28 @@ export const generateUniqueRowId = (length = 22) => {
   }
 
   return result;
+};
+
+export const getViewRows = (result: levelsStructureInfo, activeViewRows: TableRow[]) => {
+  const _arr = [];
+
+  for (let i = 0; i < activeViewRows.length; i++) {
+    for (let j = 0; j < result.length; j++) {
+      if (activeViewRows[i]._id === result[j]._id) {
+        _arr.push(result[j]);
+      }
+    }
+  }
+
+  return _arr;
+};
+
+export const sortRowsAlphabetically = (rows: levelRowInfo[], sort = false) => {
+  if (!sort) return rows;
+
+  return rows.sort((a, b) => {
+    if (a['0000'].toLowerCase() < b['0000'].toLowerCase()) return -1;
+    if (a['0000'].toLowerCase() > b['0000'].toLowerCase()) return 1;
+    return 0;
+  });
 };

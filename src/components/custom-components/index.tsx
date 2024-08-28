@@ -9,6 +9,7 @@ import {
   generateUniqueRowId,
   getLevelSelectionAndTable,
   getRowsByTableId,
+  getViewRows,
   isArraysEqual,
   isLevelSelectionDisabled,
   outputLevelsInfo,
@@ -29,6 +30,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   levelSelections,
   pluginDataStore,
   activePresetId,
+  appActiveState,
   resetDataValue,
   isDevelopment,
   activePresetIdx,
@@ -46,7 +48,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     pluginDataStore.presets.find((preset) => preset._id === activePresetId)?.expandedRows || []
   );
   const [expandedHasChanged, setExpandedHasChanged] = useState<boolean>(false);
-  const [rowsEmptyArray] = useState<boolean>(false);
+  const [rowsEmptyArray, setRowsEmptyArray] = useState<boolean>(false);
   const [minRowWidth, setMinRowWidth] = useState<number>(100);
   const [newItemName, setNewItemName] = useState<string>('');
 
@@ -143,11 +145,21 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     JSON.stringify(allTables),
     levelSelections?.third?.selected?.value,
     firstLevelTable,
+    resetDataValue,
   ]);
 
   useEffect(() => {
+    const activeTableOne = allTables.find((t) => t._id === levelSelections.first.selected?.value);
+    const viewTableOne =
+      activeTableOne?.views.find((v) => v._id === appActiveState.activeTableView?._id) ||
+      activeTableOne?.views[0];
+    const activeViewRows = window.dtableSDK.getViewRows(viewTableOne, activeTableOne);
+
     if (memoizedOutputLevelsInfo) {
-      setFinalResult(memoizedOutputLevelsInfo.cleanFinalResult);
+      setRowsEmptyArray(
+        memoizedOutputLevelsInfo?.cleanFinalResult[0]?.secondLevelRows?.length === 0
+      );
+      setFinalResult(getViewRows(memoizedOutputLevelsInfo.cleanFinalResult, activeViewRows || []));
       // Check if the new expanded rows are different from the current ones
       setExpandedRowsInfo((prevExpandedRowsInfo) => {
         const newExpandedRows = isArraysEqual(

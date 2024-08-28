@@ -60,7 +60,7 @@ import { LEVEL_SEL_DEFAULT } from './utils/custom-utils/constants';
 const App: React.FC<IAppProps> = (props) => {
   const { isDevelopment, lang } = props;
   const { [DEFAULT_LOCALE]: d } = AVAILABLE_LOCALES;
-  const [resetDataValue, setResetDataValue] = useState<{ t: string; c: number }>({ t: '', c: 0 });
+  const [resetDataValue, setResetDataValue] = useState<{ t: string }>({ t: '' });
 
   // Boolean state to show/hide the plugin's components
   const [isShowState, setIsShowState] = useState<AppIsShowState>(INITIAL_IS_SHOW_STATE);
@@ -123,11 +123,10 @@ const App: React.FC<IAppProps> = (props) => {
 
   const onDTableChanged = () => {
     resetData('DTChanged');
+    setResetDataValue({ t: 'DTChanged' });
   };
 
   const resetData = (on: string) => {
-    console.log('resetData');
-    setResetDataValue({ t: on, c: resetDataValue.c + 1 });
     const allTables: TableArray = window.dtableSDK.getTables(); // All the Tables of the Base
     const activeTable: Table = window.dtableSDK.getActiveTable(); // How is the ActiveTable Set? allTables[0]?
     const activeTableViews: TableViewArray = activeTable.views; // All the Views of the specific Active Table
@@ -337,7 +336,7 @@ const App: React.FC<IAppProps> = (props) => {
   /**
    * Handles the change of the active table or view, updating the application state and presets accordingly.
    */
-  const onTableOrViewChange = (type: SettingsOption, option: SelectOption) => {
+  const onTableOrViewChange = (type: SettingsOption, option: SelectOption, table: Table) => {
     let _activeViewRows: TableRow[];
     let updatedPluginPresets: PresetsArray;
 
@@ -374,12 +373,14 @@ const App: React.FC<IAppProps> = (props) => {
 
       case 'view':
         const _activeTableView =
-          activeTableViews.find((s) => s._id === option.value) || activeTableViews[0];
+          table?.views.find((s) => s._id === option.value) || table?.views[0];
         _activeViewRows = window.dtableSDK.getViewRows(_activeTableView, activeTable);
         setAppActiveState((prevState) => ({
           ...prevState,
           activeTableView: _activeTableView,
           activeViewRows: _activeViewRows,
+          activeTable: table,
+          activeTableName: table.name,
         }));
 
         updatedPluginPresets = pluginPresets.map((preset) =>
@@ -388,6 +389,7 @@ const App: React.FC<IAppProps> = (props) => {
                 ...preset,
                 settings: {
                   ...preset.settings,
+                  selectedTable: { value: table._id, label: table.name },
                   selectedView: { value: _activeTableView._id, label: _activeTableView.name },
                 },
               }
@@ -519,6 +521,7 @@ const App: React.FC<IAppProps> = (props) => {
               isDevelopment={isDevelopment}
               pluginPresets={pluginPresets}
               activePresetIdx={activePresetIdx}
+              appActiveState={appActiveState}
               updatePresets={updatePresets}
             />
             {activeComponents.add_row_button && (

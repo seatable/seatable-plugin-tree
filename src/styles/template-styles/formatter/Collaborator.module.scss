@@ -1,0 +1,22 @@
+.collaborator {
+  align-items: center;
+  background: #eaeaea;
+  border-radius: 10px;
+  display: flex;
+  font-size: 13px;
+  height: 20px;
+  margin-right: 10px;
+  padding: 0 8px 0 2px;
+  overflow: hidden;
+
+  img {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+  }
+
+  p {
+    line-height: 20px;
+    margin-left: 5px;
+  }
+}
