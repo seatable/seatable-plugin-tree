@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { ExpandableItemProps, levelRowInfo } from '@/utils/custom-utils/interfaces/CustomPlugin';
-import { getTableById, getRowsByIds, getLinkCellValue } from 'dtable-utils';
+import { getTableById, getRowsByIds, getLinkCellValue, CellType } from 'dtable-utils';
 import HeaderRow from '../HeaderRow';
 import { Table, TableRow, TableView } from '@/utils/template-utils/interfaces/Table.interface';
 import {
@@ -37,6 +37,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [newItemName, setNewItemName] = useState<string>('');
+  const [isSingleSelectColumn, setIsSingleSelectColumn] = useState<boolean>(false);
 
   const { levelTable, levelRows, levelSelectionIdx } = getLevelSelectionAndTable(
     level,
@@ -89,11 +90,11 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   }, []);
 
   const formulaRows = useMemo(() => {
-    if (levelTable) {
-      return getTableFormulaRows(levelTable, viewObj as TableView);
+    if (currentTable) {
+      return getTableFormulaRows(currentTable, viewObj as TableView);
     }
     return undefined;
-  }, [levelTable, viewObj, getTableFormulaRows]);
+  }, [currentTable, viewObj, getTableFormulaRows]);
 
   const collaborators = window.app.state.collaborators;
 
@@ -143,10 +144,10 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
     pluginContext.expandRow(row, currentTable);
   };
 
-  const addNewRowToTable = () => {
+  const addNewRowToTable = (noValue?: boolean, givenValue?: string) => {
     setIsAdding(false);
 
-    if (!newItemName) {
+    if (!newItemName && !noValue && !givenValue) {
       setNewItemName('');
       return;
     }
@@ -160,7 +161,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
       _last_modifier: collaborators[0].email,
       _mtime: new Date().toISOString(),
       _id: rowId,
-      [currentTable?.columns[0].key!]: newItemName,
+      ...(noValue ? {} : { [levelTable?.columns[0].key!]: givenValue || newItemName }),
     };
 
     // create new row in appropriate table
@@ -175,6 +176,25 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
 
     setNewItemName('');
   };
+
+  const firstColumn = levelTable?.columns[0];
+
+  const isShowNewRowInput = () => {
+    if (firstColumn?.type === CellType.AUTO_NUMBER || firstColumn?.type === CellType.FORMULA) {
+      addNewRowToTable(true);
+
+      return;
+    }
+
+    if (firstColumn?.type === CellType.SINGLE_SELECT) {
+      setIsSingleSelectColumn(true);
+      return;
+    }
+
+    setIsAdding(true);
+  };
+
+
 
   return (
     <div className={styles.custom_expandableItem_rows} style={levelStyleRows(level)}>
@@ -210,15 +230,14 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
             style={{
               width: `${
                 columnWidths.find(
-                  (width) =>
-                    width.id === (currentTable?.columns[0].key || '0000') + currentTable?.name
+                  (width) => width.id === (firstColumn?.key || '0000') + currentTable?.name
                 )?.width || 200
               }px`,
             }}>
             <Formatter
               column={
                 currentTable?.columns.find(
-                  (c) => c.name.toLowerCase() === 'name' || c.key === currentTable?.columns[0].key
+                  (c) => c.name.toLowerCase() === 'name' || c.key === firstColumn?.key
                 )!
               }
               row={item}
@@ -306,9 +325,10 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
                   ...levelStyleRows(level + 2),
                 }}>
                 <input
+                  type={CellType.NUMBER === firstColumn?.type ? 'number' : 'text'}
                   className={styles.new_row_input}
                   autoFocus={isAdding}
-                  onBlur={addNewRowToTable}
+                  onBlur={(e) => addNewRowToTable()}
                   value={newItemName}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
@@ -320,13 +340,39 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
               </div>
             </div>
           )}
+          {isSingleSelectColumn && (
+            <div className={styles.custom_expandableItem_rows}>
+              <div
+                className={`${styles.custom_expandableItem} expandableItem`}
+                style={{
+                  width: '100%',
+                  paddingLeft: 24,
+                }}>
+                {firstColumn?.data.options?.map((op: any) => (
+                  <div key={op.id} className={styles.custom_single_select_row}>
+                    <input
+                      onChange={() => {
+                        setIsSingleSelectColumn(false);
+                        addNewRowToTable(false, op.id);
+                      }}
+                      type="radio"
+                      name=""
+                      id={op.id}
+                      value={op.id}
+                    />
+                    <label style={{ background: op.color, color: op.textColor }}>{op.name}</label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
           {!rowsEmptyArray &&
             isLevelSelectionDisabled(level + 1, levelSelections) &&
             levelTable && (
               <button
                 className={styles.custom_p}
                 style={paddingAddBtn(level)}
-                onClick={() => setIsAdding(true)}>
+                onClick={isShowNewRowInput}>
                 + add {levelTable?.name.toLowerCase()}
               </button>
             )}

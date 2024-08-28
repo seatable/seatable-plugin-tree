@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import deepCopy from 'deep-copy';
 import ExpandableItem from './ExpandableItem';
 import HeaderRow from './HeaderRow';
 import { Table, TableColumn } from '../../utils/template-utils/interfaces/Table.interface';
 import { PLUGIN_NAME } from '../../utils/template-utils/constants';
+import { CellType } from 'dtable-utils';
 import {
   generateUniqueRowId,
   getLevelSelectionAndTable,
@@ -48,9 +51,10 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     pluginDataStore.presets.find((preset) => preset._id === activePresetId)?.expandedRows || []
   );
   const [expandedHasChanged, setExpandedHasChanged] = useState<boolean>(false);
+  const [isSingleSelectColumn, setIsSingleSelectColumn] = useState<boolean>(false);
   const [rowsEmptyArray, setRowsEmptyArray] = useState<boolean>(false);
   const [minRowWidth, setMinRowWidth] = useState<number>(100);
-  const [newItemName, setNewItemName] = useState<string>('');
+  const [newItemName, setNewItemName] = useState<any>('');
 
   const collaborators = window.app.state.collaborators;
   const { levelTable } = getLevelSelectionAndTable(0, allTables, levelSelections);
@@ -188,10 +192,10 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     }
   }, [finalResult, calculateRowWidths]);
 
-  const addNewRowToTable = () => {
+  const addNewRowToTable = (noValue?: boolean, givenValue?: string) => {
     setIsAdding(false);
 
-    if (!newItemName) {
+    if (!newItemName && !noValue && !givenValue) {
       setNewItemName('');
       return;
     }
@@ -205,13 +209,30 @@ const PluginTL: React.FC<IPluginTLProps> = ({
       _last_modifier: collaborators[0].email,
       _mtime: new Date().toISOString(),
       _id: rowId,
-      '0000': newItemName,
+      ...(noValue ? {} : { [levelTable?.columns[0].key!]: givenValue || newItemName }),
     };
 
     // create new row in appropriate table
     const lastRowId = levelTable?.rows[levelTable.rows.length - 1]._id;
     window.dtableSDK.dtableStore.insertRow(tableIndex, lastRowId, 'insert_below', newRow);
     setNewItemName('');
+  };
+
+  const firstColumn = levelTable?.columns[0];
+
+  const isShowNewRowInput = () => {
+    if (firstColumn?.type === CellType.AUTO_NUMBER || firstColumn?.type === CellType.FORMULA) {
+      addNewRowToTable(true);
+
+      return;
+    }
+
+    if (firstColumn?.type === CellType.SINGLE_SELECT) {
+      setIsSingleSelectColumn(true);
+      return;
+    }
+
+    setIsAdding(true);
   };
 
   return (
@@ -253,9 +274,10 @@ const PluginTL: React.FC<IPluginTLProps> = ({
               paddingLeft: 24,
             }}>
             <input
+              type={CellType.NUMBER === firstColumn?.type ? 'number' : 'text'}
               className={styles.new_row_input}
               autoFocus={isAdding}
-              onBlur={addNewRowToTable}
+              onBlur={(e) => addNewRowToTable()}
               value={newItemName}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
@@ -267,11 +289,34 @@ const PluginTL: React.FC<IPluginTLProps> = ({
           </div>
         </div>
       )}
+      {isSingleSelectColumn && (
+        <div className={styles.custom_expandableItem_rows}>
+          <div
+            className={`${styles.custom_expandableItem} expandableItem`}
+            style={{
+              width: '100%',
+              paddingLeft: 24,
+            }}>
+            {firstColumn?.data.options?.map((op: any) => (
+              <div key={op.id} className={styles.custom_single_select_row}>
+                <input
+                  onChange={() => {
+                    setIsSingleSelectColumn(false);
+                    addNewRowToTable(false, op.id);
+                  }}
+                  type="radio"
+                  name=""
+                  id={op.id}
+                  value={op.id}
+                />
+                <label style={{ background: op.color, color: op.textColor }}>{op.name}</label>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       {levelTable && isLevelSelectionDisabled(1, levelSelections) && (
-        <button
-          className={styles.custom_p}
-          style={paddingAddBtn(0)}
-          onClick={() => setIsAdding(true)}>
+        <button className={styles.custom_p} style={paddingAddBtn(0)} onClick={isShowNewRowInput}>
           + add {levelTable?.name.toLowerCase()}
         </button>
       )}
