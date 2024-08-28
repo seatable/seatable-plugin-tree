@@ -46,6 +46,15 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     [pluginPresets, appActiveState.activePresetId]
   );
 
+  useEffect(() => {
+    if (_activeLevelSelections) {
+      setFirstLevelSelectedOption(_activeLevelSelections.first.selected);
+      setSecondLevelSelectedOption(_activeLevelSelections.second.selected);
+      setThirdLevelSelectedOption(_activeLevelSelections?.third?.selected);
+      setLevelSelections(_activeLevelSelections);
+    }
+  }, [_activeLevelSelections]);
+
   const updateLevelSelections = useCallback(
     (levelSelections: ILevelSelections) => {
       const _id = appActiveState.activePresetId;
