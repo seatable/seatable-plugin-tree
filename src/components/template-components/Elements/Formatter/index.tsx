@@ -276,7 +276,25 @@ const Formatter: React.FC<IFormatterProps> = ({
         }
         return null;
       }
-      case CellType.FORMULA:
+      case CellType.FORMULA: {
+        if (!row || !row._id) return <div></div>;
+
+        const formulaRow = formulaRows ? formulaRows[row._id] : undefined;
+        const formulaValue = formulaRow ? formulaRow[columnKey] : '';
+
+        let formulaFormatter;
+        if (!formulaValue && column.data.formula === 'rowID()') {
+          formulaFormatter = <div>{row._id}</div>;
+        } else if (!formulaValue) {
+          formulaFormatter = <div></div>;
+        } else {
+          formulaFormatter = (
+            <FormulaFormatter value={formulaValue} containerClassName="ptl-formula-container" />
+          );
+        }
+        return formulaFormatter;
+      }
+
       case CellType.LINK_FORMULA: {
         if (!row || !row._id) return <div></div>;
 
