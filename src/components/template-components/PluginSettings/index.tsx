@@ -100,7 +100,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
 
     setViewOptions(viewOptions);
     setViewSelectedOption(viewSelectedOption);
-  }, [firstLevelOptions, _activeLevelSelections]);
+  }, [firstLevelOptions]);
 
   const secondLevelOptions = useMemo(() => {
     if (!firstLevelSelectedOption) return [];
@@ -116,8 +116,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   }, [JSON.stringify(allTables), firstLevelSelectedOption]);
 
   useEffect(() => {
-    console.log({ secondLevelOptions });
-
     const isSelectedInOptions = secondLevelOptions.some(
       (i) => i.value === activeLevelSelections.second?.selected?.value
     );
@@ -126,7 +124,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       : secondLevelOptions[0];
 
     setSecondLevelSelectedOption(selectedOption);
-  }, [secondLevelOptions, activeLevelSelections, _activeLevelSelections]);
+  }, [secondLevelOptions, activeLevelSelections]);
 
   const thirdLevelOptions = useMemo(() => {
     if (!firstLevelSelectedOption || !secondLevelSelectedOption) return [];
@@ -150,13 +148,12 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     const isSelectedInOptions = thirdLevelOptions.some(
       (i) => i.value === activeLevelSelections.third?.selected?.value
     );
-    setThirdLevelSelectedOption(
-      isSelectedInOptions
-        ? _activeLevelSelections?.third?.selected || thirdLevelOptions[0]
-        : thirdLevelOptions[0]
-    );
+    const selectedOption = isSelectedInOptions
+      ? _activeLevelSelections?.third?.selected || thirdLevelOptions[0]
+      : thirdLevelOptions[0];
+    setThirdLevelSelectedOption(selectedOption);
     setThirdLevelExists(thirdLevelOptions.length > 0);
-  }, [thirdLevelOptions, activeLevelSelections, _activeLevelSelections]);
+  }, [thirdLevelOptions, activeLevelSelections]);
 
   const handleLevelSelection = useCallback(
     (selectedOption: SelectOption, level: CustomSettingsOption) => {
