@@ -80,7 +80,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       value: item._id,
       label: truncateTableName(item.name),
     }));
-  }, [allTables]);
+  }, [JSON.stringify(allTables)]);
 
   useEffect(() => {
     setFirstLevelSelectedOption(_activeLevelSelections?.first?.selected || firstLevelOptions[0]);
@@ -112,18 +112,20 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
         value: item._id,
         label: truncateTableName(item.name),
       })),
-    ];
-  }, [allTables, firstLevelSelectedOption]);
+    ].filter((item) => item.label !== firstLevelSelectedOption.label || item.value === '00000');
+  }, [JSON.stringify(allTables), firstLevelSelectedOption]);
 
   useEffect(() => {
+    console.log({ secondLevelOptions });
+
     const isSelectedInOptions = secondLevelOptions.some(
       (i) => i.value === activeLevelSelections.second?.selected?.value
     );
-    setSecondLevelSelectedOption(
-      isSelectedInOptions
-        ? _activeLevelSelections?.second?.selected || secondLevelOptions[0]
-        : secondLevelOptions[0]
-    );
+    const selectedOption = isSelectedInOptions
+      ? _activeLevelSelections?.second?.selected || secondLevelOptions[0]
+      : secondLevelOptions[0];
+
+    setSecondLevelSelectedOption(selectedOption);
   }, [secondLevelOptions, activeLevelSelections, _activeLevelSelections]);
 
   const thirdLevelOptions = useMemo(() => {
@@ -139,10 +141,10 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       })),
     ].filter(
       (item) =>
-        item.label !== firstLevelSelectedOption.label &&
-        item.value !== secondLevelSelectedOption.value
+        (item.label !== firstLevelSelectedOption.label || item.value === '00000') &&
+        (item.value !== secondLevelSelectedOption.value || item.value === '00000')
     );
-  }, [allTables, firstLevelSelectedOption, secondLevelSelectedOption]);
+  }, [JSON.stringify(allTables), firstLevelSelectedOption, secondLevelSelectedOption]);
 
   useEffect(() => {
     const isSelectedInOptions = thirdLevelOptions.some(
@@ -158,23 +160,12 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
 
   const handleLevelSelection = useCallback(
     (selectedOption: SelectOption, level: CustomSettingsOption) => {
-      if (selectedOption.value === '00000') {
-        if (level === 'second') {
-          if (activeLevelSelections.second.isDisabled) return;
-          handleLevelDisabled('second');
-        } else {
-          if (activeLevelSelections.third?.isDisabled) return;
-          handleLevelDisabled('third');
-        }
-
-        return;
-      }
-
-      if (level === 'second' && activeLevelSelections.second.isDisabled) {
-        handleLevelDisabled('second');
-        return;
-      } else if (level === 'third' && activeLevelSelections.third?.isDisabled) {
-        handleLevelDisabled('third');
+      if (
+        (level !== 'first' && selectedOption.value === '00000') ||
+        (level === 'second' && activeLevelSelections.second.isDisabled) ||
+        (level === 'third' && activeLevelSelections.third?.isDisabled)
+      ) {
+        handleLevelDisabled(level);
         return;
       }
 
@@ -381,7 +372,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                       } `}></button>
                   </div>
                 </div>
-              </div> 
+              </div>
               <DtableSelect
                 value={
                   !thirdLevelExists ||

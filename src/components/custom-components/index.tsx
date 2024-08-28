@@ -54,7 +54,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
 
   const collaborators = window.app.state.collaborators;
   const { levelTable } = getLevelSelectionAndTable(0, allTables, levelSelections);
-
+  console.log({ levelSelections });
   const firstLevelTable = useMemo(
     () => allTables.find((t) => t._id === levelSelections.first.selected?.value),
     [JSON.stringify(allTables), levelSelections.first.selected?.value]
