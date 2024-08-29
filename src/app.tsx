@@ -49,12 +49,14 @@ import {
   getPluginDataStore,
   isMobile,
   parsePluginDataToActiveState,
+  truncateTableName,
 } from 'utils/template-utils/utils';
 import { SettingsOption } from '@/utils/types';
 import pluginContext from './plugin-context';
 import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';
 import { ILevelSelections } from './utils/custom-utils/interfaces/CustomPlugin';
 import { LEVEL_SEL_DEFAULT } from './utils/custom-utils/constants';
+import { findFirstLevelTables } from './utils/custom-utils/utils';
 // import { levelSelectionDefaultFallback } from './utils/custom-utils/utils';
 
 const App: React.FC<IAppProps> = (props) => {
