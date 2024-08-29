@@ -4,6 +4,7 @@ import React from 'react';
 import { getImageThumbnailUrl } from '../../../../utils/template-utils/utils';
 
 const ImageFormatter: React.FC<IImageProps> = ({ value }) => {
+  console.log(value);
   const image = value[0];
   const url = getImageThumbnailUrl(image, 256);
 

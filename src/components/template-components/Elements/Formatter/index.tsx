@@ -23,6 +23,8 @@ import { ILongText } from '@/utils/template-utils/interfaces/Formatter/LongText.
 import { IGeolocation } from '@/utils/template-utils/interfaces/Formatter/Geolocation.interface';
 import { IFile } from '@/utils/template-utils/interfaces/Formatter/File.interface';
 import SingleSelectFormatter from './SingleSelectFormatter/SingleSelectFormatter';
+import DigitalSignFormatter from './DigitalSignFormatter/DigitalSignFormatter';
+import { isValidDigitalSignImageValue } from './DigitalSignFormatter/utils';
 
 const Formatter: React.FC<IFormatterProps> = ({
   column,
@@ -105,7 +107,7 @@ const Formatter: React.FC<IFormatterProps> = ({
   const renderFormatter = () => {
     const { type: columnType, key: columnKey } = column;
     const _row = row?.[columnKey as keyof levelRowInfo];
-
+    console.log(columnType);
     switch (columnType) {
       case CellType.TEXT:
       case CellType.NUMBER:
@@ -382,6 +384,24 @@ const Formatter: React.FC<IFormatterProps> = ({
           );
         }
         return rateFormatter;
+      }
+      case CellType.DIGITAL_SIGN: {
+        const value: string = _row as string;
+        const { server, workspaceID, dtableUuid } = window.dtable;
+
+        if (!value) return <div></div>;
+        return (
+          <DigitalSignFormatter
+            isSample
+            isSupportPreview={false}
+            value={value}
+            config={{
+              server,
+              workspaceID,
+              dtableUuid,
+            }}
+          />
+        );
       }
       default:
         return null;
