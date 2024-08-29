@@ -30,6 +30,8 @@ import { ResizeDetail } from '@/utils/template-utils/interfaces/PluginPresets/Pr
 
 const PluginTL: React.FC<IPluginTLProps> = ({
   allTables,
+  columnsCount,
+  hasLinkColumn,
   levelSelections,
   pluginDataStore,
   activePresetId,
@@ -238,16 +240,18 @@ const PluginTL: React.FC<IPluginTLProps> = ({
 
   return (
     <>
-      <HeaderRow
-        columns={columns}
-        level={1}
-        tableName={tableName}
-        levelSelections={levelSelections}
-        columnWidths={columnWidths}
-        setColumnWidths={setColumnWidths}
-        updateResizeDetails={updateResizeDetails}
-      />
-      {finalResult && finalResult.length > 0 ? (
+      {hasLinkColumn && (
+        <HeaderRow
+          columns={columns}
+          level={1}
+          tableName={tableName}
+          levelSelections={levelSelections}
+          columnWidths={columnWidths}
+          setColumnWidths={setColumnWidths}
+          updateResizeDetails={updateResizeDetails}
+        />
+      )}
+      {finalResult && hasLinkColumn ? (
         finalResult.map((i: levelRowInfo) => (
           <ExpandableItem
             key={i._id}
@@ -319,7 +323,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
           </div>
         </div>
       )}
-      {levelTable && isLevelSelectionDisabled(1, levelSelections) && (
+      {levelTable && hasLinkColumn && isLevelSelectionDisabled(1, levelSelections) && (
         <button className={styles.custom_p} style={paddingAddBtn(0)} onClick={isShowNewRowInput}>
           + add {levelTable?.name.toLowerCase()}
         </button>

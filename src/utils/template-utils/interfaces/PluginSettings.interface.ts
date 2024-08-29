@@ -6,6 +6,7 @@ import { Table, TableArray, TableViewArray } from './Table.interface';
 
 interface IPluginSettingsProps {
   allTables: TableArray;
+  columnsCount: number;
   appActiveState: AppActiveState;
   activeTableViews: TableViewArray;
   pluginPresets: PresetsArray;

@@ -21,6 +21,7 @@ const { [DEFAULT_LOCALE]: d } = AVAILABLE_LOCALES;
 
 const PluginSettings: React.FC<IPluginSettingsProps> = ({
   allTables,
+  columnsCount,
   appActiveState,
   activeTableViews,
   isShowSettings,
@@ -87,7 +88,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
         : firstOptions;
 
     return checkFirstOptions;
-  }, [allTables]);
+  }, [allTables, columnsCount]);
 
   useEffect(() => {
     setFirstLevelSelectedOption(_activeLevelSelections?.first?.selected || firstLevelOptions[0]);

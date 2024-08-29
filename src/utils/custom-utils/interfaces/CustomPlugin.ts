@@ -8,6 +8,8 @@ import { TableArray, TableColumn } from '@/utils/template-utils/interfaces/Table
 
 export interface IPluginTLProps {
   allTables: TableArray;
+  columnsCount: number;
+  hasLinkColumn: boolean;
   levelSelections: ILevelSelections;
   pluginDataStore: IPluginDataStore;
   activePresetId: string;

@@ -49,15 +49,12 @@ import {
   getPluginDataStore,
   isMobile,
   parsePluginDataToActiveState,
-  truncateTableName,
 } from 'utils/template-utils/utils';
 import { SettingsOption } from '@/utils/types';
 import pluginContext from './plugin-context';
 import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';
 import { ILevelSelections } from './utils/custom-utils/interfaces/CustomPlugin';
 import { LEVEL_SEL_DEFAULT } from './utils/custom-utils/constants';
-import { findFirstLevelTables } from './utils/custom-utils/utils';
-// import { levelSelectionDefaultFallback } from './utils/custom-utils/utils';
 
 const App: React.FC<IAppProps> = (props) => {
   const { isDevelopment, lang } = props;
@@ -69,6 +66,8 @@ const App: React.FC<IAppProps> = (props) => {
   const { isShowPlugin, isShowSettings, isLoading, isShowPresets } = isShowState;
   // Tables, Presets, Views as dataStates. The main data of the plugin
   const [allTables, setAllTables] = useState<TableArray>([]);
+  const [columnsCount, setColumnsCount] = useState<number>(0);
+  const [hasLinkColumn, setHasLinkColumn] = useState<boolean>(false);
   const [activeTableViews, setActiveTableViews] = useState<TableViewArray>([]);
   const [activeComponents, setActiveComponents] = useState<IActiveComponents>({});
   const [pluginDataStore, setPluginDataStore] = useState<IPluginDataStore>(DEFAULT_PLUGIN_DATA);
@@ -134,6 +133,10 @@ const App: React.FC<IAppProps> = (props) => {
     const activeTableViews: TableViewArray = activeTable.views; // All the Views of the specific Active Table
     const pluginDataStore: IPluginDataStore = getPluginDataStore(activeTable, PLUGIN_NAME);
     const pluginPresets: PresetsArray = pluginDataStore.presets; // An array with all the Presets
+    const _columnsCount = allTables.reduce((total, table) => total + table.columns.length, 0);
+    const _hasLinkColumn = allTables.reduce((found, table) => {
+      return found || table.columns.some((column) => column.type === 'link');
+    }, false);
 
     setActiveComponents((prevState) => ({
       ...prevState,
@@ -143,6 +146,8 @@ const App: React.FC<IAppProps> = (props) => {
 
     setPluginDataStore(pluginDataStore);
     setAllTables(allTables);
+    setColumnsCount(_columnsCount);
+    setHasLinkColumn(_hasLinkColumn);
     setPluginPresets(pluginPresets);
     setIsShowState((prevState) => ({ ...prevState, isLoading: false }));
 
@@ -516,6 +521,8 @@ const App: React.FC<IAppProps> = (props) => {
             {/* Note: The CustomPlugin component serves as a placeholder and should be replaced with your custom plugin component. */}
             <PluginTL
               allTables={allTables}
+              columnsCount={columnsCount}
+              hasLinkColumn={hasLinkColumn}
               levelSelections={activeLevelSelections}
               pluginDataStore={pluginDataStore}
               activePresetId={appActiveState.activePresetId}
@@ -542,6 +549,7 @@ const App: React.FC<IAppProps> = (props) => {
             activeComponents={activeComponents}
             isShowSettings={isShowSettings}
             allTables={allTables}
+            columnsCount={columnsCount}
             appActiveState={appActiveState}
             activeTableViews={activeTableViews}
             pluginPresets={pluginPresets}
