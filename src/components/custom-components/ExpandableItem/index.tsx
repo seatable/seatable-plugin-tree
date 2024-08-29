@@ -194,8 +194,6 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
     setIsAdding(true);
   };
 
-
-
   return (
     <div className={styles.custom_expandableItem_rows} style={levelStyleRows(level)}>
       <div

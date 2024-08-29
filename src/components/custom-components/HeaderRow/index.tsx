@@ -15,10 +15,7 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
   updateResizeDetails,
 }) => {
   const [onHover, setOnHover] = useState<boolean>(false);
-  const handleMouseDown = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    col_id: string,
-  ) => {
+  const handleMouseDown = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, col_id: string) => {
     const initialX = event.clientX;
     const prevWidth =
       columnWidths.find((width: ResizeDetail) => width.id === col_id + tableName)?.width || 200;
@@ -30,10 +27,7 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
     const handleMouseMove = (event: MouseEvent) => {
       widthChange = event.clientX - initialX;
 
-      setColumnWidths([
-        ...otherWidths,
-        { id: col_id + tableName, width: prevWidth + widthChange },
-      ]);  
+      setColumnWidths([...otherWidths, { id: col_id + tableName, width: prevWidth + widthChange }]);
     };
 
     const handleMouseUp = () => {

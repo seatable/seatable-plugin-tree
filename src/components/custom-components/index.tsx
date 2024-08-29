@@ -54,7 +54,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   const [isSingleSelectColumn, setIsSingleSelectColumn] = useState<boolean>(false);
   const [rowsEmptyArray, setRowsEmptyArray] = useState<boolean>(false);
   const [minRowWidth, setMinRowWidth] = useState<number>(100);
-  const [newItemName, setNewItemName] = useState<any>('');
+  const [newItemName, setNewItemName] = useState<string>('');
 
   const collaborators = window.app.state.collaborators;
   const { levelTable } = getLevelSelectionAndTable(0, allTables, levelSelections);
@@ -163,6 +163,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
       setRowsEmptyArray(
         memoizedOutputLevelsInfo?.cleanFinalResult[0]?.secondLevelRows?.length === 0
       );
+
       setFinalResult(getViewRows(memoizedOutputLevelsInfo.cleanFinalResult, activeViewRows || []));
       // Check if the new expanded rows are different from the current ones
       setExpandedRowsInfo((prevExpandedRowsInfo) => {
@@ -246,7 +247,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
         setColumnWidths={setColumnWidths}
         updateResizeDetails={updateResizeDetails}
       />
-      {finalResult &&
+      {finalResult && finalResult.length > 0 ? (
         finalResult.map((i: levelRowInfo) => (
           <ExpandableItem
             key={i._id}
@@ -264,7 +265,10 @@ const PluginTL: React.FC<IPluginTLProps> = ({
             setColumnWidths={setColumnWidths}
             updateResizeDetails={updateResizeDetails}
           />
-        ))}
+        ))
+      ) : (
+        <p className={styles.centeredMessage}>There are no tables with links yet.</p>
+      )}
       {isAdding && (
         <div className={styles.custom_expandableItem_rows}>
           <div
