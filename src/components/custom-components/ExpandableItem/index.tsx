@@ -23,6 +23,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   item,
   level,
   allTables,
+  columnsCount,
   levelSelections,
   handleItemClick,
   expandedRowsInfo,
@@ -308,6 +309,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
                 rowsEmptyArray={rowsEmptyArray}
                 isDevelopment={isDevelopment}
                 columnWidths={columnWidths}
+                columnsCount={columnsCount}
                 minRowWidth={minRowWidth}
                 setColumnWidths={setColumnWidths}
                 updateResizeDetails={updateResizeDetails}

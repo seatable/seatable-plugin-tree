@@ -67,6 +67,7 @@ export interface HeaderRowProps {
 export interface ExpandableItemProps {
   item: levelRowInfo;
   allTables: TableArray;
+  columnsCount: number;
   levelSelections: ILevelSelections;
   expandedRowsInfo: RowExpandedInfo[];
   level: number;

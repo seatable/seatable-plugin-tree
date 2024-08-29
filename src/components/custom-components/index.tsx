@@ -124,7 +124,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
       setColumns(firstLevelTable.columns);
       setTableName(firstLevelTable.name);
     }
-  }, [firstLevelTable]);
+  }, [firstLevelTable, columnsCount]);
 
   const firstRows = useMemo(() => {
     return getRowsByTableId(levelSelections.first.selected?.value, allTables);
@@ -265,6 +265,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
             expandedRowsInfo={expandedRowsInfo}
             isDevelopment={isDevelopment}
             columnWidths={columnWidths}
+            columnsCount={columnsCount}
             minRowWidth={minRowWidth}
             setColumnWidths={setColumnWidths}
             updateResizeDetails={updateResizeDetails}
