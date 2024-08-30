@@ -4,6 +4,7 @@ import { HeaderRowProps } from '@/utils/custom-utils/interfaces/CustomPlugin';
 import { isLevelSelectionDisabled } from '../../../utils/custom-utils/utils';
 import ResizableCell from '../ResizableCell';
 import { ResizeDetail } from '@/utils/template-utils/interfaces/PluginPresets/Presets.interface';
+import { TableColumn } from '@/utils/template-utils/interfaces/Table.interface';
 
 const HeaderRow: React.FC<HeaderRowProps> = ({
   columns,
@@ -43,11 +44,11 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
     document.addEventListener('mouseup', handleMouseUp);
   };
 
-  const getColumnDisplayName = (columnName: string): string => {
-    if (columnName === 'Name') {
+  const getColumnDisplayName = (column: TableColumn): string => {
+    if (column?.key === '0000') {
       return capitalizeFirstLetter(tableName || '');
     }
-    return capitalizeFirstLetter(columnName || '');
+    return capitalizeFirstLetter(column?.name || '');
   };
 
   const levelStyleHeader = (level: number) => {
@@ -81,7 +82,7 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
                 handleMouseDown(e, column.key)
               }>
               <div style={{ width }} className={styles.custom_headerColumn}>
-                {getColumnDisplayName(column.name)}
+                {getColumnDisplayName(column)}
               </div>
             </ResizableCell>
           );

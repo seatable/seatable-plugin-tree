@@ -39,7 +39,6 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [newItemName, setNewItemName] = useState<string>('');
   const [isSingleSelectColumn, setIsSingleSelectColumn] = useState<boolean>(false);
-
   const { levelTable, levelRows, levelSelectionIdx } = getLevelSelectionAndTable(
     level,
     allTables,

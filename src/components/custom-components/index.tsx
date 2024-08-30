@@ -155,6 +155,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   ]);
 
   useEffect(() => {
+    console.log(memoizedOutputLevelsInfo?.cleanFinalResult);
     const activeTableOne = allTables.find((t) => t._id === levelSelections.first.selected?.value);
     const viewTableOne =
       activeTableOne?.views.find((v) => v._id === appActiveState.activeTableView?._id) ||
@@ -162,10 +163,16 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     const activeViewRows = window.dtableSDK.getViewRows(viewTableOne, activeTableOne);
 
     if (memoizedOutputLevelsInfo) {
+      console.log('FR', memoizedOutputLevelsInfo?.cleanFinalResult);
+      console.log(memoizedOutputLevelsInfo?.cleanFinalResult[0]?.secondLevelRows);
+      // setRowsEmptyArray(
+      //   memoizedOutputLevelsInfo?.cleanFinalResult[0]?.secondLevelRows?.length === 0
+      // );
       setRowsEmptyArray(
-        memoizedOutputLevelsInfo?.cleanFinalResult[0]?.secondLevelRows?.length === 0
+        !memoizedOutputLevelsInfo?.cleanFinalResult?.some(
+          (item) => item?.secondLevelRows && item.secondLevelRows.length > 0
+        )
       );
-
       setFinalResult(getViewRows(memoizedOutputLevelsInfo.cleanFinalResult, activeViewRows || []));
       // Check if the new expanded rows are different from the current ones
       setExpandedRowsInfo((prevExpandedRowsInfo) => {

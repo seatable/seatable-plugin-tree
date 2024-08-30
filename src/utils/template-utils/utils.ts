@@ -119,7 +119,6 @@ export const getImageThumbnailUrl = (url: string, size = 256) => {
     );
   }
   if (isDigitalSignsUrl(url)) {
-    console.log(url);
     return generateCurrentBaseImageThumbnailUrl({
       server,
       workspaceID,

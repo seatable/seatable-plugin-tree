@@ -45,9 +45,10 @@ const Formatter: React.FC<IFormatterProps> = ({
   }, [row, column]);
 
   const calculateCollaboratorData = () => {
-    if (column.type === CellType.LAST_MODIFIER) {
+    console.log(column?.type, column?.name);
+    if (column?.type === CellType.LAST_MODIFIER) {
       getCollaborator(row?._last_modifier!);
-    } else if (column.type === CellType.CREATOR) {
+    } else if (column?.type === CellType.CREATOR) {
       getCollaborator(row?._creator!);
     }
   };
@@ -104,9 +105,8 @@ const Formatter: React.FC<IFormatterProps> = ({
   };
 
   const renderFormatter = () => {
-    const { type: columnType, key: columnKey } = column;
+    const { type: columnType = '', key: columnKey = '' } = column || {};
     const _row = row?.[columnKey as keyof levelRowInfo];
-    console.log(columnType);
     switch (columnType) {
       case CellType.TEXT:
       case CellType.NUMBER:
