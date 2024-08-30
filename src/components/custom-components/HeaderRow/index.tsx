@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styles from '../../../styles/custom-styles/CustomPlugin.module.scss';
 import { HeaderRowProps } from '@/utils/custom-utils/interfaces/CustomPlugin';
 import { isLevelSelectionDisabled } from '../../../utils/custom-utils/utils';
@@ -8,6 +8,7 @@ import { TableColumn } from '@/utils/template-utils/interfaces/Table.interface';
 
 const HeaderRow: React.FC<HeaderRowProps> = ({
   columns,
+  hiddenColumns,
   level,
   tableName,
   levelSelections,
@@ -16,6 +17,11 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
   updateResizeDetails,
 }) => {
   const [onHover, setOnHover] = useState<boolean>(false);
+  columns =
+    tableName === levelSelections.first.selected.label
+      ? columns?.filter((col) => !hiddenColumns.includes(col.key))
+      : columns;
+
   const handleMouseDown = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, col_id: string) => {
     const initialX = event.clientX;
     const prevWidth =

@@ -24,6 +24,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   level,
   allTables,
   columnsCount,
+  hiddenColumns,
   levelSelections,
   handleItemClick,
   expandedRowsInfo,
@@ -46,7 +47,15 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   );
   const rows = item[levelRows];
   const isClickable = level !== 3 && rows?.length !== 0 && item[levelRows] !== undefined;
-  const currentTable = allTables.find((table) => table.name === item._name);
+
+  let currentTable = allTables.find((table) => table.name === item._name);
+  currentTable =
+    currentTable?.name === levelSelections.first.selected.label
+      ? {
+          ...currentTable,
+          columns: currentTable?.columns.filter((col) => !hiddenColumns.includes(col.key)),
+        }
+      : currentTable;
 
   const viewObj = useMemo(() => {
     if (currentTable && currentTable.views && currentTable.views.length > 0) {
@@ -259,7 +268,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
               key={column.key}
               style={{
                 width: `${
-                  columnWidths.find((width) => width.id === column.key + currentTable.name)
+                  columnWidths.find((width) => width.id === column.key + currentTable?.name)
                     ?.width || 200
                 }px`,
               }}
@@ -287,6 +296,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
             <HeaderRow
               columns={levelTable?.columns}
               level={++level + 1}
+              hiddenColumns={hiddenColumns}
               tableName={levelTable?.name}
               levelSelections={levelSelections}
               columnWidths={columnWidths}
@@ -309,6 +319,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
                 isDevelopment={isDevelopment}
                 columnWidths={columnWidths}
                 columnsCount={columnsCount}
+                hiddenColumns={hiddenColumns}
                 minRowWidth={minRowWidth}
                 setColumnWidths={setColumnWidths}
                 updateResizeDetails={updateResizeDetails}
