@@ -23,8 +23,7 @@ import { ILongText } from '@/utils/template-utils/interfaces/Formatter/LongText.
 import { IGeolocation } from '@/utils/template-utils/interfaces/Formatter/Geolocation.interface';
 import { IFile } from '@/utils/template-utils/interfaces/Formatter/File.interface';
 import SingleSelectFormatter from './SingleSelectFormatter/SingleSelectFormatter';
-import DigitalSignFormatter from './DigitalSignFormatter/DigitalSignFormatter';
-import { isValidDigitalSignImageValue } from './DigitalSignFormatter/utils';
+import { DigitalSignFormatter } from 'dtable-ui-component';
 
 const Formatter: React.FC<IFormatterProps> = ({
   column,
@@ -396,9 +395,9 @@ const Formatter: React.FC<IFormatterProps> = ({
             isSupportPreview={false}
             value={value}
             config={{
-              server,
-              workspaceID,
-              dtableUuid,
+              server: server,
+              workspaceID: workspaceID,
+              dtableUuid: dtableUuid,
             }}
           />
         );
