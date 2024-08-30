@@ -45,7 +45,6 @@ const Formatter: React.FC<IFormatterProps> = ({
   }, [row, column]);
 
   const calculateCollaboratorData = () => {
-    console.log(column?.type, column?.name);
     if (column?.type === CellType.LAST_MODIFIER) {
       getCollaborator(row?._last_modifier!);
     } else if (column?.type === CellType.CREATOR) {
