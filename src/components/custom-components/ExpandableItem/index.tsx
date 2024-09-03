@@ -290,7 +290,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
             </div>
           ))}
       </div>
-      {isExpanded && (
+      {isExpanded && isClickable && (
         <div className={styles.custom_expandableItem_rows}>
           {!rowsEmptyArray && (
             <HeaderRow
