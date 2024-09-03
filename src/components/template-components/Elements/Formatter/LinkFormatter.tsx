@@ -45,7 +45,9 @@ const LinkFormatter: React.FC<ILinkProps> = ({ column, row, linkMetaData }) => {
         // return value;
       }
       case CellType.SINGLE_SELECT: {
-        const option = data.options.find((item: any) => item.id === value || item.name === value);
+        const option = data.options.find(
+          (item: { id: string | number; name: string }) => item.id === value || item.name === value
+        );
         return option ? option.name : null;
       }
       default:
