@@ -312,21 +312,23 @@ const PluginTL: React.FC<IPluginTLProps> = ({
               width: '100%',
               paddingLeft: 24,
             }}>
-            {firstColumn?.data.options?.map((op: any) => (
-              <div key={op.id} className={styles.custom_single_select_row}>
-                <input
-                  onChange={() => {
-                    setIsSingleSelectColumn(false);
-                    addNewRowToTable(false, op.id);
-                  }}
-                  type="radio"
-                  name=""
-                  id={op.id}
-                  value={op.id}
-                />
-                <label style={{ background: op.color, color: op.textColor }}>{op.name}</label>
-              </div>
-            ))}
+            {firstColumn?.data.options?.map(
+              (op: { id: string | number; color: string; textColor: string; name: string }) => (
+                <div key={op.id} className={styles.custom_single_select_row}>
+                  <input
+                    onChange={() => {
+                      setIsSingleSelectColumn(false);
+                      addNewRowToTable(false, String(op.id));
+                    }}
+                    type="radio"
+                    name=""
+                    id={String(op.id)}
+                    value={String(op.id)}
+                  />
+                  <label style={{ background: op.color, color: op.textColor }}>{op.name}</label>
+                </div>
+              )
+            )}
           </div>
         </div>
       )}

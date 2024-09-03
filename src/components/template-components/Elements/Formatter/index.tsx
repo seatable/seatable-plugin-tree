@@ -13,7 +13,6 @@ import MultipleSelectFormatter from '../Formatter/MultipleSelectFormatter';
 import FileFormatter from './FileFormatter/FileFormatter';
 import CheckboxFormatter from '../Formatter/CheckboxFormatter';
 import CTimeFormatter from '../Formatter/CTimeFormatter';
-import FormulaFormatter from '../Formatter/FormulaFormatter';
 import LinkFormatter from '../Formatter/LinkFormatter';
 import DurationFormatter from '../Formatter/DurationFormatter';
 import RateFormatter from '../Formatter/RateFormatter';
@@ -23,7 +22,7 @@ import { ILongText } from '@/utils/template-utils/interfaces/Formatter/LongText.
 import { IGeolocation } from '@/utils/template-utils/interfaces/Formatter/Geolocation.interface';
 import { IFile } from '@/utils/template-utils/interfaces/Formatter/File.interface';
 import SingleSelectFormatter from './SingleSelectFormatter/SingleSelectFormatter';
-import { DigitalSignFormatter } from 'dtable-ui-component';
+import { DigitalSignFormatter, FormulaFormatter } from 'dtable-ui-component';
 
 const Formatter: React.FC<IFormatterProps> = ({
   column,
@@ -276,40 +275,20 @@ const Formatter: React.FC<IFormatterProps> = ({
         }
         return null;
       }
-      case CellType.FORMULA: {
-        if (!row || !row._id) return <div></div>;
-
-        const formulaRow = formulaRows ? formulaRows[row._id] : undefined;
-        const formulaValue = formulaRow ? formulaRow[columnKey] : '';
-
-        let formulaFormatter;
-        if (!formulaValue && column.data.formula === 'rowID()') {
-          formulaFormatter = <div>{row._id}</div>;
-        } else if (!formulaValue) {
-          formulaFormatter = <div></div>;
-        } else {
-          formulaFormatter = (
-            <FormulaFormatter value={formulaValue} containerClassName="ptl-formula-container" />
-          );
-        }
-        return formulaFormatter;
-      }
-
+      case CellType.FORMULA:
       case CellType.LINK_FORMULA: {
         if (!row || !row._id) return <div></div>;
-
         const formulaRow = formulaRows ? formulaRows[row._id] : undefined;
         const formulaValue = formulaRow ? formulaRow[columnKey] : '';
-
-        let formulaFormatter;
-        if (!formulaValue) {
-          formulaFormatter = <div></div>;
-        } else {
-          formulaFormatter = (
-            <FormulaFormatter value={formulaValue} containerClassName="ptl-formula-container" />
-          );
-        }
-        return formulaFormatter;
+        if (!formulaValue) return <div> </div>;
+        return (
+          <FormulaFormatter
+            value={formulaValue}
+            column={column}
+            collaborators={collaborators}
+            containerClassName="ptl-formatter-formula"
+          />
+        );
       }
 
       case CellType.LINK: {
