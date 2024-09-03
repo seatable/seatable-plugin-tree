@@ -56,6 +56,7 @@ export interface levelRowInfo {
 }
 export interface HeaderRowProps {
   columns: TableColumn[] | undefined;
+  hiddenColumns: string[];
   level: number;
   tableName?: string;
   levelSelections: ILevelSelections;
@@ -68,6 +69,7 @@ export interface ExpandableItemProps {
   item: levelRowInfo;
   allTables: TableArray;
   columnsCount: number;
+  hiddenColumns: string[];
   levelSelections: ILevelSelections;
   expandedRowsInfo: RowExpandedInfo[];
   level: number;

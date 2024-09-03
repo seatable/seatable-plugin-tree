@@ -24,6 +24,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   level,
   allTables,
   columnsCount,
+  hiddenColumns,
   levelSelections,
   handleItemClick,
   expandedRowsInfo,
@@ -39,7 +40,6 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [newItemName, setNewItemName] = useState<string>('');
   const [isSingleSelectColumn, setIsSingleSelectColumn] = useState<boolean>(false);
-
   const { levelTable, levelRows, levelSelectionIdx } = getLevelSelectionAndTable(
     level,
     allTables,
@@ -47,7 +47,15 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   );
   const rows = item[levelRows];
   const isClickable = level !== 3 && rows?.length !== 0 && item[levelRows] !== undefined;
-  const currentTable = allTables.find((table) => table.name === item._name);
+
+  let currentTable = allTables.find((table) => table.name === item._name);
+  currentTable =
+    currentTable?.name === levelSelections.first.selected.label
+      ? {
+          ...currentTable,
+          columns: currentTable?.columns.filter((col) => !hiddenColumns.includes(col.key)),
+        }
+      : currentTable;
 
   const viewObj = useMemo(() => {
     if (currentTable && currentTable.views && currentTable.views.length > 0) {
@@ -120,21 +128,21 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
     }
   };
 
-  const fontStyleRows = (level: number) => {
-    const style = {
-      width: `${
-        columnWidths.find((width) => width.id === '0000' + currentTable?.name)?.width || 200
-      }px`,
-    };
-    switch (level) {
-      case 0:
-        return { ...style, fontSize: '18px' };
-      case 1:
-        return { ...style, fontSize: '16px' };
-      case 2:
-        return { ...style, fontSize: '15px', fontWeight: 'normal' };
-    }
-  };
+  // const fontStyleRows = (level: number) => {
+  //   const style = {
+  //     width: `${
+  //       columnWidths.find((width) => width.id === '0000' + currentTable?.name)?.width || 200
+  //     }px`,
+  //   };
+  //   switch (level) {
+  //     case 0:
+  //       return { ...style, fontSize: '18px' };
+  //     case 1:
+  //       return { ...style, fontSize: '16px' };
+  //     case 2:
+  //       return { ...style, fontSize: '15px', fontWeight: 'normal' };
+  //   }
+  // };
 
   const minW = minRowWidth - 24 * --level;
 
@@ -260,7 +268,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
               key={column.key}
               style={{
                 width: `${
-                  columnWidths.find((width) => width.id === column.key + currentTable.name)
+                  columnWidths.find((width) => width.id === column.key + currentTable?.name)
                     ?.width || 200
                 }px`,
               }}
@@ -288,6 +296,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
             <HeaderRow
               columns={levelTable?.columns}
               level={++level + 1}
+              hiddenColumns={hiddenColumns}
               tableName={levelTable?.name}
               levelSelections={levelSelections}
               columnWidths={columnWidths}
@@ -310,6 +319,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
                 isDevelopment={isDevelopment}
                 columnWidths={columnWidths}
                 columnsCount={columnsCount}
+                hiddenColumns={hiddenColumns}
                 minRowWidth={minRowWidth}
                 setColumnWidths={setColumnWidths}
                 updateResizeDetails={updateResizeDetails}
@@ -348,21 +358,23 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
                   width: '100%',
                   paddingLeft: 24,
                 }}>
-                {firstColumn?.data.options?.map((op: any) => (
-                  <div key={op.id} className={styles.custom_single_select_row}>
-                    <input
-                      onChange={() => {
-                        setIsSingleSelectColumn(false);
-                        addNewRowToTable(false, op.id);
-                      }}
-                      type="radio"
-                      name=""
-                      id={op.id}
-                      value={op.id}
-                    />
-                    <label style={{ background: op.color, color: op.textColor }}>{op.name}</label>
-                  </div>
-                ))}
+                {firstColumn?.data.options?.map(
+                  (op: { id: string | number; color: string; textColor: string; name: string }) => (
+                    <div key={op.id} className={styles.custom_single_select_row}>
+                      <input
+                        onChange={() => {
+                          setIsSingleSelectColumn(false);
+                          addNewRowToTable(false, String(op.id));
+                        }}
+                        type="radio"
+                        name=""
+                        id={String(op.id)}
+                        value={String(op.id)}
+                      />
+                      <label style={{ background: op.color, color: op.textColor }}>{op.name}</label>
+                    </div>
+                  )
+                )}
               </div>
             </div>
           )}
