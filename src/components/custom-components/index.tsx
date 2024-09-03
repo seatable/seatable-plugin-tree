@@ -44,6 +44,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
 }) => {
   const [finalResult, setFinalResult] = useState<levelsStructureInfo>([]);
   const [columns, setColumns] = useState<TableColumn[]>([]);
+  const [hiddenColumns, setHiddenColumns] = useState<string[]>([]);
   const [tableName, setTableName] = useState<string>('');
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [columnWidths, setColumnWidths] = useState<ResizeDetail[]>(
@@ -159,6 +160,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     const viewTableOne =
       activeTableOne?.views.find((v) => v._id === appActiveState.activeTableView?._id) ||
       activeTableOne?.views[0];
+    setHiddenColumns(viewTableOne?.hidden_columns ?? []);
     const activeViewRows = window.dtableSDK.getViewRows(viewTableOne, activeTableOne);
 
     if (memoizedOutputLevelsInfo) {
@@ -167,6 +169,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
           (item) => item?.secondLevelRows && item.secondLevelRows.length > 0
         )
       );
+
       setFinalResult(getViewRows(memoizedOutputLevelsInfo.cleanFinalResult, activeViewRows || []));
       // Check if the new expanded rows are different from the current ones
       setExpandedRowsInfo((prevExpandedRowsInfo) => {
@@ -244,6 +247,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
       {hasLinkColumn && (
         <HeaderRow
           columns={columns}
+          hiddenColumns={hiddenColumns}
           level={1}
           tableName={tableName}
           levelSelections={levelSelections}
@@ -261,6 +265,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
             rowsEmptyArray={rowsEmptyArray}
             expandedHasChanged={expandedHasChanged}
             allTables={allTables}
+            hiddenColumns={hiddenColumns}
             levelSelections={levelSelections}
             handleItemClick={handleItemClick}
             expandedRowsInfo={expandedRowsInfo}
@@ -307,21 +312,23 @@ const PluginTL: React.FC<IPluginTLProps> = ({
               width: '100%',
               paddingLeft: 24,
             }}>
-            {firstColumn?.data.options?.map((op: any) => (
-              <div key={op.id} className={styles.custom_single_select_row}>
-                <input
-                  onChange={() => {
-                    setIsSingleSelectColumn(false);
-                    addNewRowToTable(false, op.id);
-                  }}
-                  type="radio"
-                  name=""
-                  id={op.id}
-                  value={op.id}
-                />
-                <label style={{ background: op.color, color: op.textColor }}>{op.name}</label>
-              </div>
-            ))}
+            {firstColumn?.data.options?.map(
+              (op: { id: string | number; color: string; textColor: string; name: string }) => (
+                <div key={op.id} className={styles.custom_single_select_row}>
+                  <input
+                    onChange={() => {
+                      setIsSingleSelectColumn(false);
+                      addNewRowToTable(false, String(op.id));
+                    }}
+                    type="radio"
+                    name=""
+                    id={String(op.id)}
+                    value={String(op.id)}
+                  />
+                  <label style={{ background: op.color, color: op.textColor }}>{op.name}</label>
+                </div>
+              )
+            )}
           </div>
         </div>
       )}
