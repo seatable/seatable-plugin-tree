@@ -145,9 +145,8 @@ export const outputLevelsInfo = (
   }
 
   const finalResult: levelsStructureInfo = [];
-
   rows.forEach((r: TableRow) => {
-    const _ids = linkedRows[r._id][secondLevelKey as string];
+    const _ids = linkedRows?.[r._id]?.[secondLevelKey as string] ?? [];
     let secondLevelRows = [];
     for (const i in _ids) {
       const linked_row = allRowsInAllTables.find((row: TableRow) => row._id === _ids[i]);

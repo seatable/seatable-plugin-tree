@@ -17,7 +17,7 @@ import {
   POSSIBLE,
   PresetHandleAction,
 } from './constants';
-import { IFile } from './interfaces/Formatter/File.interface'; 
+import { IFile } from './interfaces/Formatter/File.interface';
 import { FileIconMap } from './interfaces/PluginSettings.interface';
 
 export const getFileIconUrl = (filename: string, direntType: string): string => {

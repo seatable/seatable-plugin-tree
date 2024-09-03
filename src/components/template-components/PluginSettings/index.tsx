@@ -21,6 +21,7 @@ const { [DEFAULT_LOCALE]: d } = AVAILABLE_LOCALES;
 
 const PluginSettings: React.FC<IPluginSettingsProps> = ({
   allTables,
+  columnsCount,
   appActiveState,
   activeTableViews,
   isShowSettings,
@@ -76,14 +77,22 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   );
 
   const firstLevelOptions = useMemo(() => {
-    return findFirstLevelTables(allTables).map((item) => ({
+    const firstOptions = findFirstLevelTables(allTables).map((item) => ({
       value: item._id,
       label: truncateTableName(item.name),
     }));
-  }, [allTables]);
+
+    const checkFirstOptions =
+      firstOptions.length === 0
+        ? [{ value: allTables[0]._id, label: allTables[0].name }]
+        : firstOptions;
+
+    return checkFirstOptions;
+  }, [allTables, columnsCount]);
 
   useEffect(() => {
     setFirstLevelSelectedOption(_activeLevelSelections?.first?.selected || firstLevelOptions[0]);
+
     const _table = allTables.find(
       (table) =>
         table._id === (_activeLevelSelections?.first?.selected?.value || firstLevelOptions[0].value)
@@ -381,7 +390,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                       } `}></button>
                   </div>
                 </div>
-              </div> 
+              </div>
               <DtableSelect
                 value={
                   !thirdLevelExists ||
