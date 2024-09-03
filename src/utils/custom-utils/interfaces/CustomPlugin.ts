@@ -8,6 +8,8 @@ import { TableArray, TableColumn } from '@/utils/template-utils/interfaces/Table
 
 export interface IPluginTLProps {
   allTables: TableArray;
+  columnsCount: number;
+  hasLinkColumn: boolean;
   levelSelections: ILevelSelections;
   pluginDataStore: IPluginDataStore;
   activePresetId: string;
@@ -54,6 +56,7 @@ export interface levelRowInfo {
 }
 export interface HeaderRowProps {
   columns: TableColumn[] | undefined;
+  hiddenColumns: string[];
   level: number;
   tableName?: string;
   levelSelections: ILevelSelections;
@@ -65,6 +68,8 @@ export interface HeaderRowProps {
 export interface ExpandableItemProps {
   item: levelRowInfo;
   allTables: TableArray;
+  columnsCount: number;
+  hiddenColumns: string[];
   levelSelections: ILevelSelections;
   expandedRowsInfo: RowExpandedInfo[];
   level: number;

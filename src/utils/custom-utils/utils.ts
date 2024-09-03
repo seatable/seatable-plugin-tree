@@ -134,6 +134,9 @@ export const outputLevelsInfo = (
     second: levelSelections.second.isDisabled,
     third: levelSelections.third ? levelSelections.third.isDisabled : true,
   };
+  if (tableId === '00000') {
+    tableId = '0000';
+  }
   const table = allTables.find((t) => t._id === tableId);
   const linkedRows = window.dtableSDK.getTableLinkRows(rows, table);
   const allRowsInAllTables: TableRow[] = allTables.flatMap((t: Table) => t.rows);
@@ -145,9 +148,8 @@ export const outputLevelsInfo = (
   }
 
   const finalResult: levelsStructureInfo = [];
-
   rows.forEach((r: TableRow) => {
-    const _ids = linkedRows[r._id][secondLevelKey as string];
+    const _ids = linkedRows?.[r._id]?.[secondLevelKey as string] ?? [];
     let secondLevelRows = [];
     for (const i in _ids) {
       const linked_row = allRowsInAllTables.find((row: TableRow) => row._id === _ids[i]);
