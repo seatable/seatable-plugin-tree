@@ -289,6 +289,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
               />
             </div>
           ))}
+        <div style={{ width: 90 }} />
       </div>
       {isExpanded && isClickable && (
         <div className={styles.custom_expandableItem_rows}>

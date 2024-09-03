@@ -93,6 +93,9 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
             </ResizableCell>
           );
         })}
+      <div>
+        <div style={{ width: 100 }}></div>
+      </div>
     </div>
   );
 };
