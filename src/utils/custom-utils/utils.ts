@@ -491,9 +491,9 @@ const onInsertRow = (table: Table, view: TableView, rowData: { [key: string]: an
 
 export const paddingAddBtn = (level: number) => {
   if (level === 0) {
-    return { paddingLeft: 34, paddingBottom: 20 };
+    return { paddingLeft: 34, paddingBottom: 10, paddingTop: 5, height: 20 };
   } else if (level === 1 || level === 2) {
-    return { paddingLeft: 44, paddingBottom: 20 };
+    return { paddingLeft: 44, paddingBottom: 10, paddingTop: 5, height: 20 };
   }
 };
 

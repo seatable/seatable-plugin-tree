@@ -138,7 +138,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
       case 0:
         return { ...style, fontSize: '18px' };
       case 1:
-        return { ...style, fontSize: '16px' };
+        return { ...style, fontSize: '15px' };
       case 2:
         return { ...style, fontSize: '15px', fontWeight: 'normal' };
     }
