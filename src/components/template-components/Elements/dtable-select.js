@@ -9,7 +9,7 @@ const MenuSelectStyle = {
       ...provided,
       color: value === '00000' ? '#999999' : '#333',
       cursor: isDisabled ? 'default' : 'pointer',
-      backgroundColor: isSelected ? '#20a0ff' : isFocused ? '#f5f5f5' : '#fff',
+      backgroundColor: isFocused ? '#f5f5f5' : '#fff',
       '.header-icon .dtable-font': {
         color: isSelected ? '#fff' : '#aaa',
       },

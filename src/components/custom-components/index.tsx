@@ -332,7 +332,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
           </div>
         </div>
       )}
-      {levelTable && hasLinkColumn && isLevelSelectionDisabled(1, levelSelections) && (
+      {levelTable && !isAdding && hasLinkColumn && isLevelSelectionDisabled(1, levelSelections) && (
         <button className={styles.custom_p} style={paddingAddBtn(0)} onClick={isShowNewRowInput}>
           + add {levelTable?.name.toLowerCase()}
         </button>
