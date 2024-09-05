@@ -5,7 +5,7 @@ import deepCopy from 'deep-copy';
 import Calendar from 'rc-calendar';
 import ExpandableItem from './ExpandableItem';
 import HeaderRow from './HeaderRow';
-import { Table, TableColumn } from '../../utils/template-utils/interfaces/Table.interface';
+import { Table } from '../../utils/template-utils/interfaces/Table.interface';
 import { PLUGIN_NAME } from '../../utils/template-utils/constants';
 import { CellType } from 'dtable-utils';
 import {
@@ -44,7 +44,6 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   updatePresets,
 }) => {
   const [finalResult, setFinalResult] = useState<levelsStructureInfo>([]);
-  const [columns, setColumns] = useState<TableColumn[]>([]);
   const [hiddenColumns, setHiddenColumns] = useState<string[]>([]);
   const [tableName, setTableName] = useState<string>('');
   const [isAdding, setIsAdding] = useState<boolean>(false);
@@ -139,7 +138,6 @@ const PluginTL: React.FC<IPluginTLProps> = ({
 
   useEffect(() => {
     if (firstLevelTable && firstLevelTable.columns) {
-      setColumns(firstLevelTable.columns);
       setTableName(firstLevelTable.name);
     }
   }, [firstLevelTable, columnsCount]);
@@ -283,7 +281,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     <>
       {hasLinkColumn && (
         <HeaderRow
-          columns={columns}
+          columns={levelTable?.columns}
           hiddenColumns={hiddenColumns}
           level={1}
           tableName={tableName}
@@ -381,11 +379,16 @@ const PluginTL: React.FC<IPluginTLProps> = ({
           </div>
         </div>
       )}
-      {levelTable && hasLinkColumn && isLevelSelectionDisabled(1, levelSelections) && (
-        <button className={styles.custom_p} style={paddingAddBtn(0)} onClick={isShowNewRowInput}>
-          + add {levelTable?.name.toLowerCase()}
-        </button>
-      )}
+      {levelTable &&
+        !isAdding &&
+        !isSingleSelectColumn &&
+        !isDateColumn &&
+        hasLinkColumn &&
+        isLevelSelectionDisabled(1, levelSelections) && (
+          <button className={styles.custom_p} style={paddingAddBtn(0)} onClick={isShowNewRowInput}>
+            + add {levelTable?.name.toLowerCase()}
+          </button>
+        )}
     </>
   );
 };

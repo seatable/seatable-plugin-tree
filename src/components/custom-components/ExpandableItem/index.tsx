@@ -145,22 +145,22 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
         return { paddingLeft: 10 };
     }
   };
-
-  // const fontStyleRows = (level: number) => {
-  //   const style = {
-  //     width: `${
-  //       columnWidths.find((width) => width.id === '0000' + currentTable?.name)?.width || 200
-  //     }px`,
-  //   };
-  //   switch (level) {
-  //     case 0:
-  //       return { ...style, fontSize: '18px' };
-  //     case 1:
-  //       return { ...style, fontSize: '16px' };
-  //     case 2:
-  //       return { ...style, fontSize: '15px', fontWeight: 'normal' };
-  //   }
-  // };
+  const fontStyleRows = (level: number) => {
+    const style = {
+      width: `${
+        columnWidths.find((width) => width.id === (firstColumn?.key || '0000') + currentTable?.name)
+          ?.width || 200
+      }px`,
+    };
+    switch (level) {
+      case 0:
+        return { ...style, fontSize: '18px' };
+      case 1:
+        return { ...style, fontSize: '15px' };
+      case 2:
+        return { ...style, fontSize: '15px', fontWeight: 'normal' };
+    }
+  };
 
   const minW = minRowWidth - 24 * --level;
 
@@ -215,7 +215,6 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   const isShowNewRowInput = () => {
     if (firstColumn?.type === CellType.AUTO_NUMBER || firstColumn?.type === CellType.FORMULA) {
       addNewRowToTable(true);
-
       return;
     }
 
@@ -271,15 +270,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
           </button>
         )}
         {
-          <div
-            className={styles.custom_expandableItem_name_col}
-            style={{
-              width: `${
-                columnWidths.find(
-                  (width) => width.id === (firstColumn?.key || '0000') + currentTable?.name
-                )?.width || 200
-              }px`,
-            }}>
+          <div className={styles.custom_expandableItem_name_col} style={fontStyleRows(level)}>
             <Formatter
               column={
                 currentTable?.columns.find(
@@ -372,7 +363,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
                 className={`${styles.custom_expandableItem} expandableItem`}
                 style={{
                   width: '100%',
-                  ...levelStyleRows(level + 2),
+                  paddingLeft: 32,
                 }}>
                 <input
                   type={CellType.NUMBER === firstColumn?.type ? 'number' : 'text'}
@@ -432,7 +423,10 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
           )}
           {!rowsEmptyArray &&
             isLevelSelectionDisabled(level + 1, levelSelections) &&
-            levelTable && (
+            levelTable &&
+            !isAdding &&
+            !isSingleSelectColumn &&
+            !isDateColumn && (
               <button
                 className={styles.custom_p}
                 style={paddingAddBtn(level)}

@@ -9,7 +9,7 @@ const TextFormatter: React.FC<ITextProps> = ({ value, containerClassName, url })
           {value}
         </a>
       ) : (
-        <p>{value}</p>
+        <p style={{ marginBottom: 0 }}>{value}</p>
       )}
     </div>
   );

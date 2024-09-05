@@ -121,17 +121,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     ].filter((item) => item.label !== firstLevelSelectedOption.label || item.value === '00000');
   }, [JSON.stringify(allTables), firstLevelSelectedOption]);
 
-  // useEffect(() => {
-  //   const isSelectedInOptions = secondLevelOptions.some(
-  //     (i) => i.value === activeLevelSelections.second?.selected?.value
-  //   );
-  //   const selectedOption = isSelectedInOptions
-  //     ? _activeLevelSelections?.second?.selected || secondLevelOptions[0]
-  //     : secondLevelOptions[0];
-
-  //   setSecondLevelSelectedOption(selectedOption);
-  // }, [secondLevelOptions, activeLevelSelections]);
-
   const thirdLevelOptions = useMemo(() => {
     if (!firstLevelSelectedOption || !secondLevelSelectedOption) return [];
 
@@ -325,6 +314,17 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     [activeLevelSelections, levelSelections, updateLevelSelections]
   );
 
+  const selectedViewOption = viewOptions?.find((op) => op.value === viewSelectedOption?.value);
+  const selectedFirstLevel = firstLevelOptions?.find(
+    (op) => op.value === firstLevelSelectedOption?.value
+  );
+  const selectedSecondLevel = secondLevelOptions?.find(
+    (op) => op.value === secondLevelSelectedOption?.value
+  );
+  const selectedThirdLevel = thirdLevelOptions?.find(
+    (op) => op.value === thirdLevelSelectedOption?.value
+  );
+
   return (
     <div
       className={`bg-white ${
@@ -348,9 +348,10 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                   {intl.get('customSettings.1stLevel').d(`${d.table}`)}
                 </p>
                 <DtableSelect
-                  value={firstLevelSelectedOption}
+                  value={selectedFirstLevel}
                   options={firstLevelOptions}
                   onChange={(selectedOption: SelectOption) => {
+                    setFirstLevelSelectedOption(selectedOption);
                     handleLevelSelection(selectedOption, 'first');
                   }}
                 />
@@ -359,9 +360,10 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                 <p className="d-inline-block mb-2 mt-3">{intl.get('view').d(`${d.view}`)}</p>
                 {/* Toggle table view */}
                 <DtableSelect
-                  value={viewSelectedOption}
+                  value={selectedViewOption}
                   options={viewOptions}
                   onChange={(selectedOption: SelectOption) => {
+                    setViewSelectedOption(selectedOption);
                     onTableOrViewChange(
                       'view',
                       selectedOption,
@@ -398,10 +400,11 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                 value={
                   activeLevelSelections.second.isDisabled
                     ? secondLevelOptions[0]
-                    : secondLevelSelectedOption
+                    : selectedSecondLevel
                 }
                 options={secondLevelOptions}
                 onChange={(selectedOption: SelectOption) => {
+                  setSecondLevelSelectedOption(selectedOption);
                   handleLevelSelection(selectedOption, 'second');
                 }}
               />
@@ -434,7 +437,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                   activeLevelSelections.second.isDisabled ||
                   activeLevelSelections.third?.isDisabled
                     ? thirdLevelOptions[0]
-                    : thirdLevelSelectedOption
+                    : selectedThirdLevel
                 }
                 options={
                   (!thirdLevelExists ||
@@ -445,6 +448,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                     : thirdLevelOptions
                 }
                 onChange={(selectedOption: SelectOption) => {
+                  setThirdLevelSelectedOption(selectedOption);
                   handleLevelSelection(selectedOption, 'third');
                 }}
               />
