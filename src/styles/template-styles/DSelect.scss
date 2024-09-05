@@ -1,0 +1,11 @@
+.react-select__menu {
+  &:hover {
+    .react-select__option {
+      background-color: #fff;
+
+      &:hover {
+        background-color: #f5f5f5;
+      }
+    }
+  }
+}

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
+import Calendar from 'rc-calendar';
 import { ExpandableItemProps, levelRowInfo } from '@/utils/custom-utils/interfaces/CustomPlugin';
 import { getTableById, getRowsByIds, getLinkCellValue, CellType } from 'dtable-utils';
 import HeaderRow from '../HeaderRow';
@@ -18,6 +19,7 @@ import stylesFormatter from '../../../styles/template-styles/formatter/Formatter
 import pluginContext from '../../../plugin-context';
 import Formatter from '../../../components/template-components/Elements/Formatter';
 import { SlArrowDown, SlArrowRight } from 'react-icons/sl';
+import { Moment } from 'moment';
 
 const ExpandableItem: React.FC<ExpandableItemProps> = ({
   item,
@@ -40,13 +42,29 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [newItemName, setNewItemName] = useState<string>('');
   const [isSingleSelectColumn, setIsSingleSelectColumn] = useState<boolean>(false);
+  const [isDateColumn, setIsDateColumn] = useState<boolean>(false);
   const { levelTable, levelRows, levelSelectionIdx } = getLevelSelectionAndTable(
     level,
     allTables,
     levelSelections
   );
+  const datePickerRef = useRef<HTMLDivElement | null>(null);
   const rows = item[levelRows];
   const isClickable = level !== 3 && rows?.length !== 0 && item[levelRows] !== undefined;
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (datePickerRef.current && !datePickerRef.current.contains(event.target as Node)) {
+      setIsDateColumn(false); // Update state when clicked outside
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   let currentTable = allTables.find((table) => table.name === item._name);
   currentTable =
@@ -178,9 +196,15 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
     window.dtableSDK.dtableStore.insertRow(tableIndex, lastRowId, 'insert_below', newRow);
 
     // add link to newly created row
-    const linkID = item[levelRows]?.[0]?.columns.find(
-      (c) => c.data.other_table_id === currentTable?._id
-    )?.data.link_id;
+    let linkID = item[levelRows]?.[0]?.columns.find((c) => c.data.table_id === currentTable?._id)
+      ?.data.link_id;
+
+    if (!linkID) {
+      linkID = item[levelRows]?.[0]?.columns.find(
+        (c) => c.data.other_table_id === currentTable?._id
+      )?.data.link_id;
+    }
+
     window.dtableSDK.addLink(linkID, levelTable?._id, currentTable?._id, rowId, item._id);
 
     setNewItemName('');
@@ -199,7 +223,22 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
       return;
     }
 
+    if (firstColumn?.type === CellType.DATE) {
+      setIsDateColumn(true);
+      return;
+    }
+
     setIsAdding(true);
+  };
+
+  const dateOnChange = (date: Moment) => {
+    if (!date) {
+      setIsDateColumn(false);
+      return;
+    }
+
+    addNewRowToTable(false, date.toDate().toISOString());
+    setIsDateColumn(false);
   };
 
   return (
@@ -370,11 +409,24 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
               </div>
             </div>
           )}
+          {isDateColumn && (
+            <div ref={datePickerRef} className={styles.custom_expandableItem_rows}>
+              <div
+                className={`${styles.custom_expandableItem} expandableItem`}
+                style={{
+                  width: '100%',
+                  paddingLeft: 24,
+                }}>
+                <Calendar onSelect={dateOnChange} dateInputPlaceholder="Enter date" showToday />
+              </div>
+            </div>
+          )}
           {!rowsEmptyArray &&
             isLevelSelectionDisabled(level + 1, levelSelections) &&
             levelTable &&
             !isAdding &&
-            !isSingleSelectColumn && (
+            !isSingleSelectColumn &&
+            !isDateColumn && (
               <button
                 className={styles.custom_p}
                 style={paddingAddBtn(level)}
