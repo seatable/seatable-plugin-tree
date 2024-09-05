@@ -1,15 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select, { components } from 'react-select';
+import './../../../styles/template-styles/DSelect.scss';
 
 const MenuSelectStyle = {
   option: (provided, state) => {
-    const { isDisabled, isSelected, isFocused, value } = state;
+    const { isDisabled, isSelected, value } = state;
     return {
       ...provided,
       color: value === '00000' ? '#999999' : '#333',
       cursor: isDisabled ? 'default' : 'pointer',
-      backgroundColor: isSelected ? '#20a0ff' : isFocused ? '#f5f5f5' : '#fff',
+      backgroundColor: isSelected ? '#f5f5f5' : '#fff',
       '.header-icon .dtable-font': {
         color: isSelected ? '#fff' : '#aaa',
       },
@@ -123,7 +124,7 @@ class DtableSelect extends React.Component {
         onChange={onChange}
         options={options}
         isMulti={isMulti}
-        classNamePrefix={classNamePrefix}
+        classNamePrefix={classNamePrefix || 'react-select'}
         styles={MenuSelectStyle}
         components={{ Option, DropdownIndicator, MenuList }}
         placeholder={placeholder}

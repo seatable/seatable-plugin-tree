@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import deepCopy from 'deep-copy';
+import Calendar from 'rc-calendar';
 import ExpandableItem from './ExpandableItem';
 import HeaderRow from './HeaderRow';
 import { Table, TableColumn } from '../../utils/template-utils/interfaces/Table.interface';
@@ -27,6 +27,7 @@ import {
 } from '../../utils/custom-utils/interfaces/CustomPlugin';
 import styles from '../../styles/custom-styles/CustomPlugin.module.scss';
 import { ResizeDetail } from '@/utils/template-utils/interfaces/PluginPresets/Presets.interface';
+import { Moment } from 'moment';
 
 const PluginTL: React.FC<IPluginTLProps> = ({
   allTables,
@@ -55,17 +56,33 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   );
   const [expandedHasChanged, setExpandedHasChanged] = useState<boolean>(false);
   const [isSingleSelectColumn, setIsSingleSelectColumn] = useState<boolean>(false);
+  const [isDateColumn, setIsDateColumn] = useState<boolean>(false);
   const [rowsEmptyArray, setRowsEmptyArray] = useState<boolean>(false);
   const [minRowWidth, setMinRowWidth] = useState<number>(100);
   const [newItemName, setNewItemName] = useState<string>('');
+  const datePickerRef = useRef<HTMLDivElement | null>(null);
 
   const collaborators = window.app.state.collaborators;
   const { levelTable } = getLevelSelectionAndTable(0, allTables, levelSelections);
-  console.log({ levelSelections });
+
   const firstLevelTable = useMemo(
     () => allTables.find((t) => t._id === levelSelections.first.selected?.value),
     [JSON.stringify(allTables), levelSelections.first.selected?.value]
   );
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (datePickerRef.current && !datePickerRef.current.contains(event.target as Node)) {
+      setIsDateColumn(false); // Update state when clicked outside
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleItemClick = (updatedRow: RowExpandedInfo): void => {
     const updatedRows = updateExpandedState(updatedRow, expandedRowsInfo);
@@ -199,7 +216,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     }
   }, [finalResult, calculateRowWidths]);
 
-  const addNewRowToTable = (noValue?: boolean, givenValue?: string) => {
+  const addNewRowToTable = async (noValue?: boolean, givenValue?: string) => {
     setIsAdding(false);
 
     if (!newItemName && !noValue && !givenValue) {
@@ -221,8 +238,13 @@ const PluginTL: React.FC<IPluginTLProps> = ({
 
     // create new row in appropriate table
     const lastRowId = levelTable?.rows[levelTable.rows.length - 1]._id;
-    window.dtableSDK.dtableStore.insertRow(tableIndex, lastRowId, 'insert_below', newRow);
-    setNewItemName('');
+    try {
+      window.dtableSDK.dtableStore.insertRow(tableIndex, lastRowId, 'insert_below', newRow);
+    } catch (error) {
+      console.error('Error inserting new row:', error);
+    } finally {
+      setNewItemName('');
+    }
   };
 
   const firstColumn = levelTable?.columns[0];
@@ -239,7 +261,22 @@ const PluginTL: React.FC<IPluginTLProps> = ({
       return;
     }
 
+    if (firstColumn?.type === CellType.DATE) {
+      setIsDateColumn(true);
+      return;
+    }
+
     setIsAdding(true);
+  };
+
+  const dateOnChange = (date: Moment) => {
+    if (!date) {
+      setIsDateColumn(false);
+      return;
+    }
+
+    addNewRowToTable(false, date.toDate().toISOString());
+    setIsDateColumn(false);
   };
 
   return (
@@ -329,6 +366,18 @@ const PluginTL: React.FC<IPluginTLProps> = ({
                 </div>
               )
             )}
+          </div>
+        </div>
+      )}
+      {isDateColumn && (
+        <div ref={datePickerRef} className={styles.custom_expandableItem_rows}>
+          <div
+            className={`${styles.custom_expandableItem} expandableItem`}
+            style={{
+              width: '100%',
+              paddingLeft: 24,
+            }}>
+            <Calendar onSelect={dateOnChange} dateInputPlaceholder="Enter date" showToday />
           </div>
         </div>
       )}
