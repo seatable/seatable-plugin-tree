@@ -50,7 +50,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
 
   useEffect(() => {
     if (_activeLevelSelections) {
-      console.log({ _activeLevelSelections });
       setFirstLevelSelectedOption(_activeLevelSelections.first.selected);
       setSecondLevelSelectedOption(_activeLevelSelections.second.selected);
       setThirdLevelSelectedOption(_activeLevelSelections?.third?.selected);

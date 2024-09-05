@@ -178,10 +178,20 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
     window.dtableSDK.dtableStore.insertRow(tableIndex, lastRowId, 'insert_below', newRow);
 
     // add link to newly created row
-    const linkID = item[levelRows]?.[0]?.columns.find(
-      (c) => c.data.other_table_id === currentTable?._id
-    )?.data.link_id;
+    let linkID = item[levelRows]?.[0]?.columns.find((c) => c.data.table_id === currentTable?._id)
+      ?.data.link_id;
+
+    if (!linkID) {
+      linkID = item[levelRows]?.[0]?.columns.find(
+        (c) => c.data.other_table_id === currentTable?._id
+      )?.data.link_id;
+    }
+
     window.dtableSDK.addLink(linkID, levelTable?._id, currentTable?._id, rowId, item._id);
+
+    // console.log(item[levelRows]?.[0]?.columns, currentTable?._id);
+
+    // console.log(linkID, levelTable?._id, currentTable?._id, rowId, item._id);
 
     setNewItemName('');
   };

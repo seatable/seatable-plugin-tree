@@ -61,7 +61,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
 
   const collaborators = window.app.state.collaborators;
   const { levelTable } = getLevelSelectionAndTable(0, allTables, levelSelections);
-  console.log({ levelSelections });
+
   const firstLevelTable = useMemo(
     () => allTables.find((t) => t._id === levelSelections.first.selected?.value),
     [JSON.stringify(allTables), levelSelections.first.selected?.value]
@@ -199,7 +199,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     }
   }, [finalResult, calculateRowWidths]);
 
-  const addNewRowToTable = (noValue?: boolean, givenValue?: string) => {
+  const addNewRowToTable = async (noValue?: boolean, givenValue?: string) => {
     setIsAdding(false);
 
     if (!newItemName && !noValue && !givenValue) {
@@ -221,8 +221,13 @@ const PluginTL: React.FC<IPluginTLProps> = ({
 
     // create new row in appropriate table
     const lastRowId = levelTable?.rows[levelTable.rows.length - 1]._id;
-    window.dtableSDK.dtableStore.insertRow(tableIndex, lastRowId, 'insert_below', newRow);
-    setNewItemName('');
+    try {
+      window.dtableSDK.dtableStore.insertRow(tableIndex, lastRowId, 'insert_below', newRow);
+    } catch (error) {
+      console.error('Error inserting new row:', error);
+    } finally {
+      setNewItemName('');
+    }
   };
 
   const firstColumn = levelTable?.columns[0];
