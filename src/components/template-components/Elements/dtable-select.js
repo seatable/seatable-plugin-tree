@@ -6,7 +6,6 @@ import './../../../styles/template-styles/DSelect.scss';
 const MenuSelectStyle = {
   option: (provided, state) => {
     const { isDisabled, isSelected, value } = state;
-    console.log(state);
     return {
       ...provided,
       color: value === '00000' ? '#999999' : '#333',
