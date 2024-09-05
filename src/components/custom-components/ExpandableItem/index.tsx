@@ -373,7 +373,8 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
           {!rowsEmptyArray &&
             isLevelSelectionDisabled(level + 1, levelSelections) &&
             levelTable &&
-            !isAdding && (
+            !isAdding &&
+            !isSingleSelectColumn && (
               <button
                 className={styles.custom_p}
                 style={paddingAddBtn(level)}
