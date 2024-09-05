@@ -316,6 +316,15 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   );
 
   const selectedViewOption = viewOptions?.find((op) => op.value === viewSelectedOption?.value);
+  const selectedFirstLevel = firstLevelOptions?.find(
+    (op) => op.value === firstLevelSelectedOption?.value
+  );
+  const selectedSecondLevel = secondLevelOptions?.find(
+    (op) => op.value === secondLevelSelectedOption?.value
+  );
+  const selectedThirdLevel = thirdLevelOptions?.find(
+    (op) => op.value === thirdLevelSelectedOption?.value
+  );
 
   return (
     <div
@@ -340,9 +349,10 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                   {intl.get('customSettings.1stLevel').d(`${d.table}`)}
                 </p>
                 <DtableSelect
-                  value={firstLevelSelectedOption}
+                  value={selectedFirstLevel}
                   options={firstLevelOptions}
                   onChange={(selectedOption: SelectOption) => {
+                    setFirstLevelSelectedOption(selectedOption);
                     handleLevelSelection(selectedOption, 'first');
                   }}
                 />
@@ -354,6 +364,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                   value={selectedViewOption}
                   options={viewOptions}
                   onChange={(selectedOption: SelectOption) => {
+                    setViewSelectedOption(selectedOption);
                     onTableOrViewChange(
                       'view',
                       selectedOption,
@@ -390,10 +401,11 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                 value={
                   activeLevelSelections.second.isDisabled
                     ? secondLevelOptions[0]
-                    : secondLevelSelectedOption
+                    : selectedSecondLevel
                 }
                 options={secondLevelOptions}
                 onChange={(selectedOption: SelectOption) => {
+                  setSecondLevelSelectedOption(selectedOption);
                   handleLevelSelection(selectedOption, 'second');
                 }}
               />
@@ -426,7 +438,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                   activeLevelSelections.second.isDisabled ||
                   activeLevelSelections.third?.isDisabled
                     ? thirdLevelOptions[0]
-                    : thirdLevelSelectedOption
+                    : selectedThirdLevel
                 }
                 options={
                   (!thirdLevelExists ||
@@ -437,6 +449,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                     : thirdLevelOptions
                 }
                 onChange={(selectedOption: SelectOption) => {
+                  setThirdLevelSelectedOption(selectedOption);
                   handleLevelSelection(selectedOption, 'third');
                 }}
               />
