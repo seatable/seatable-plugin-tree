@@ -9,8 +9,8 @@ class SingleSelectEditor extends Component {
     super(props);
     const options = this.getSelectColumnOptions();
     this.initIdOptionMap(options);
-    const page = window.app.getPage();
-    this.isFormPage = page.type === PAGE_TYPE.FORM;
+
+    this.isFormPage = 'form';
     const highlightIndex = this.getInitHighLightIndex(options, props.value);
     this.state = {
       value: props.value || '',
@@ -141,12 +141,15 @@ class SingleSelectEditor extends Component {
   };
 
   onSelectOption = (optionID) => {
+    // Determine the value based on whether it's the currently selected option
     let value = optionID;
     if (optionID === this.props.value) {
       value = null;
     }
+
+    // Set the new value in state and then call onCommit with the updated value
     this.setState({ value }, () => {
-      this.props.onCommit();
+      this.props.onCommit({ updatedValue: value });
     });
   };
 
@@ -309,7 +312,7 @@ class SingleSelectEditor extends Component {
           <div className="option-selector-searcher search-single-selects">
             <DTableSearchInput
               autoFocus
-              placeholder={intl.get('Search_option')}
+              placeholder={intl.get('search_option')}
               onKeyDown={this.onKeyDown}
               onChange={this.onChangeSearch}
             />

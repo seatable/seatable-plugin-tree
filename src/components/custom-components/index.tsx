@@ -8,8 +8,7 @@ import HeaderRow from './HeaderRow';
 import { Table } from '../../utils/template-utils/interfaces/Table.interface';
 import { PLUGIN_NAME } from '../../utils/template-utils/constants';
 import { CellType } from 'dtable-utils';
-import { SingleSelectEditor } from 'dtable-ui-component';
-// import SingleSelectEditor from '../template-components/Elements/Formatter/Editors/SingleSelect/single-select-editor';
+import SingleSelectEditor from '../template-components/Elements/Formatter/Editors/SingleSelect/single-select-editor';
 import {
   generateUniqueRowId,
   getLevelSelectionAndTable,
@@ -62,6 +61,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   const [minRowWidth, setMinRowWidth] = useState<number>(100);
   const [newItemName, setNewItemName] = useState<string>('');
   const datePickerRef = useRef<HTMLDivElement | null>(null);
+  const singleSelectRef = useRef<HTMLDivElement | null>(null);
 
   const collaborators = window.app.state.collaborators;
   const { levelTable } = getLevelSelectionAndTable(0, allTables, levelSelections);
@@ -74,6 +74,9 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   const handleClickOutside = (event: MouseEvent) => {
     if (datePickerRef.current && !datePickerRef.current.contains(event.target as Node)) {
       setIsDateColumn(false); // Update state when clicked outside
+    }
+    if (singleSelectRef.current && !singleSelectRef.current.contains(event.target as Node)) {
+      setIsSingleSelectColumn(false); // Update state when clicked outside
     }
   };
 
@@ -342,7 +345,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
         </div>
       )}
       {isSingleSelectColumn && (
-        <div className={styles.custom_expandableItem_rows}>
+        <div ref={singleSelectRef} className={styles.custom_expandableItem_rows}>
           <div
             className={`${styles.custom_expandableItem} expandableItem`}
             style={{
@@ -355,13 +358,14 @@ const PluginTL: React.FC<IPluginTLProps> = ({
                 data: firstColumn?.data,
                 type: CellType.SINGLE_SELECT,
               }}
-              enableSearch={false}
+              enableSearch={true}
               key={firstColumn?.key}
+              newValues={firstColumn?.data}
               isSupportNewOption={true}
-              onCommit={(updatedValue: { undefined: string }) => {
+              onCommit={(value: { updatedValue: string }) => {
                 const selectedOption = firstColumn?.data?.options?.find(
                   (option: { name: string; color: string; textColor: string; id: string }) =>
-                    option.name === updatedValue.undefined
+                    option.id === value.updatedValue
                 );
 
                 if (selectedOption) {
