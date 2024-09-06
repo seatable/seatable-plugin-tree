@@ -358,15 +358,14 @@ const PluginTL: React.FC<IPluginTLProps> = ({
               enableSearch={false}
               key={firstColumn?.key}
               isSupportNewOption={true}
-              onCommit={(updatedValue: any) => {
-                const selectedName = updatedValue.undefined; // The selected option's name
+              onCommit={(updatedValue: { undefined: string }) => {
                 const selectedOption = firstColumn?.data?.options?.find(
-                  (option: any) => option.name === selectedName
+                  (option: { name: string; color: string; textColor: string; id: string }) =>
+                    option.name === updatedValue.undefined
                 );
 
                 if (selectedOption) {
-                  const selectedOptionId = selectedOption.id; // Get the id of the selected option
-                  console.log('Selected Option ID:', selectedOptionId);
+                  const selectedOptionId = selectedOption.id;
                   addNewRowToTable(false, String(selectedOptionId));
                 }
                 setIsSingleSelectColumn(false);
