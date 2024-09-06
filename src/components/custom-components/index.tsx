@@ -8,6 +8,8 @@ import HeaderRow from './HeaderRow';
 import { Table } from '../../utils/template-utils/interfaces/Table.interface';
 import { PLUGIN_NAME } from '../../utils/template-utils/constants';
 import { CellType } from 'dtable-utils';
+import { SingleSelectEditor } from 'dtable-ui-component';
+// import SingleSelectEditor from '../template-components/Elements/Formatter/Editors/SingleSelect/single-select-editor';
 import {
   generateUniqueRowId,
   getLevelSelectionAndTable,
@@ -347,23 +349,29 @@ const PluginTL: React.FC<IPluginTLProps> = ({
               width: '100%',
               paddingLeft: 24,
             }}>
-            {firstColumn?.data.options?.map(
-              (op: { id: string | number; color: string; textColor: string; name: string }) => (
-                <div key={op.id} className={styles.custom_single_select_row}>
-                  <input
-                    onChange={() => {
-                      setIsSingleSelectColumn(false);
-                      addNewRowToTable(false, String(op.id));
-                    }}
-                    type="radio"
-                    name=""
-                    id={String(op.id)}
-                    value={String(op.id)}
-                  />
-                  <label style={{ background: op.color, color: op.textColor }}>{op.name}</label>
-                </div>
-              )
-            )}
+            <SingleSelectEditor
+              column={{
+                key: 'status',
+                data: firstColumn?.data,
+                type: CellType.SINGLE_SELECT,
+              }}
+              enableSearch={false}
+              key={firstColumn?.key}
+              isSupportNewOption={true}
+              onCommit={(updatedValue: any) => {
+                const selectedName = updatedValue.undefined; // The selected option's name
+                const selectedOption = firstColumn?.data?.options?.find(
+                  (option: any) => option.name === selectedName
+                );
+
+                if (selectedOption) {
+                  const selectedOptionId = selectedOption.id; // Get the id of the selected option
+                  console.log('Selected Option ID:', selectedOptionId);
+                  addNewRowToTable(false, String(selectedOptionId));
+                }
+                setIsSingleSelectColumn(false);
+              }}
+            />
           </div>
         </div>
       )}
