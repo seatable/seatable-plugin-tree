@@ -377,6 +377,7 @@ const Formatter: React.FC<IFormatterProps> = ({
               workspaceID: workspaceID,
               dtableUuid: dtableUuid,
             }}
+            containerClassName="image-formatter"
           />
         );
       }

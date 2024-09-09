@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from 't_styles/Plugin.module.scss';
 import stylesPPresets from 't_styles/PluginPresets.module.scss';
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
 import { IHeaderProps } from '@/utils/template-utils/interfaces/Header.interface';
 import { PLUGIN_ID } from 'utils/template-utils/constants';
 import { HiOutlineChevronDoubleRight } from 'react-icons/hi2';
@@ -18,22 +16,6 @@ const Header: React.FC<IHeaderProps> = (props) => {
       setCustomComponentContent(input.innerHTML);
     }
   }, []);
-
-  const downloadPdfDocument = () => {
-    const input = document.getElementById(PLUGIN_ID);
-    if (input) {
-      html2canvas(input, {
-        logging: true,
-        allowTaint: false,
-        useCORS: true,
-      }).then((canvas: HTMLCanvasElement) => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('l', 'mm', 'a4', true);
-        pdf.addImage(imgData, 'JPEG', 0, 0, 230, 200);
-        pdf.save(`${PLUGIN_ID} .pdf`);
-      });
-    }
-  };
 
   return (
     <div className={styles.plugin_header}>
