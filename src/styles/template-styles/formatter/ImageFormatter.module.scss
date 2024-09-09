@@ -1,9 +1,14 @@
+.imageContainer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
 .imageItem {
   display: inline-block;
   height: 28px;
-  width: 28px;
   margin-right: 4px;
-  border: 1px solid #f0f0f0;
+  padding: 2px;
 }
 
 .imageItem:hover {
