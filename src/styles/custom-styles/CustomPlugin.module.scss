@@ -111,6 +111,7 @@
     background-color: $modal-bgColor;
     height: 35px;
     width: max-content;
+    position: relative;
 
     &_rows {
       display: flex;

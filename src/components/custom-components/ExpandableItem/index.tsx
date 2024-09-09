@@ -381,7 +381,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
               </div>
             </div>
           )}
-          {isSingleSelectColumn && (
+          {/* {isSingleSelectColumn && (
             <div className={styles.custom_expandableItem_rows}>
               <div
                 className={`${styles.custom_expandableItem} expandableItem`}
@@ -408,7 +408,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
                 )}
               </div>
             </div>
-          )}
+          )} */}
           {isDateColumn && (
             <div ref={datePickerRef} className={styles.custom_expandableItem_rows}>
               <div

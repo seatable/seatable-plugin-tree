@@ -15,7 +15,7 @@ const SingleSelectFormatter: React.FC<ISingleSelectProps> = ({ value, options })
   const className = classnames('dtable-ui cell-formatter-container single-select-formatter');
 
   return (
-    <div className={className} id={'test'}>
+    <div className={className} id={''}>
       {value ? getOption() : ''}
     </div>
   );
