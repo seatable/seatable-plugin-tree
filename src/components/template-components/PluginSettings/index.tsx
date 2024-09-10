@@ -145,7 +145,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       thirdLevelSelectedOption &&
       !thirdLevelOptions.map((op) => op.value).includes(thirdLevelSelectedOption.value)
     ) {
-      console.log(thirdLevelSelectedOption);
       const selectedOption = thirdLevelOptions[1] || thirdLevelOptions[0];
       setThirdLevelSelectedOption(selectedOption);
       setThirdLevelExists(thirdLevelOptions.length > 0);
@@ -238,7 +237,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   );
 
   const handleFirstLevelSelection = (selectedOption: SelectOption, noUpdate?: boolean) => {
-    console.log('handleFirstLevelSelection');
     const _table = allTables.find((table) => table._id === selectedOption.value);
     const _views = _table?.views || [];
 
