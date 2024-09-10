@@ -557,6 +557,7 @@ const App: React.FC<IAppProps> = (props) => {
             onToggleSettings={toggleSettings}
             pluginDataStore={pluginDataStore}
             updatePresets={updatePresets}
+            setActiveLevelSelections={setActiveLevelSelections}
             activeLevelSelections={activeLevelSelections}
           />
         </div>
