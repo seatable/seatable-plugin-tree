@@ -33,6 +33,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   pluginDataStore,
   pluginPresets,
   updatePresets,
+  setActiveLevelSelections,
 }) => {
   const { activeTableView } = appActiveState;
   const [firstLevelSelectedOption, setFirstLevelSelectedOption] = useState<SelectOption>();
@@ -151,9 +152,24 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   }, [JSON.stringify(allTables), firstLevelSelectedOption, secondLevelSelectedOption]);
 
   useEffect(() => {
-    const selectedOption = thirdLevelOptions[1] || thirdLevelOptions[0];
-    setThirdLevelSelectedOption(selectedOption);
-    setThirdLevelExists(thirdLevelOptions.length > 0);
+    if (
+      thirdLevelSelectedOption &&
+      !thirdLevelOptions.map((op) => op.value).includes(thirdLevelSelectedOption.value)
+    ) {
+      console.log(thirdLevelSelectedOption);
+      const selectedOption = thirdLevelOptions[1] || thirdLevelOptions[0];
+      setThirdLevelSelectedOption(selectedOption);
+      setThirdLevelExists(thirdLevelOptions.length > 0);
+
+      setActiveLevelSelections({
+        ...activeLevelSelections,
+        third: {
+          ...activeLevelSelections.third,
+          selected: selectedOption,
+          isDisabled: selectedOption.value === '00000',
+        },
+      });
+    }
   }, [thirdLevelOptions, levelSelections]);
 
   const handleLevelSelection = useCallback(
@@ -233,6 +249,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   );
 
   const handleFirstLevelSelection = (selectedOption: SelectOption, noUpdate?: boolean) => {
+    console.log('handleFirstLevelSelection');
     const _table = allTables.find((table) => table._id === selectedOption.value);
     const _views = _table?.views || [];
 
