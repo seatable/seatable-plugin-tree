@@ -173,7 +173,7 @@ class SingleSelectEditor extends Component {
     }
   };
 
-  onEsc = (e) => {
+  onEsc = () => {
     const { onEscape } = this.props;
     if (!onEscape) return;
     const closeEditor = onEscape();

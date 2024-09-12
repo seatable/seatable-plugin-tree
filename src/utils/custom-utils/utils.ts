@@ -66,8 +66,8 @@ export function levelSelectionDefaultFallback(
         : { value: fstLvlTbls[0]._id, label: fstLvlTbls[0].name };
 
     const scnLvlTbls = findSecondLevelTables(allTables, {
-      value: fstLvlTbls[0]?._id || '',
-      label: fstLvlTbls[0]?.name || '',
+      value: fstLvlTbls[0]?._id || allTables[0]?._id,
+      label: fstLvlTbls[0]?.name || allTables[0]?.name,
     });
 
     const selectedScnLvlObj =
@@ -118,10 +118,11 @@ export function findSecondLevelTables(
   }
 
   // Finding the first level table
-  const firstLevelTable = allTables.find((t) => t?._id === firsLevelSelectedOption?.value);
+  let firstLevelTable = allTables.find((t) => t?._id === firsLevelSelectedOption?.value);
 
   if (!firstLevelTable) {
-    console.warn('First level table not found');
+    firstLevelTable = allTables[0];
+    // console.warn('First level table not found');
     return [];
   }
 
@@ -192,8 +193,20 @@ export const outputLevelsInfo = (
   thirdLevelId?: string,
   keyName?: string
 ) => {
+  console.log('called');
   if (!levelSelections || !tableId || !rows || !expandedRowsInfo || !secondLevelId || !allTables) {
-    console.error('Missing required parameters in outputLevelsInfo function.');
+    const missingParams = [];
+
+    if (!levelSelections) missingParams.push('levelSelections');
+    if (!tableId) missingParams.push('tableId');
+    if (!rows) missingParams.push('rows');
+    if (!expandedRowsInfo) missingParams.push('expandedRowsInfo');
+    if (!secondLevelId) missingParams.push('secondLevelId');
+    if (!allTables) missingParams.push('allTables');
+
+    console.error(
+      `Missing required parameters in outputLevelsInfo function: ${missingParams.join(', ')}`
+    );
     return { cleanFinalResult: [], cleanExpandedRowsObj: [] };
   }
 
@@ -215,15 +228,20 @@ export const outputLevelsInfo = (
   const linkedRows = window.dtableSDK.getTableLinkRows(rows, table);
   const allRowsInAllTables: TableRow[] = allTables.flatMap((t: Table) => t.rows);
   const linkedColumns = getLinkColumns(table?.columns || []);
-
+  if (linkedColumns.length === 0) {
+    return { cleanFinalResult: [], cleanExpandedRowsObj: [] };
+  }
   let secondLevelKey = linkedColumns.find((c) => c.data.other_table_id === secondLevelId)?.key;
+
   if (!secondLevelKey) {
     secondLevelKey = linkedColumns.find((c) => c.data.table_id === secondLevelId)?.key;
   }
 
   if (!secondLevelKey) {
-    console.error('Second level key not found.');
-    return { cleanFinalResult: [], cleanExpandedRowsObj: [] };
+    const dataTableId = linkedColumns[0].data.table_id;
+    const otherDataTableId = linkedColumns[0].data.other_table_id;
+    secondLevelKey = dataTableId !== tableId ? dataTableId : otherDataTableId;
+    console.log({ secondLevelKey });
   }
 
   const finalResult: levelsStructureInfo = [];
@@ -260,7 +278,6 @@ export const outputLevelsInfo = (
       [keyName ? keyName : 'secondLevelRows']: secondLevelRows,
     } satisfies levelRowInfo);
   });
-
   const cleanExpandedRowsObj = cleanObjects(finalResult, undefined, 1, undefined);
   let cleanFinalResult;
   if (disablingLevels.second || disablingLevels.third) {
@@ -303,14 +320,15 @@ export function getLevelSelectionAndTable(
   }
 
   // Ensure that levelSelection exists before trying to access its properties
-  const levelTable = levelSelection
+  let levelTable = levelSelection
     ? allTables.find((t) => t._id === levelSelection?.selected?.value)
     : undefined;
 
   if (!levelTable) {
-    console.warn(
-      `No table found for the level selection: ${levelSelectionIdx}. Ensure correct table data is passed.`
-    );
+    levelTable = allTables[0];
+    // console.warn(
+    //   `No table found for the level selection: ${levelSelectionIdx}. Ensure correct table data is passed.`
+    // );
   }
 
   return { levelTable, levelRows, levelSelectionIdx };

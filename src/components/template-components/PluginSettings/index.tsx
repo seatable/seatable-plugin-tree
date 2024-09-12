@@ -24,11 +24,9 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   allTables,
   columnsCount,
   appActiveState,
-  activeTableViews,
   isShowSettings,
   onToggleSettings,
   onTableOrViewChange,
-  activeComponents,
   activeLevelSelections,
   pluginDataStore,
   pluginPresets,
@@ -102,11 +100,18 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   }, [allTables, columnsCount]);
 
   useEffect(() => {
-    setFirstLevelSelectedOption(_activeLevelSelections?.first?.selected || firstLevelOptions[0]);
-    handleFirstLevelSelection(
-      _activeLevelSelections?.first?.selected || firstLevelOptions[0],
-      true
+    const isTheSelectedOptionStillInAllTables = allTables.some(
+      (table) => table._id === _activeLevelSelections?.first?.selected?.value
     );
+    const _selectedOption = isTheSelectedOptionStillInAllTables
+      ? _activeLevelSelections?.first?.selected
+      : firstLevelOptions[0];
+
+    if (_selectedOption) {
+      console.log({ _selectedOption });
+      setFirstLevelSelectedOption(_selectedOption);
+      handleFirstLevelSelection(_selectedOption, true);
+    }
   }, [firstLevelOptions]);
 
   const secondLevelOptions = useMemo(() => {
@@ -330,6 +335,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   );
 
   const selectedViewOption = viewOptions?.find((op) => op.value === viewSelectedOption?.value);
+
   const selectedFirstLevel = firstLevelOptions?.find(
     (op) => op.value === firstLevelSelectedOption?.value
   );

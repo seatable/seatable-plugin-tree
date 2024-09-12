@@ -140,9 +140,8 @@ const PluginTL: React.FC<IPluginTLProps> = ({
       setExpandedRowsInfo(newRowsExpandedInfo);
     }
   }, [activePresetId, pluginDataStore.presets]);
-
   useEffect(() => {
-    if (firstLevelTable && firstLevelTable.columns) {
+    if (firstLevelTable !== undefined && firstLevelTable.columns) {
       setTableName(firstLevelTable.name);
     }
   }, [firstLevelTable, columnsCount]);
@@ -152,6 +151,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   }, [JSON.stringify(allTables), levelSelections.first.selected?.value]);
 
   const memoizedOutputLevelsInfo = useMemo(() => {
+    console.log('here');
     if (firstRows && firstLevelTable) {
       const firstTableId = levelSelections.first.selected?.value;
       return outputLevelsInfo(
@@ -189,7 +189,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
           (item) => item?.secondLevelRows && item.secondLevelRows.length > 0
         )
       );
-
+      console.log({ memoizedOutputLevelsInfo });
       setFinalResult(getViewRows(memoizedOutputLevelsInfo.cleanFinalResult, activeViewRows || []));
       // Check if the new expanded rows are different from the current ones
       setExpandedRowsInfo((prevExpandedRowsInfo) => {
@@ -289,7 +289,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
           columns={levelTable?.columns}
           hiddenColumns={hiddenColumns}
           level={1}
-          tableName={tableName}
+          tableName={levelTable?.name}
           levelSelections={levelSelections}
           columnWidths={columnWidths}
           setColumnWidths={setColumnWidths}

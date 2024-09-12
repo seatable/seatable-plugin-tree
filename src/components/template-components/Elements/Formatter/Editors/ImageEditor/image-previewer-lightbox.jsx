@@ -51,7 +51,7 @@ function ImagePreviewerLightbox(props) {
     imageTitle = URL ? decodeURI(URL.slice(URL.lastIndexOf('/') + 1)) : '';
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.log(error);
+    console.error(error);
   }
 
   // svg image is vectorgraph and can't rotate, external image can't rotate
