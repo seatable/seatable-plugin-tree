@@ -193,7 +193,6 @@ export const outputLevelsInfo = (
   thirdLevelId?: string,
   keyName?: string
 ) => {
-  console.log('called');
   if (!levelSelections || !tableId || !rows || !expandedRowsInfo || !secondLevelId || !allTables) {
     const missingParams = [];
 
@@ -207,7 +206,6 @@ export const outputLevelsInfo = (
     console.error(
       `Missing required parameters in outputLevelsInfo function: ${missingParams.join(', ')}`
     );
-    return { cleanFinalResult: [], cleanExpandedRowsObj: [] };
   }
 
   const disablingLevels = {
@@ -219,10 +217,10 @@ export const outputLevelsInfo = (
     tableId = '0000';
   }
 
-  const table = allTables.find((t) => t._id === tableId);
+  let table = allTables.find((t) => t._id === tableId);
   if (!table) {
     console.error('Table not found.');
-    return { cleanFinalResult: [], cleanExpandedRowsObj: [] };
+    table = allTables[0];
   }
 
   const linkedRows = window.dtableSDK.getTableLinkRows(rows, table);
@@ -232,7 +230,6 @@ export const outputLevelsInfo = (
     return { cleanFinalResult: [], cleanExpandedRowsObj: [] };
   }
   let secondLevelKey = linkedColumns.find((c) => c.data.other_table_id === secondLevelId)?.key;
-
   if (!secondLevelKey) {
     secondLevelKey = linkedColumns.find((c) => c.data.table_id === secondLevelId)?.key;
   }
@@ -241,7 +238,6 @@ export const outputLevelsInfo = (
     const dataTableId = linkedColumns[0].data.table_id;
     const otherDataTableId = linkedColumns[0].data.other_table_id;
     secondLevelKey = dataTableId !== tableId ? dataTableId : otherDataTableId;
-    console.log({ secondLevelKey });
   }
 
   const finalResult: levelsStructureInfo = [];

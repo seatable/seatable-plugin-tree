@@ -48,6 +48,9 @@ const DEFAULT_PLUGIN_DATA = {
   ],
 };
 
+// Default Not Used Data
+const NOT_USED_DATA = { value: '00000', label: 'Not used' };
+
 // Preset Handle Actions
 const PresetHandleAction = {
   delete: 'delete',
@@ -165,4 +168,5 @@ export {
   FILEEXT_ICON_MAP,
   PREVIEWER,
   ADDITION,
+  NOT_USED_DATA,
 };

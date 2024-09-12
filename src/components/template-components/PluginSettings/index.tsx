@@ -17,6 +17,7 @@ import { LEVEL_DATA_DEFAULT } from '../../../utils/custom-utils/constants';
 import { HiOutlineChevronDoubleRight } from 'react-icons/hi2';
 import intl from 'react-intl-universal';
 import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';
+import { NOT_USED_DATA } from '../../../utils/template-utils/constants';
 
 const { [DEFAULT_LOCALE]: d } = AVAILABLE_LOCALES;
 
@@ -108,7 +109,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       : firstLevelOptions[0];
 
     if (_selectedOption) {
-      console.log({ _selectedOption });
       setFirstLevelSelectedOption(_selectedOption);
       handleFirstLevelSelection(_selectedOption, true);
     }
@@ -119,7 +119,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     const SECOND_LEVEL_TABLES = findSecondLevelTables(allTables, firstLevelSelectedOption);
 
     return [
-      { value: '00000', label: 'Not used' },
+      NOT_USED_DATA,
       ...SECOND_LEVEL_TABLES.map((item) => ({
         value: item._id,
         label: truncateTableName(item.name),
@@ -133,7 +133,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     const THIRD_LEVEL_TABLES = findSecondLevelTables(allTables, secondLevelSelectedOption);
 
     return [
-      { value: '00000', label: 'Not used' },
+      NOT_USED_DATA,
       ...THIRD_LEVEL_TABLES.map((item) => ({
         value: item._id,
         label: truncateTableName(item.name),

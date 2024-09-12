@@ -38,7 +38,6 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   setColumnWidths,
   updateResizeDetails,
 }) => {
-
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [newItemName, setNewItemName] = useState<string>('');
@@ -52,7 +51,6 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   const datePickerRef = useRef<HTMLDivElement | null>(null);
   const rows = item[levelRows];
   const isClickable = level !== 3 && rows?.length !== 0 && item[levelRows] !== undefined;
-
 
   const handleClickOutside = (event: MouseEvent) => {
     if (datePickerRef.current && !datePickerRef.current.contains(event.target as Node)) {
