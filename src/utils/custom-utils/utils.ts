@@ -193,50 +193,37 @@ export const outputLevelsInfo = (
   thirdLevelId?: string,
   keyName?: string
 ) => {
-  if (!levelSelections || !tableId || !rows || !expandedRowsInfo || !secondLevelId || !allTables) {
-    const missingParams = [];
-
-    if (!levelSelections) missingParams.push('levelSelections');
-    if (!tableId) missingParams.push('tableId');
-    if (!rows) missingParams.push('rows');
-    if (!expandedRowsInfo) missingParams.push('expandedRowsInfo');
-    if (!secondLevelId) missingParams.push('secondLevelId');
-    if (!allTables) missingParams.push('allTables');
-
-    console.error(
-      `Missing required parameters in outputLevelsInfo function: ${missingParams.join(', ')}`
-    );
-  }
-
   const disablingLevels = {
     second: levelSelections.second.isDisabled,
     third: levelSelections.third ? levelSelections.third.isDisabled : true,
   };
 
   if (tableId === '00000') {
-    tableId = '0000';
+    tableId = allTables[0]._id;
   }
 
   let table = allTables.find((t) => t._id === tableId);
   if (!table) {
-    console.error('Table not found.');
+    console.error(`Table ${tableId} not found.`);
     table = allTables[0];
   }
 
   const linkedRows = window.dtableSDK.getTableLinkRows(rows, table);
   const allRowsInAllTables: TableRow[] = allTables.flatMap((t: Table) => t.rows);
   const linkedColumns = getLinkColumns(table?.columns || []);
+
   if (linkedColumns.length === 0) {
     return { cleanFinalResult: [], cleanExpandedRowsObj: [] };
   }
-  let secondLevelKey = linkedColumns.find((c) => c.data.other_table_id === secondLevelId)?.key;
-  if (!secondLevelKey) {
-    secondLevelKey = linkedColumns.find((c) => c.data.table_id === secondLevelId)?.key;
-  }
 
+  // Try to find the secondLevelKey using both conditions in one step
+  let secondLevelKey = linkedColumns.find(
+    (c) => c.data.other_table_id === secondLevelId || c.data.table_id === secondLevelId
+  )?.key;
+
+  // Fallback if secondLevelKey wasn't found
   if (!secondLevelKey) {
-    const dataTableId = linkedColumns[0].data.table_id;
-    const otherDataTableId = linkedColumns[0].data.other_table_id;
+    const { table_id: dataTableId, other_table_id: otherDataTableId } = linkedColumns[0].data;
     secondLevelKey = dataTableId !== tableId ? dataTableId : otherDataTableId;
   }
 
