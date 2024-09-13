@@ -17,6 +17,7 @@ import { LEVEL_DATA_DEFAULT } from '../../../utils/custom-utils/constants';
 import { HiOutlineChevronDoubleRight } from 'react-icons/hi2';
 import intl from 'react-intl-universal';
 import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';
+import { TableArray } from '@/utils/template-utils/interfaces/Table.interface';
 
 const { [DEFAULT_LOCALE]: d } = AVAILABLE_LOCALES;
 
@@ -108,6 +109,12 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     );
   }, [firstLevelOptions]);
 
+  useEffect(() => {
+    if (!firstLevelOptions.map((table) => table.value).includes(firstLevelSelectedOption?.value!)) {
+      handleFirstLevelSelection(firstLevelOptions[0]);
+    }
+  }, [firstLevelOptions]);
+
   const secondLevelOptions = useMemo(() => {
     if (!firstLevelSelectedOption) return [];
     const SECOND_LEVEL_TABLES = findSecondLevelTables(allTables, firstLevelSelectedOption);
@@ -137,20 +144,24 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
         (item.label !== firstLevelSelectedOption.label || item.value === '00000') &&
         (item.value !== secondLevelSelectedOption.value || item.value === '00000')
     );
-  }, [JSON.stringify(allTables), firstLevelSelectedOption, secondLevelSelectedOption]);
+  }, [JSON.stringify(allTables), secondLevelSelectedOption]);
 
-  useEffect(() => {
-    const selectedOption = thirdLevelOptions[1] || thirdLevelOptions[0];
-    setThirdLevelSelectedOption(selectedOption);
-    setThirdLevelExists(thirdLevelOptions.length > 0);
-  }, [thirdLevelOptions, levelSelections]);
+  // useEffect(() => {
+  //   const selectedOption = thirdLevelOptions[1] || thirdLevelOptions[0];
+  //   setThirdLevelSelectedOption(selectedOption);
+  //   setThirdLevelExists(thirdLevelOptions.length > 0);
+  //   console.log('thirdLevelOptions', thirdLevelOptions, selectedOption);
+  // }, [thirdLevelOptions, levelSelections]);
 
   const handleLevelSelection = useCallback(
     (selectedOption: SelectOption, level: CustomSettingsOption) => {
       if (
-        (level !== 'first' && selectedOption.value === '00000') ||
-        (level === 'second' && activeLevelSelections.second.isDisabled) ||
-        (level === 'third' && activeLevelSelections.third?.isDisabled)
+        (level !== 'first' &&
+          selectedOption.value === '00000' &&
+          !activeLevelSelections[level]?.isDisabled) ||
+        (level !== 'first' &&
+          selectedOption.value !== '00000' &&
+          activeLevelSelections[level]?.isDisabled)
       ) {
         handleLevelDisabled(level);
         return;
@@ -171,14 +182,17 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
 
       setLevelSelections((prevState) => ({
         ...prevState,
-        [level]: { selected: selectedOption, isDisabled: levelSelections[level]?.isDisabled },
+        [level]: {
+          selected: selectedOption,
+          isDisabled: selectedOption.value === '0000' ? true : false,
+        },
       }));
 
       updateLevelSelections({
         ...levelSelections,
         [level]: {
           selected: selectedOption,
-          isDisabled: levelSelections[level]?.isDisabled,
+          isDisabled: selectedOption.value === '0000' ? true : false,
         },
       });
     },
@@ -248,28 +262,44 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
         value: item._id,
         label: truncateTableName(item.name),
       }))
-      .filter((item) => item.label !== secondLevelOptions[0].label || item.value === '00000');
+      .filter((item) => item.value !== selectedOption.value || item.value === '00000');
 
-    setSecondLevelSelectedOption(secondLevelOptions[0]);
-    setThirdLevelSelectedOption(thirdLevelOptions[0]);
+    let notUsedOption;
+    let thirdLevelNotUsed;
 
+    if (secondLevelOptions[0] === undefined) {
+      notUsedOption = { value: '00000', label: 'Not used' };
+    }
+
+    if (thirdLevelOptions[0] === undefined) {
+      thirdLevelNotUsed = { value: '00000', label: 'Not used' };
+    }
+
+    setSecondLevelSelectedOption(notUsedOption || secondLevelOptions[0]);
+    setThirdLevelSelectedOption(thirdLevelNotUsed || notUsedOption || thirdLevelOptions[0]);
     setLevelSelections({
       first: { selected: selectedOption, isDisabled: levelSelections.first?.isDisabled },
       second: {
-        selected: secondLevelOptions[0],
-        isDisabled: levelSelections.second?.isDisabled,
+        selected: notUsedOption || secondLevelOptions[0],
+        isDisabled: notUsedOption ? true : levelSelections.second?.isDisabled,
       },
-      third: { selected: thirdLevelOptions[0], isDisabled: levelSelections.third?.isDisabled! },
+      third: {
+        selected: thirdLevelNotUsed || notUsedOption || thirdLevelOptions[0],
+        isDisabled: thirdLevelNotUsed || notUsedOption ? true : false,
+      },
     });
 
     !noUpdate &&
       updateLevelSelections({
         first: { selected: selectedOption, isDisabled: levelSelections.first?.isDisabled },
         second: {
-          selected: secondLevelOptions[0],
-          isDisabled: levelSelections.second?.isDisabled,
+          selected: notUsedOption || secondLevelOptions[0],
+          isDisabled: notUsedOption ? true : levelSelections.second?.isDisabled,
         },
-        third: { selected: thirdLevelOptions[0], isDisabled: levelSelections.third?.isDisabled! },
+        third: {
+          selected: thirdLevelNotUsed || notUsedOption || thirdLevelOptions[0],
+          isDisabled: thirdLevelNotUsed || notUsedOption ? true : false,
+        },
       });
   };
 
@@ -404,6 +434,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                 }
                 options={secondLevelOptions}
                 onChange={(selectedOption: SelectOption) => {
+                  console.log('selectedOption', selectedOption);
                   setSecondLevelSelectedOption(selectedOption);
                   handleLevelSelection(selectedOption, 'second');
                 }}

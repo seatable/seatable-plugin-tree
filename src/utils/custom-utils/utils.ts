@@ -87,7 +87,7 @@ export function findSecondLevelTables(
   firsLevelSelectedOption: SelectOption
 ): TableArray {
   // Finding the first level table
-  const firstLevelTable = allTables.find((t) => t._id === firsLevelSelectedOption.value);
+  const firstLevelTable = allTables.find((t) => t._id === firsLevelSelectedOption?.value);
 
   // Finding the columns with link type
   const columnsWithLinkType = firstLevelTable?.columns.filter(
@@ -138,7 +138,7 @@ export const outputLevelsInfo = (
     tableId = '0000';
   }
   const table = allTables.find((t) => t._id === tableId);
-  const linkedRows = window.dtableSDK.getTableLinkRows(rows, table);
+  const linkedRows = table ? window.dtableSDK.getTableLinkRows(rows, table) : [];
   const allRowsInAllTables: TableRow[] = allTables.flatMap((t: Table) => t.rows);
   const linkedColumns = getLinkColumns(table?.columns || []);
 
