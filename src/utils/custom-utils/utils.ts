@@ -201,14 +201,8 @@ export const outputLevelsInfo = (
   if (tableId === '00000') {
     tableId = allTables[0]._id;
   }
-
-  let table = allTables.find((t) => t._id === tableId);
-  if (!table) {
-    console.error(`Table ${tableId} not found.`);
-    table = allTables[0];
-  }
-
-  const linkedRows = window.dtableSDK.getTableLinkRows(rows, table);
+  const table = allTables.find((t) => t._id === tableId);
+  const linkedRows = table ? window.dtableSDK.getTableLinkRows(rows, table) : [];
   const allRowsInAllTables: TableRow[] = allTables.flatMap((t: Table) => t.rows);
   const linkedColumns = getLinkColumns(table?.columns || []);
 

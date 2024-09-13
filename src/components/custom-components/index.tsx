@@ -46,7 +46,6 @@ const PluginTL: React.FC<IPluginTLProps> = ({
 }) => {
   const [finalResult, setFinalResult] = useState<levelsStructureInfo>([]);
   const [hiddenColumns, setHiddenColumns] = useState<string[]>([]);
-  const [tableName, setTableName] = useState<string>('');
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [columnWidths, setColumnWidths] = useState<ResizeDetail[]>(
     pluginPresets[activePresetIdx].settings?.resize_details || []
@@ -143,11 +142,6 @@ const PluginTL: React.FC<IPluginTLProps> = ({
       setExpandedRowsInfo(newRowsExpandedInfo);
     }
   }, [activePresetId, pluginDataStore.presets]);
-  useEffect(() => {
-    if (firstLevelTable !== undefined && firstLevelTable.columns) {
-      setTableName(firstLevelTable.name);
-    }
-  }, [firstLevelTable, columnsCount]);
 
   const firstRows = useMemo(() => {
     let rows = getRowsByTableId(levelSelections.first.selected?.value, allTables);
