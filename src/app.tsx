@@ -137,6 +137,7 @@ const App: React.FC<IAppProps> = (props) => {
     const _hasLinkColumn = allTables.reduce((found, table) => {
       return found || table.columns.some((column) => column.type === 'link');
     }, false);
+    // Check if views have been added or removed or changed
 
     setActiveComponents((prevState) => ({
       ...prevState,
@@ -351,6 +352,7 @@ const App: React.FC<IAppProps> = (props) => {
       case 'table':
         // eslint-disable-next-line
         const _activeTable = allTables.find((s) => s._id === option.value)!;
+
         _activeViewRows = window.dtableSDK.getViewRows(_activeTable.views[0], _activeTable);
         setActiveTableViews(_activeTable.views);
         setAppActiveState((prevState) => ({
@@ -404,7 +406,6 @@ const App: React.FC<IAppProps> = (props) => {
         );
         break;
     }
-
     setPluginPresets(updatedPluginPresets);
     updatePluginDataStore({ ...pluginDataStore, presets: updatedPluginPresets });
   };
@@ -557,6 +558,7 @@ const App: React.FC<IAppProps> = (props) => {
             onToggleSettings={toggleSettings}
             pluginDataStore={pluginDataStore}
             updatePresets={updatePresets}
+            setActiveLevelSelections={setActiveLevelSelections}
             activeLevelSelections={activeLevelSelections}
           />
         </div>

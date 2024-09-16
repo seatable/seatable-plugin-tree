@@ -17,6 +17,7 @@ interface IPluginSettingsProps {
   pluginDataStore: IPluginDataStore;
   // onLevelSelectionChange: (levelSelections: ILevelSelections) => void;
   activeLevelSelections: ILevelSelections;
+  setActiveLevelSelections: React.Dispatch<React.SetStateAction<ILevelSelections>>;
   updatePresets: (
     currentIdx: number,
     presets: PresetsArray,

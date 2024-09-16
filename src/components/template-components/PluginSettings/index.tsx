@@ -17,6 +17,7 @@ import { LEVEL_DATA_DEFAULT } from '../../../utils/custom-utils/constants';
 import { HiOutlineChevronDoubleRight } from 'react-icons/hi2';
 import intl from 'react-intl-universal';
 import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';
+import { NOT_USED_DATA } from '../../../utils/template-utils/constants';
 
 const { [DEFAULT_LOCALE]: d } = AVAILABLE_LOCALES;
 
@@ -31,6 +32,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   pluginDataStore,
   pluginPresets,
   updatePresets,
+  setActiveLevelSelections,
 }) => {
   const { activeTableView } = appActiveState;
   const [firstLevelSelectedOption, setFirstLevelSelectedOption] = useState<SelectOption>();
@@ -102,7 +104,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     const SECOND_LEVEL_TABLES = findSecondLevelTables(allTables, firstLevelSelectedOption);
 
     return [
-      { value: '00000', label: 'Not used' },
+      NOT_USED_DATA,
       ...SECOND_LEVEL_TABLES.map((item) => ({
         value: item._id,
         label: truncateTableName(item.name),
@@ -116,7 +118,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     const THIRD_LEVEL_TABLES = findSecondLevelTables(allTables, secondLevelSelectedOption);
 
     return [
-      { value: '00000', label: 'Not used' },
+      NOT_USED_DATA,
       ...THIRD_LEVEL_TABLES.map((item) => ({
         value: item._id,
         label: truncateTableName(item.name),
@@ -137,7 +139,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   }, [firstLevelOptions]);
 
   useEffect(() => {
-    // check if first level options have changed
+    // check if first level options have changed and does not include the selected option
     if (
       firstLevelSelectedOption &&
       !firstLevelOptions.map((table) => table.value).includes(firstLevelSelectedOption.value)
@@ -145,7 +147,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       handleFirstLevelSelection(firstLevelOptions[0]);
     }
 
-    // check if second level options have changed
+    // check if second level options have changed and does not include the selected option
     if (
       secondLevelSelectedOption &&
       !secondLevelOptions.map((table) => table.value).includes(secondLevelSelectedOption.value)
@@ -153,7 +155,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       handleLevelSelection(secondLevelOptions[1] || secondLevelOptions[0], 'second');
     }
 
-    // check if third level options have changed
+    // check if third level options have changed and does not include the selected option
     if (
       thirdLevelSelectedOption &&
       !thirdLevelOptions.map((table) => table.value).includes(thirdLevelSelectedOption.value)
@@ -247,8 +249,41 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     [activeLevelSelections, levelSelections, updateLevelSelections]
   );
 
+  useEffect(() => {
+    if (!firstLevelSelectedOption) return;
+
+    // Find the corresponding table for the selected first-level option
+    const _table = allTables.find((table) => table._id === firstLevelSelectedOption.value);
+    if (!_table) return;
+
+    // Get the current views for the selected table
+    const _views = _table?.views || [];
+
+    // Map views to options for the select component
+    const newViewOptions = _views.map((item) => ({
+      value: item._id,
+      label: truncateTableName(item.name),
+    }));
+
+    // Check if the views have changed
+    const viewsChanged = JSON.stringify(newViewOptions) !== JSON.stringify(viewOptions);
+
+    if (viewsChanged) {
+      // Update viewOptions and viewSelectedOption if views have changed
+      const newViewSelectedOption =
+        newViewOptions.find((item) => item.value === viewSelectedOption?.value) ||
+        newViewOptions[0];
+
+      setViewOptions(newViewOptions);
+      setViewSelectedOption(newViewSelectedOption);
+    }
+  }, [firstLevelSelectedOption, allTables, viewOptions, viewSelectedOption, updatePresets]);
+
   const handleFirstLevelSelection = (selectedOption: SelectOption, noUpdate?: boolean) => {
-    const _table = allTables.find((table) => table._id === selectedOption.value);
+    const _table = allTables.find((table) => table._id === selectedOption?.value);
+    if (_table) {
+      onTableOrViewChange('table', selectedOption, _table);
+    }
     const _views = _table?.views || [];
 
     // Create options for views
@@ -357,6 +392,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   );
 
   const selectedViewOption = viewOptions?.find((op) => op.value === viewSelectedOption?.value);
+
   const selectedFirstLevel = firstLevelOptions?.find(
     (op) => op.value === firstLevelSelectedOption?.value
   );

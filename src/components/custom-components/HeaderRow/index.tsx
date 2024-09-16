@@ -17,6 +17,7 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
   updateResizeDetails,
 }) => {
   const [onHover, setOnHover] = useState<boolean>(false);
+
   columns =
     tableName === levelSelections.first.selected.label
       ? columns?.filter((col) => !hiddenColumns.includes(col.key))
