@@ -97,23 +97,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     return checkFirstOptions;
   }, [allTables, columnsCount]);
 
-  useEffect(() => {
-    setFirstLevelSelectedOption(_activeLevelSelections?.first?.selected || firstLevelOptions[0]);
-    handleFirstLevelSelection(
-      _activeLevelSelections?.first?.selected || firstLevelOptions[0],
-      true
-    );
-  }, [firstLevelOptions]);
-
-  useEffect(() => {
-    if (
-      firstLevelSelectedOption &&
-      !firstLevelOptions.map((table) => table.value).includes(firstLevelSelectedOption.value)
-    ) {
-      handleFirstLevelSelection(firstLevelOptions[0]);
-    }
-  }, [firstLevelOptions]);
-
   const secondLevelOptions = useMemo(() => {
     if (!firstLevelSelectedOption) return [];
     const SECOND_LEVEL_TABLES = findSecondLevelTables(allTables, firstLevelSelectedOption);
@@ -145,6 +128,42 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     );
   }, [JSON.stringify(allTables), secondLevelSelectedOption]);
 
+  useEffect(() => {
+    setFirstLevelSelectedOption(_activeLevelSelections?.first?.selected || firstLevelOptions[0]);
+    handleFirstLevelSelection(
+      _activeLevelSelections?.first?.selected || firstLevelOptions[0],
+      true
+    );
+  }, [firstLevelOptions]);
+
+  useEffect(() => {
+    // check if first level options have changed
+    if (
+      firstLevelSelectedOption &&
+      !firstLevelOptions.map((table) => table.value).includes(firstLevelSelectedOption.value)
+    ) {
+      handleFirstLevelSelection(firstLevelOptions[0]);
+    }
+
+    // check if second level options have changed
+    if (
+      secondLevelSelectedOption &&
+      !secondLevelOptions.map((table) => table.value).includes(secondLevelSelectedOption.value)
+    ) {
+      handleLevelSelection(secondLevelOptions[1] || secondLevelOptions[0], 'second');
+    }
+
+    // check if third level options have changed
+    if (
+      thirdLevelSelectedOption &&
+      !thirdLevelOptions.map((table) => table.value).includes(thirdLevelSelectedOption.value)
+    ) {
+      handleLevelSelection(thirdLevelOptions[1] || thirdLevelOptions[0], 'third');
+    }
+
+    // default options will be selected as a result
+  }, [firstLevelOptions, secondLevelOptions, thirdLevelOptions]);
+
   const handleLevelSelection = useCallback(
     (selectedOption: SelectOption, level: CustomSettingsOption) => {
       if (
@@ -156,7 +175,8 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
           activeLevelSelections[level]?.isDisabled)
       ) {
         handleLevelDisabled(level);
-        return;
+
+        if (!activeLevelSelections[level]?.isDisabled) return;
       }
 
       if (level === 'first') {
