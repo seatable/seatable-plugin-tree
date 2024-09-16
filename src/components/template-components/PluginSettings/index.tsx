@@ -151,13 +151,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     );
   }, [JSON.stringify(allTables), secondLevelSelectedOption]);
 
-  // useEffect(() => {
-  //   const selectedOption = thirdLevelOptions[1] || thirdLevelOptions[0];
-  //   setThirdLevelSelectedOption(selectedOption);
-  //   setThirdLevelExists(thirdLevelOptions.length > 0);
-  //   console.log('thirdLevelOptions', thirdLevelOptions, selectedOption);
-  // }, [thirdLevelOptions, levelSelections]);
-
   const handleLevelSelection = useCallback(
     (selectedOption: SelectOption, level: CustomSettingsOption) => {
       if (
@@ -240,8 +233,41 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     [activeLevelSelections, levelSelections, updateLevelSelections]
   );
 
+  useEffect(() => {
+    if (!firstLevelSelectedOption) return;
+
+    // Find the corresponding table for the selected first-level option
+    const _table = allTables.find((table) => table._id === firstLevelSelectedOption.value);
+    if (!_table) return;
+
+    // Get the current views for the selected table
+    const _views = _table?.views || [];
+
+    // Map views to options for the select component
+    const newViewOptions = _views.map((item) => ({
+      value: item._id,
+      label: truncateTableName(item.name),
+    }));
+
+    // Check if the views have changed
+    const viewsChanged = JSON.stringify(newViewOptions) !== JSON.stringify(viewOptions);
+
+    if (viewsChanged) {
+      // Update viewOptions and viewSelectedOption if views have changed
+      const newViewSelectedOption =
+        newViewOptions.find((item) => item.value === viewSelectedOption?.value) ||
+        newViewOptions[0];
+
+      setViewOptions(newViewOptions);
+      setViewSelectedOption(newViewSelectedOption);
+    }
+  }, [firstLevelSelectedOption, allTables, viewOptions, viewSelectedOption, updatePresets]);
+
   const handleFirstLevelSelection = (selectedOption: SelectOption, noUpdate?: boolean) => {
-    const _table = allTables.find((table) => table._id === selectedOption.value);
+    const _table = allTables.find((table) => table._id === selectedOption?.value);
+    if (_table) {
+      onTableOrViewChange('table', selectedOption, _table);
+    }
     const _views = _table?.views || [];
 
     // Create options for views
@@ -440,7 +466,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
                 }
                 options={secondLevelOptions}
                 onChange={(selectedOption: SelectOption) => {
-                  console.log('selectedOption', selectedOption);
                   setSecondLevelSelectedOption(selectedOption);
                   handleLevelSelection(selectedOption, 'second');
                 }}

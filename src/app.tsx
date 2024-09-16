@@ -128,7 +128,6 @@ const App: React.FC<IAppProps> = (props) => {
   };
 
   const resetData = (on: string) => {
-    console.log('resetData', on);
     const allTables: TableArray = window.dtableSDK.getTables(); // All the Tables of the Base
     const activeTable: Table = window.dtableSDK.getActiveTable(); // How is the ActiveTable Set? allTables[0]?
     const activeTableViews: TableViewArray = activeTable.views; // All the Views of the specific Active Table
@@ -138,6 +137,7 @@ const App: React.FC<IAppProps> = (props) => {
     const _hasLinkColumn = allTables.reduce((found, table) => {
       return found || table.columns.some((column) => column.type === 'link');
     }, false);
+    // Check if views have been added or removed or changed
 
     setActiveComponents((prevState) => ({
       ...prevState,
@@ -352,6 +352,7 @@ const App: React.FC<IAppProps> = (props) => {
       case 'table':
         // eslint-disable-next-line
         const _activeTable = allTables.find((s) => s._id === option.value)!;
+
         _activeViewRows = window.dtableSDK.getViewRows(_activeTable.views[0], _activeTable);
         setActiveTableViews(_activeTable.views);
         setAppActiveState((prevState) => ({
@@ -405,7 +406,6 @@ const App: React.FC<IAppProps> = (props) => {
         );
         break;
     }
-
     setPluginPresets(updatedPluginPresets);
     updatePluginDataStore({ ...pluginDataStore, presets: updatedPluginPresets });
   };
