@@ -321,7 +321,9 @@ const PluginTL: React.FC<IPluginTLProps> = ({
           />
         ))
       ) : (
-        <p className={styles.centeredMessage}>There are no tables with links yet.</p>
+        <div className={styles.centeredMessage}>
+          <p>There are no tables with links yet.</p>
+        </div>
       )}
       {isAdding && (
         <div className={styles.custom_expandableItem_rows}>
