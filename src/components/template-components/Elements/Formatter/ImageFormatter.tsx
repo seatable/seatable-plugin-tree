@@ -10,11 +10,7 @@ const ImageFormatter: React.FC<IImageProps> = ({ value }) => {
         const url = getImageThumbnailUrl(image, 256);
         return (
           <div className={styles.imageItem} key={index}>
-            <img
-              src={url}
-              alt={image} // Use descriptive alt text if you have context
-              style={{ width: '50px', marginRight: '10px' }}
-            />
+            <img src={url} alt={'dtable-image'} style={{ width: '50px', marginRight: '10px' }} />
           </div>
         );
       })}

@@ -46,7 +46,6 @@ const PluginTL: React.FC<IPluginTLProps> = ({
 }) => {
   const [finalResult, setFinalResult] = useState<levelsStructureInfo>([]);
   const [hiddenColumns, setHiddenColumns] = useState<string[]>([]);
-  const [tableName, setTableName] = useState<string>('');
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [columnWidths, setColumnWidths] = useState<ResizeDetail[]>(
     pluginPresets[activePresetIdx].settings?.resize_details || []
@@ -66,10 +65,13 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   const collaborators = window.app.state.collaborators;
   const { levelTable } = getLevelSelectionAndTable(0, allTables, levelSelections);
 
-  const firstLevelTable = useMemo(
-    () => allTables.find((t) => t._id === levelSelections.first.selected?.value),
-    [JSON.stringify(allTables), levelSelections.first.selected?.value]
-  );
+  const firstLevelTable = useMemo(() => {
+    const table = allTables.find((t) => t._id === levelSelections.first.selected?.value);
+    if (!table) {
+      return allTables[0];
+    }
+    return table;
+  }, [JSON.stringify(allTables), levelSelections.first.selected?.value]);
 
   const handleClickOutside = (event: MouseEvent) => {
     if (datePickerRef.current && !datePickerRef.current.contains(event.target as Node)) {
@@ -141,14 +143,13 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     }
   }, [activePresetId, pluginDataStore.presets]);
 
-  useEffect(() => {
-    if (firstLevelTable && firstLevelTable.columns) {
-      setTableName(firstLevelTable.name);
-    }
-  }, [firstLevelTable, columnsCount]);
-
   const firstRows = useMemo(() => {
-    return getRowsByTableId(levelSelections.first.selected?.value, allTables);
+    let rows = getRowsByTableId(levelSelections.first.selected?.value, allTables);
+    if (!rows || rows.length === 0) {
+      rows = getRowsByTableId(allTables[0]._id, allTables);
+    }
+
+    return rows;
   }, [JSON.stringify(allTables), levelSelections.first.selected?.value]);
 
   const memoizedOutputLevelsInfo = useMemo(() => {
@@ -176,7 +177,8 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   ]);
 
   useEffect(() => {
-    const activeTableOne = allTables.find((t) => t._id === levelSelections.first.selected?.value);
+    const _activeTableOne = allTables.find((t) => t._id === levelSelections.first.selected?.value);
+    const activeTableOne = _activeTableOne || allTables[0];
     const viewTableOne =
       activeTableOne?.views.find((v) => v._id === appActiveState.activeTableView?._id) ||
       activeTableOne?.views[0];
@@ -190,7 +192,8 @@ const PluginTL: React.FC<IPluginTLProps> = ({
         )
       );
 
-      setFinalResult(getViewRows(memoizedOutputLevelsInfo.cleanFinalResult, activeViewRows || []));
+      const _finalResult = getViewRows(memoizedOutputLevelsInfo.cleanFinalResult, activeViewRows);
+      setFinalResult(_finalResult || []);
       // Check if the new expanded rows are different from the current ones
       setExpandedRowsInfo((prevExpandedRowsInfo) => {
         const newExpandedRows = isArraysEqual(
@@ -202,7 +205,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
         return prevExpandedRowsInfo !== newExpandedRows ? newExpandedRows : prevExpandedRowsInfo;
       });
     }
-  }, [memoizedOutputLevelsInfo]);
+  }, [memoizedOutputLevelsInfo, hasLinkColumn]);
 
   const calculateRowWidths = useCallback(() => {
     const rows = Array.from(document.querySelectorAll('.expandableItem'));
@@ -289,7 +292,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
           columns={levelTable?.columns}
           hiddenColumns={hiddenColumns}
           level={1}
-          tableName={tableName}
+          tableName={levelTable?.name}
           levelSelections={levelSelections}
           columnWidths={columnWidths}
           setColumnWidths={setColumnWidths}
@@ -318,7 +321,9 @@ const PluginTL: React.FC<IPluginTLProps> = ({
           />
         ))
       ) : (
-        <p className={styles.centeredMessage}>There are no tables with links yet.</p>
+        <div className={styles.centeredMessage}>
+          <p>There are no tables with links yet.</p>
+        </div>
       )}
       {isAdding && (
         <div className={styles.custom_expandableItem_rows}>
