@@ -2,9 +2,16 @@
   "settings_headline": "设置",
   "table": "子表",
   "view": "视图",
-  "preset_add": "添加预设",
+  "preset_add": "加树",
   "preset_rename": "重命名预置",
   "preset_duplicate": "复制预置",
   "preset_delete": "删除预设",
-  "preset_warn_exist": "请输入唯一的预设名称"
+  "preset_warn_exist": "请输入唯一的预设名称",
+  "customSettings": {
+    "1stLevel": "一级",
+    "2ndLevel": "二级",
+    "3rdLevel": "三级",
+    "LevelSorted": "A-Z"
+  },
+  "search_option": "搜索选项"
 }

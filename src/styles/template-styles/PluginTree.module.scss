@@ -12,7 +12,7 @@
 .plugin_wrapper {
   width: 100%;
   position: fixed;
-  height: 95%;
+  height: calc(100% - 68px);
   bottom: 0;
   overflow: hidden;
   border-radius: 10px 10px 0 0;

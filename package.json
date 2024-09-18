@@ -1,6 +1,6 @@
 {
-  "name": "seatable-plugin-template",
-  "version": "0.1.2",
+  "name": "seatable-plugin-tree",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@seafile/react-image-lightbox": "2.0.5",
