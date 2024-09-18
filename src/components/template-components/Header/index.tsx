@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styles from 't_styles/Plugin.module.scss';
+import styles from 't_styles/PluginTree.module.scss';
 import stylesPPresets from 't_styles/PluginPresets.module.scss';
 import { IHeaderProps } from '@/utils/template-utils/interfaces/Header.interface';
 import { PLUGIN_ID } from 'utils/template-utils/constants';

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import styles from 't_styles/Plugin.module.scss';
+import styles from 't_styles/PluginTree.module.scss';
 import { AVAILABLE_LOCALES } from 'locale';
 
 type LanguageDropdownProps = {

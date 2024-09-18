@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import styles from 't_styles/Plugin.module.scss';
+import styles from 't_styles/PluginTree.module.scss';
 import { IResizableWrapper } from '@/utils/template-utils/interfaces/ResizableWrapper.interface';
 
 const ResizableWrapper: React.FC<IResizableWrapper> = ({ children }) => {
