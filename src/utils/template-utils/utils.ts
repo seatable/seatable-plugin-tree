@@ -158,7 +158,6 @@ export const getFileThumbnailUrl = (file: IFile) => {
   } else {
     fileIconUrl = getFileIconUrl(fileName, fileType);
   }
-  console.log({ fileIconUrl });
   return fileIconUrl;
 };
 

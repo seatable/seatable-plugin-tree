@@ -279,7 +279,6 @@ const PluginPresets: React.FC<IPresetsProps> = ({
       updatePresets(newIdx, __pluginPresets, _pluginDataStore, v_id);
     }
   };
-  console.log(icon);
   return (
     <div
       className={`${stylesPresets.presets}  ${!isShowPresets && stylesPresets.presets_collapsed}`}>
