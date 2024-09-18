@@ -431,7 +431,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
                 className={styles.custom_p}
                 style={paddingAddBtn(level)}
                 onClick={isShowNewRowInput}>
-                + add {levelTable?.name.toLowerCase()}
+                + Add row
               </button>
             )}
         </div>

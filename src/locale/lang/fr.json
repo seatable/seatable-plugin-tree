@@ -2,9 +2,16 @@
   "settings_headline": "Paramètres",
   "table": "Tableau",
   "view": "Vue",
-  "preset_add": "Nouvelle préréglage",
+  "preset_add": "Nouvelle arborescence",
   "preset_rename": "Renommer",
   "preset_duplicate": "Dupliquer",
   "preset_delete": "Supprimmer",
-  "preset_warn_exist": "Veuillez saisir un nom de préréglage unique"
+  "preset_warn_exist": "Veuillez saisir un nom de préréglage unique",
+  "customSettings": {
+    "1stLevel": "Niveau 1",
+    "2ndLevel": "Niveau 2",
+    "3rdLevel": "Niveau 3",
+    "LevelSorted": "A-Z"
+  },
+  "search_option": "Option de recherche"
 }

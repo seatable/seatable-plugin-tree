@@ -2,9 +2,16 @@
   "settings_headline": "Настройки",
   "table": "Таблица",
   "view": "Вид",
-  "preset_add": "добавить предустановку",
+  "preset_add": "добавить дерево",
   "preset_rename": "переименовать",
   "preset_duplicate": "дубликат",
   "preset_delete": "удалить",
-  "preset_warn_exist": "Пожалуйста, введите уникальное имя предустановки"
+  "preset_warn_exist": "Пожалуйста, введите уникальное имя предустановки",
+  "customSettings": {
+    "1stLevel": "уровень 1",
+    "2ndLevel": "уровень 2",
+    "3rdLevel": "уровень 3",
+    "LevelSorted": "A-Z"
+  },
+  "search_option": "возможность поиска"
 }
