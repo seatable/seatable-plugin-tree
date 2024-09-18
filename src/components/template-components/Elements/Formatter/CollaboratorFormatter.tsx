@@ -20,7 +20,7 @@ const CollaboratorFormatter: React.FC<ICollaboratorProps> = ({
   return (
     <div className={`${containerClassName} ${style.collaborator}`}>
       <img src={collaborator?.avatar_url} alt={collaborator?.name} />
-      <p>{collaborator?.name}</p>
+      <p style={{ marginBottom: 0 }}>{collaborator?.name}</p>
     </div>
   );
 };

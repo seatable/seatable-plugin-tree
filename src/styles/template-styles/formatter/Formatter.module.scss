@@ -11,6 +11,9 @@
   position: relative;
   height: 35px;
   align-items: center;
+  p {
+    margin-bottom: 0;
+  }
 }
 
 .formatter_cell::-webkit-scrollbar {
