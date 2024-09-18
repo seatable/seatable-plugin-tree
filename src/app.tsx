@@ -497,6 +497,7 @@ const App: React.FC<IAppProps> = (props) => {
         activePresetIdx={activePresetIdx}
         pluginDataStore={pluginDataStore}
         isShowPresets={isShowPresets}
+        isDevelopment={isDevelopment}
         onTogglePresets={togglePresets}
         onToggleSettings={toggleSettings}
         onSelectPreset={onSelectPreset}

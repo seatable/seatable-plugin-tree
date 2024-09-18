@@ -3,7 +3,6 @@ import { getTableByName } from 'dtable-utils';
 import PresetItem from './PresetItem/index';
 import stylesPresets from 't_styles/PluginPresets.module.scss';
 import deepCopy from 'deep-copy';
-import icon from 'plugin-config/icon.png';
 import Preset from 'model/preset';
 import {
   IPresetInfo,
@@ -14,6 +13,7 @@ import {
 import {
   appendPresetSuffix,
   createDefaultPresetSettings,
+  generateImageSrc,
   generatorPresetId,
   getActiveTableAndActiveView,
   isUniquePresetName,
@@ -37,6 +37,7 @@ import intl from 'react-intl-universal';
 import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';
 import { levelSelectionDefaultFallback } from '../../../utils/custom-utils/utils';
 import { ILevelSelections } from '@/utils/custom-utils/interfaces/CustomPlugin';
+import pluginContext from '../../../plugin-context';
 const { [DEFAULT_LOCALE]: d } = AVAILABLE_LOCALES;
 
 const PluginPresets: React.FC<IPresetsProps> = ({
@@ -45,6 +46,7 @@ const PluginPresets: React.FC<IPresetsProps> = ({
   activePresetIdx,
   pluginDataStore,
   isShowPresets,
+  isDevelopment,
   onTogglePresets,
   onToggleSettings,
   onSelectPreset,
@@ -58,6 +60,8 @@ const PluginPresets: React.FC<IPresetsProps> = ({
   const [_pluginPresets, setPluginPresets] = useState<PresetsArray>([]);
   const [showNewPresetPopUp, setShowNewPresetPopUp] = useState<boolean>(false);
   const [showEditPresetPopUp, setShowEditPresetPopUp] = useState<boolean>(false);
+  const server = pluginContext.getSetting('server');
+  const icon = generateImageSrc('icon.png', server, PLUGIN_NAME.toLowerCase(), isDevelopment);
 
   useEffect(() => {
     setPluginPresets(pluginPresets);
@@ -275,7 +279,7 @@ const PluginPresets: React.FC<IPresetsProps> = ({
       updatePresets(newIdx, __pluginPresets, _pluginDataStore, v_id);
     }
   };
-
+  console.log(icon);
   return (
     <div
       className={`${stylesPresets.presets}  ${!isShowPresets && stylesPresets.presets_collapsed}`}>
