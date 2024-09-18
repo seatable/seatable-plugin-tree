@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from 't_styles/Plugin.module.scss';
+import styles from 't_styles/PluginTree.module.scss';
 import stylesPPresets from 't_styles/PluginPresets.module.scss';
 import { IPresetDropdownProps } from '@/utils/template-utils/interfaces/PluginPresets/Dropdown.interface';
 import { PresetHandleAction } from 'utils/template-utils/constants';

@@ -12,7 +12,7 @@ import { PresetHandleAction } from 'utils/template-utils/constants';
 // Interfaces
 import { IPresetItemProps } from '@/utils/template-utils/interfaces/PluginPresets/Item.interface';
 // Styles
-import styles from 't_styles/Plugin.module.scss';
+import styles from 't_styles/PluginTree.module.scss';
 import 'assets/css/plugin-layout.css';
 import intl from 'react-intl-universal';
 import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';

@@ -30,7 +30,7 @@ import {
 import { PresetsArray } from '@/utils/template-utils/interfaces/PluginPresets/Presets.interface';
 import { SelectOption } from '@/utils/template-utils/interfaces/PluginSettings.interface';
 // Import of CSS
-import styles from './styles/template-styles/Plugin.module.scss';
+import styles from './styles/template-styles/PluginTree.module.scss';
 import 'assets/css/plugin-layout.css';
 // Import of Constants
 import {
