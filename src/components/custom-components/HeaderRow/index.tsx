@@ -51,13 +51,6 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
     document.addEventListener('mouseup', handleMouseUp);
   };
 
-  const getColumnDisplayName = (column: TableColumn): string => {
-    if (column?.key === '0000') {
-      return capitalizeFirstLetter(tableName || '');
-    }
-    return capitalizeFirstLetter(column?.name || '');
-  };
-
   const levelStyleHeader = (level: number) => {
     switch (level) {
       case 1:
@@ -89,7 +82,7 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
                 handleMouseDown(e, column.key)
               }>
               <div style={{ width }} className={styles.custom_headerColumn}>
-                {getColumnDisplayName(column)}
+                {column?.name}
               </div>
             </ResizableCell>
           );
@@ -102,8 +95,3 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
 };
 
 export default HeaderRow;
-
-function capitalizeFirstLetter(str: string) {
-  if (!str) return '';
-  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-}
