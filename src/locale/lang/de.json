@@ -2,9 +2,16 @@
   "settings_headline": "Einstellungen",
   "table": "Tabelle",
   "view": "Ansicht",
-  "preset_add": "Voreinstellung hinzufügen",
+  "preset_add": "Baum hinzufügen",
   "preset_rename": "Umbenennen",
   "preset_duplicate": "Duplizieren",
   "preset_delete": "Löschen",
-  "preset_warn_exist": "Bitte wählen Sie einen einzigartigen Namen"
+  "preset_warn_exist": "Bitte wählen Sie einen einzigartigen Namen",
+  "customSettings": {
+    "1stLevel": "Level 1",
+    "2ndLevel": "Level 2",
+    "3rdLevel": "Level 3",
+    "LevelSorted": "A-Z"
+  },
+  "search_option": "Option suchen"
 }

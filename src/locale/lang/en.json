@@ -2,15 +2,15 @@
   "settings_headline": "Settings",
   "table": "Table",
   "view": "View",
-  "preset_add": "Add Preset",
+  "preset_add": "Add tree",
   "preset_rename": "Rename",
   "preset_duplicate": "Duplicate",
   "preset_delete": "Delete",
-  "preset_warn_exist": "Please enter a unique preset name",
+  "preset_warn_exist": "Please enter a unique tree name",
   "customSettings": {
-    "1stLevel": "Select Level 1",
-    "2ndLevel": "Select Level 2",
-    "3rdLevel": "Select Level 3",
+    "1stLevel": "Level 1",
+    "2ndLevel": "Level 2",
+    "3rdLevel": "Level 3",
     "LevelSorted": "A-Z"
   },
   "search_option": "Search Option"
