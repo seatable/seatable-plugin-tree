@@ -1,9 +1,25 @@
 {
-  "name": "plugin-tree-list",
-  "version": "0.9.0",
+  "name": "tree",
+  "version": "1.0.0",
   "display_type": "overlay",
-  "display_name": "Plugin Tree Lists",
-  "description": "Plugin Tree Lists",
+  "display_name": {
+    "de": "Baum",
+    "en": "Tree",
+    "fr": "Arbre",
+    "es": "Árbol",
+    "pt": "Árvore",
+    "ru": "Дерево",
+    "zh-cn": "树"
+  },
+  "description": {
+    "de": "Organisieren von Datenebenen in einer Baumstruktur",
+    "en": "Organize layers of data in a tree structure.",
+    "fr": "Organiser des couches de données dans une structure arborescente.",
+    "es": "Organizar capas de datos en una estructura de árbol",
+    "pt": "Organizar camadas de dados numa estrutura em árvore",
+    "ru": "Организуйте слои данных в виде древовидной структуры",
+    "zh-cn": "以树形结构组织数据层"
+  },
   "active_components": {
     "settings_dropdowns": false,
     "add_row_button": false
