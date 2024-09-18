@@ -220,6 +220,9 @@
       background-color: lighten($preset-bgColor, 30%);
     }
   }
+  p {
+    margin-bottom: 0;
+  }
 }
 
 .add_row {
