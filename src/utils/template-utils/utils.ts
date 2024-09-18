@@ -1,5 +1,6 @@
 import pluginContext from '../../plugin-context';
 import dayjs from 'dayjs';
+import icon from '../../plugin-config/icon.png';
 import { AppActiveState, IPluginDataStore } from './interfaces/App.interface';
 import { PresetSettings, PresetsArray } from './interfaces/PluginPresets/Presets.interface';
 import {
@@ -40,6 +41,18 @@ export const getFileIconUrl = (filename: string, direntType: string): string => 
       : 'assets/file/192/' + FILEEXT_ICON_MAP['default'];
 
   return iconUrl;
+};
+
+export const generateImageSrc = (
+  imageName: string,
+  server: string,
+  pluginName: string,
+  isDevelopment: boolean | undefined
+): string => {
+  if (isDevelopment || !server) {
+    return icon;
+  }
+  return `${server}/dtable-plugins/${pluginName}/?path=/media/${imageName}`;
 };
 
 export const downloadFile = (url: string, fileName: string) => {

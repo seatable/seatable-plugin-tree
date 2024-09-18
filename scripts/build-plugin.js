@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const JSZip = require('jszip');
 const fs = require('fs-extra');
 const path = require('path');
