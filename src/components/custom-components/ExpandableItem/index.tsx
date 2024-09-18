@@ -20,6 +20,7 @@ import pluginContext from '../../../plugin-context';
 import Formatter from '../../../components/template-components/Elements/Formatter';
 import { SlArrowDown, SlArrowRight } from 'react-icons/sl';
 import { Moment } from 'moment';
+import SingleSelectEditor from '../../template-components/Elements/Formatter/Editors/SingleSelect/single-select-editor';
 
 const ExpandableItem: React.FC<ExpandableItemProps> = ({
   item,
@@ -43,6 +44,7 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   const [newItemName, setNewItemName] = useState<string>('');
   const [isSingleSelectColumn, setIsSingleSelectColumn] = useState<boolean>(false);
   const [isDateColumn, setIsDateColumn] = useState<boolean>(false);
+  const singleSelectRef = useRef<HTMLDivElement | null>(null);
   const { levelTable, levelRows, levelSelectionIdx } = getLevelSelectionAndTable(
     level,
     allTables,
@@ -55,6 +57,9 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
   const handleClickOutside = (event: MouseEvent) => {
     if (datePickerRef.current && !datePickerRef.current.contains(event.target as Node)) {
       setIsDateColumn(false); // Update state when clicked outside
+    }
+    if (singleSelectRef.current && !singleSelectRef.current.contains(event.target as Node)) {
+      setIsSingleSelectColumn(false); // Update state when clicked outside
     }
   };
 
@@ -381,34 +386,39 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
               </div>
             </div>
           )}
-          {/* {isSingleSelectColumn && (
-            <div className={styles.custom_expandableItem_rows}>
+          {isSingleSelectColumn && (
+            <div ref={singleSelectRef} className={styles.custom_expandableItem_rows}>
               <div
                 className={`${styles.custom_expandableItem} expandableItem`}
                 style={{
                   width: '100%',
                   paddingLeft: 24,
                 }}>
-                {firstColumn?.data.options?.map(
-                  (op: { id: string | number; color: string; textColor: string; name: string }) => (
-                    <div key={op.id} className={styles.custom_single_select_row}>
-                      <input
-                        onChange={() => {
-                          setIsSingleSelectColumn(false);
-                          addNewRowToTable(false, String(op.id));
-                        }}
-                        type="radio"
-                        name=""
-                        id={String(op.id)}
-                        value={String(op.id)}
-                      />
-                      <label style={{ background: op.color, color: op.textColor }}>{op.name}</label>
-                    </div>
-                  )
-                )}
+                <SingleSelectEditor
+                  column={{
+                    key: 'status',
+                    data: firstColumn?.data,
+                    type: CellType.SINGLE_SELECT,
+                  }}
+                  enableSearch={true}
+                  key={firstColumn?.key}
+                  newValues={firstColumn?.data}
+                  isSupportNewOption={true}
+                  onCommit={(value: { updatedValue: string }) => {
+                    const selectedOption = firstColumn?.data?.options?.find(
+                      (option: { name: string; color: string; textColor: string; id: string }) =>
+                        option.id === value.updatedValue
+                    );
+                    if (selectedOption) {
+                      const selectedOptionId = selectedOption.id;
+                      addNewRowToTable(false, String(selectedOptionId));
+                    }
+                    setIsSingleSelectColumn(false);
+                  }}
+                />
               </div>
             </div>
-          )} */}
+          )}
           {isDateColumn && (
             <div ref={datePickerRef} className={styles.custom_expandableItem_rows}>
               <div

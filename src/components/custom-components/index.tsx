@@ -372,9 +372,10 @@ const PluginTL: React.FC<IPluginTLProps> = ({
                   (option: { name: string; color: string; textColor: string; id: string }) =>
                     option.id === value.updatedValue
                 );
-
                 if (selectedOption) {
                   const selectedOptionId = selectedOption.id;
+                  console.log({ selectedOptionId });
+                  console.log({ p: firstColumn?.data });
                   addNewRowToTable(false, String(selectedOptionId));
                 }
                 setIsSingleSelectColumn(false);

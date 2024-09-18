@@ -25,6 +25,7 @@ class SingleSelectEditor extends Component {
   }
 
   componentDidMount() {
+    console.log({ props: this.props });
     if (this.selectContainer && this.selectItem) {
       this.setState({
         maxItemNum: this.getMaxItemNum(),
