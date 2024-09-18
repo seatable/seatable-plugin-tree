@@ -1,6 +1,6 @@
 {
   "name": "plugin-tree-list",
-  "version": "0.0.1",
+  "version": "0.9.0",
   "display_type": "overlay",
   "display_name": "Plugin Tree Lists",
   "description": "Plugin Tree Lists",
@@ -9,3 +9,37 @@
     "add_row_button": false
   }
 }
+
+
+Meine Themen mit Ralf?
+- wenn in verlinkter tabelle kein einziger link existiert, dann wird nicht angeboten? => unproblematisch
+- was soll mit button spalte passieren? einfach nicht einblenden? => unproblematisch
+- soll sich die Überschrift wiederholen, wenn unterbrochen? (wie bei airtable)
+- soll die headline stehen bleiben? (wie bei airtable)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
