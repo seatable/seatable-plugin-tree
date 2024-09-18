@@ -19,7 +19,7 @@ export interface IPresetsProps {
   allTables: TableArray;
   onTogglePresets: () => void;
   onToggleSettings: () => void;
-  updateActiveData: () => void; 
+  updateActiveData: () => void;
 }
 
 export interface IPresetsState {
