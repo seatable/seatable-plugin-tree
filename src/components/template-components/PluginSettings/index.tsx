@@ -13,7 +13,7 @@ import { CustomSettingsOption } from '@/utils/types';
 import { ILevelSelections } from '@/utils/custom-utils/interfaces/CustomPlugin';
 import { truncateTableName } from 'utils/template-utils/utils';
 import { findFirstLevelTables, findSecondLevelTables } from '../../../utils/custom-utils/utils';
-import { LEVEL_DATA_DEFAULT } from '../../../utils/custom-utils/constants';
+import { LEVEL_DATA_DEFAULT, NOT_USED_VALUE } from '../../../utils/custom-utils/constants';
 import { HiOutlineChevronDoubleRight } from 'react-icons/hi2';
 import intl from 'react-intl-universal';
 import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from 'locale';
@@ -109,7 +109,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
         value: item._id,
         label: truncateTableName(item.name),
       })),
-    ].filter((item) => item.label !== firstLevelSelectedOption.label || item.value === '00000');
+    ].filter((item) => item.label !== firstLevelSelectedOption.label || item.value === NOT_USED_VALUE);
   }, [JSON.stringify(allTables), firstLevelSelectedOption]);
 
   const thirdLevelOptions = useMemo(() => {
@@ -125,8 +125,8 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
       })),
     ].filter(
       (item) =>
-        (item.label !== firstLevelSelectedOption.label || item.value === '00000') &&
-        (item.value !== secondLevelSelectedOption.value || item.value === '00000')
+        (item.label !== firstLevelSelectedOption.label || item.value === NOT_USED_VALUE) &&
+        (item.value !== secondLevelSelectedOption.value || item.value === NOT_USED_VALUE)
     );
   }, [JSON.stringify(allTables), secondLevelSelectedOption]);
 
@@ -170,10 +170,10 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     (selectedOption: SelectOption, level: CustomSettingsOption) => {
       if (
         (level !== 'first' &&
-          selectedOption.value === '00000' &&
+          selectedOption.value === NOT_USED_VALUE &&
           !activeLevelSelections[level]?.isDisabled) ||
         (level !== 'first' &&
-          selectedOption.value !== '00000' &&
+          selectedOption.value !== NOT_USED_VALUE &&
           activeLevelSelections[level]?.isDisabled)
       ) {
         handleLevelDisabled(level);
@@ -198,7 +198,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
         ...prevState,
         [level]: {
           selected: selectedOption,
-          isDisabled: selectedOption.value === '0000' ? true : false,
+          isDisabled: selectedOption.value === NOT_USED_VALUE ? true : false,
         },
       }));
 
@@ -206,7 +206,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
         ...levelSelections,
         [level]: {
           selected: selectedOption,
-          isDisabled: selectedOption.value === '0000' ? true : false,
+          isDisabled: selectedOption.value === NOT_USED_VALUE ? true : false,
         },
       });
     },
@@ -302,24 +302,24 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
         value: item._id,
         label: truncateTableName(item.name),
       }))
-      .filter((item) => item.label !== selectedOption.label || item.value === '00000');
+      .filter((item) => item.label !== selectedOption.label || item.value === NOT_USED_VALUE);
 
     const thirdLevelOptions = findSecondLevelTables(allTables, secondLevelOptions[0])
       .map((item) => ({
         value: item._id,
         label: truncateTableName(item.name),
       }))
-      .filter((item) => item.value !== selectedOption.value || item.value === '00000');
+      .filter((item) => item.value !== selectedOption.value || item.value === NOT_USED_VALUE);
 
     let notUsedOption;
     let thirdLevelNotUsed;
 
     if (secondLevelOptions[0] === undefined) {
-      notUsedOption = { value: '00000', label: 'Not used' };
+      notUsedOption = { value: NOT_USED_VALUE, label: 'Not used' };
     }
 
     if (thirdLevelOptions[0] === undefined) {
-      thirdLevelNotUsed = { value: '00000', label: 'Not used' };
+      thirdLevelNotUsed = { value: NOT_USED_VALUE, label: 'Not used' };
     }
 
     setSecondLevelSelectedOption(notUsedOption || secondLevelOptions[0]);

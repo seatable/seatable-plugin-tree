@@ -352,6 +352,13 @@ const App: React.FC<IAppProps> = (props) => {
       case 'table':
         // eslint-disable-next-line
         const _activeTable = allTables.find((s) => s._id === option.value)!;
+        // if the current active view is in the selected table, keep it, otherwise set the first view
+        const _activeView = _activeTable.views.find(
+          (s) =>
+            appActiveState.activeTableView &&
+            s._id === appActiveState.activeTableView._id &&
+            s.name === appActiveState.activeTableView.name
+        );
 
         _activeViewRows = window.dtableSDK.getViewRows(_activeTable.views[0], _activeTable);
         setActiveTableViews(_activeTable.views);
@@ -359,7 +366,7 @@ const App: React.FC<IAppProps> = (props) => {
           ...prevState,
           activeTable: _activeTable,
           activeTableName: _activeTable.name,
-          activeTableView: _activeTable.views[0],
+          activeTableView: _activeView || _activeTable.views[0],
           activeViewRows: _activeViewRows,
         }));
 
@@ -371,8 +378,8 @@ const App: React.FC<IAppProps> = (props) => {
                   ...preset.settings,
                   selectedTable: { value: _activeTable._id, label: _activeTable.name },
                   selectedView: {
-                    value: _activeTable.views[0]._id,
-                    label: _activeTable.views[0].name,
+                    value: _activeView ? _activeView._id : _activeTable.views[0]._id,
+                    label: _activeView ? _activeView.name : _activeTable.views[0].name,
                   },
                 },
               }
