@@ -34,6 +34,8 @@ const LEVEL_DATA_DISABLED = {
   label: 'Disable Level',
 };
 
+const NOT_USED_VALUE = '00000';
+
 export {
   LINK_TYPE,
   LEVEL_SEL_DEFAULT,
@@ -41,4 +43,5 @@ export {
   INDEX_COLUMN,
   LEVEL_DATA_DEFAULT,
   LEVEL_DATA_DISABLED,
+  NOT_USED_VALUE,
 };

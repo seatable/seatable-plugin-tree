@@ -4,7 +4,6 @@ import { HeaderRowProps } from '@/utils/custom-utils/interfaces/CustomPlugin';
 import { isLevelSelectionDisabled } from '../../../utils/custom-utils/utils';
 import ResizableCell from '../ResizableCell';
 import { ResizeDetail } from '@/utils/template-utils/interfaces/PluginPresets/Presets.interface';
-import { TableColumn } from '@/utils/template-utils/interfaces/Table.interface';
 
 const HeaderRow: React.FC<HeaderRowProps> = ({
   columns,
