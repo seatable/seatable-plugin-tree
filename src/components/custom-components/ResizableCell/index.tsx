@@ -5,7 +5,7 @@ import { useState } from 'react';
 const ResizableCell = ({ children, handleMouseDown, onHover }: IResizableCell) => {
   const [color, setColor] = useState('#eee');
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative', display: 'flex' }}>
       {onHover && (
         <div
           className={styles.custom_cell_resize_handle}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { CellType, COLUMNS_ICON_CONFIG } from 'dtable-utils';
 import styles from '../../../styles/custom-styles/CustomPlugin.module.scss';
 import { HeaderRowProps } from '@/utils/custom-utils/interfaces/CustomPlugin';
 import { isLevelSelectionDisabled } from '../../../utils/custom-utils/utils';
@@ -16,6 +17,24 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
   updateResizeDetails,
 }) => {
   const [onHover, setOnHover] = useState<boolean>(false);
+
+  function getIconByType(ct: Record<string, string>, t: string) {
+    // Find the key where the value matches 't'
+    const C_T = Object.keys(ct).find((key) => ct[key] === t);
+
+    // Ensure C_T is not undefined and exists in CellType
+    if (C_T && C_T in CellType) {
+      // Get the icon using the found key
+      const icon =
+        COLUMNS_ICON_CONFIG[
+          CellType[C_T as keyof typeof CellType] as keyof typeof COLUMNS_ICON_CONFIG
+        ];
+      return icon;
+    }
+
+    // Return undefined or some fallback if no match is found
+    return undefined;
+  }
 
   columns =
     tableName === levelSelections.first.selected.label
@@ -81,7 +100,12 @@ const HeaderRow: React.FC<HeaderRowProps> = ({
                 handleMouseDown(e, column.key)
               }>
               <div style={{ width }} className={styles.custom_headerColumn}>
-                {column?.name}
+                <div className={styles.custom_headerIcon}>
+                  <i
+                    className={`dtable-font ${getIconByType(CellType, column.type)}`}
+                    style={{ fontSize: '12px' }}></i>
+                </div>
+                <div className={styles.custom_headerColumn_value}> {column?.name}</div>
               </div>
             </ResizableCell>
           );
