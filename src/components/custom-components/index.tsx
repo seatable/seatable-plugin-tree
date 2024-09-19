@@ -243,6 +243,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     }
 
     const tableIndex = allTables.findIndex((t: Table) => t._id === levelTable?._id);
+
     const rowId = generateUniqueRowId();
     const newRow = {
       _participants: [],
@@ -270,7 +271,6 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   const isShowNewRowInput = () => {
     if (firstColumn?.type === CellType.AUTO_NUMBER || firstColumn?.type === CellType.FORMULA) {
       addNewRowToTable(true);
-
       return;
     }
 
@@ -384,7 +384,6 @@ const PluginTL: React.FC<IPluginTLProps> = ({
                   (option: { name: string; color: string; textColor: string; id: string }) =>
                     option.id === value.updatedValue
                 );
-
                 if (selectedOption) {
                   const selectedOptionId = selectedOption.id;
                   addNewRowToTable(false, String(selectedOptionId));
