@@ -10,7 +10,6 @@ import { PLUGIN_NAME } from '../../utils/template-utils/constants';
 import { CellType } from 'dtable-utils';
 import SingleSelectEditor from '../template-components/Elements/Formatter/Editors/SingleSelect/single-select-editor';
 import {
-  addNewRowToTableUtils,
   generateUniqueRowId,
   getLevelSelectionAndTable,
   getRowsByTableId,
@@ -223,39 +222,35 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     }
   }, [finalResult, calculateRowWidths]);
 
-  const addNewRowToTable = (noValue?: boolean, givenValue?: string) => {
-    console.log({ finalResult });
-    const { levelTable, levelRows } = getLevelSelectionAndTable(1, allTables, levelSelections);
-    console.log({ levelTable, levelRows });
-    console.log({ givenValue });
-    const index = finalResult.findIndex((item) => item['0000'] === givenValue);
-    console.log({ index });
-    const item = finalResult[index];
-    console.log({ item });
-    let currentTable = allTables.find((table) => table.name === item._name);
+  const addNewRowToTable = async (noValue?: boolean, givenValue?: string) => {
+    setIsAdding(false);
 
-    if (currentTable?.name === levelSelections.first.selected.label) {
-      currentTable = {
-        ...currentTable,
-        columns: currentTable.columns.filter((col) => !hiddenColumns.includes(col.key)),
-      };
-    }
-    console.log({ currentTable });
     if (!newItemName && !noValue && !givenValue) {
       setNewItemName('');
       return;
-    } else {
-      addNewRowToTableUtils(
-        newItemName,
-        allTables,
-        levelTable,
-        collaborators,
-        item,
-        currentTable,
-        levelRows,
-        noValue,
-        givenValue
-      );
+    }
+
+    const tableIndex = allTables.findIndex((t: Table) => t._id === levelTable?._id);
+    console.log(tableIndex);
+
+    const rowId = generateUniqueRowId();
+    const newRow = {
+      _participants: [],
+      _creator: collaborators[0].email,
+      _ctime: new Date().toISOString(),
+      _last_modifier: collaborators[0].email,
+      _mtime: new Date().toISOString(),
+      _id: rowId,
+      ...(noValue ? {} : { [levelTable?.columns[0].key!]: givenValue || newItemName }),
+    };
+
+    // create new row in appropriate table
+    const lastRowId = levelTable?.rows[levelTable.rows.length - 1]._id;
+    try {
+      window.dtableSDK.dtableStore.insertRow(tableIndex, lastRowId, 'insert_below', newRow);
+    } catch (error) {
+      console.error('Error inserting new row:', error);
+    } finally {
       setNewItemName('');
     }
   };
@@ -265,7 +260,6 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   const isShowNewRowInput = () => {
     if (firstColumn?.type === CellType.AUTO_NUMBER || firstColumn?.type === CellType.FORMULA) {
       addNewRowToTable(true);
-
       return;
     }
 
@@ -381,6 +375,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
                 );
                 if (selectedOption) {
                   const selectedOptionId = selectedOption.id;
+                  console.log({ selectedOption });
                   addNewRowToTable(false, String(selectedOptionId));
                 }
                 setIsSingleSelectColumn(false);

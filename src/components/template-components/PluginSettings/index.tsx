@@ -109,7 +109,9 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
         value: item._id,
         label: truncateTableName(item.name),
       })),
-    ].filter((item) => item.label !== firstLevelSelectedOption.label || item.value === NOT_USED_VALUE);
+    ].filter(
+      (item) => item.label !== firstLevelSelectedOption.label || item.value === NOT_USED_VALUE
+    );
   }, [JSON.stringify(allTables), firstLevelSelectedOption]);
 
   const thirdLevelOptions = useMemo(() => {
