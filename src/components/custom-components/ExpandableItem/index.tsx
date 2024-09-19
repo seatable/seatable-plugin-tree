@@ -185,7 +185,6 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
     }
 
     const tableIndex = allTables.findIndex((t: Table) => t._id === levelTable?._id);
-    console.log(tableIndex);
     const rowId = generateUniqueRowId();
     const newRow = {
       _participants: [],

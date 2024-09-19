@@ -231,7 +231,6 @@ const PluginTL: React.FC<IPluginTLProps> = ({
     }
 
     const tableIndex = allTables.findIndex((t: Table) => t._id === levelTable?._id);
-    console.log(tableIndex);
 
     const rowId = generateUniqueRowId();
     const newRow = {
@@ -375,7 +374,6 @@ const PluginTL: React.FC<IPluginTLProps> = ({
                 );
                 if (selectedOption) {
                   const selectedOptionId = selectedOption.id;
-                  console.log({ selectedOption });
                   addNewRowToTable(false, String(selectedOptionId));
                 }
                 setIsSingleSelectColumn(false);

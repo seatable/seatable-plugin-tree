@@ -10,8 +10,6 @@ const CollaboratorFormatter: React.FC<ICollaboratorProps> = ({
   containerClassName,
   collaborators,
 }) => {
-  console.log(value);
-  console.log(collaborators);
   let collaborator;
   if (typeof value === 'string') {
     collaborator = collaborators.find((c: ICollaborator) => c.email === value);
