@@ -1,9 +1,15 @@
 {
-  "name": "tree-matteo",
+  "name": "tree",
   "version": "1.0.0",
   "display_type": "overlay",
   "display_name": {
-    "en": "Tree-Matteo"
+    "de": "Baum",
+    "en": "Tree",
+    "fr": "Arbre",
+    "es": "Árbol",
+    "pt": "Árvore",
+    "ru": "Дерево",
+    "zh-cn": "树"
   },
   "description": {
     "de": "Organisieren von Datenebenen in einer Baumstruktur",
