@@ -10,6 +10,7 @@ import { PLUGIN_NAME } from '../../utils/template-utils/constants';
 import { CellType } from 'dtable-utils';
 import SingleSelectEditor from '../template-components/Elements/Formatter/Editors/SingleSelect/single-select-editor';
 import {
+  findSecondLevelTables,
   generateUniqueRowId,
   getLevelSelectionAndTable,
   getRowsByTableId,
@@ -155,14 +156,25 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   const memoizedOutputLevelsInfo = useMemo(() => {
     if (firstRows && firstLevelTable) {
       const firstTableId = levelSelections.first.selected?.value || allTables[0]._id;
+      
+      // this fix is for the case when the plugin first loads and there's no levelSelections
+      const defaultSecondLevel = findSecondLevelTables(allTables, {
+        label: allTables[0].name,
+        value: allTables[0]._id,
+      });
+      const defaultThirdLevel = findSecondLevelTables(allTables, {
+        label: defaultSecondLevel[0].name,
+        value: defaultSecondLevel[0]._id,
+      });
+
       return outputLevelsInfo(
         levelSelections,
         firstTableId,
         firstRows,
         expandedRowsInfo,
-        levelSelections.second.selected?.value,
+        levelSelections.second.selected?.value || defaultSecondLevel[0]._id,
         allTables,
-        levelSelections?.third?.selected?.value
+        levelSelections?.third?.selected?.value || defaultThirdLevel[0]._id
       );
     }
     return null;
