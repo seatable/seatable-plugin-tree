@@ -563,6 +563,56 @@ const onInsertRow = (table: Table, view: TableView, rowData: { [key: string]: an
   }
 };
 
+export const addNewRowToTableUtils = (
+  newItemName: string,
+  allTables: TableArray,
+  levelTable: Table,
+  collaborators: { email: string }[],
+  item: levelRowInfo,
+  currentTable: Table | undefined,
+  levelRows: 'nextLevelRows' | 'secondLevelRows' | 'thirdLevelRows',
+  noValue?: boolean,
+  givenValue?: string
+) => {
+  const tableIndex = allTables.findIndex((t: Table) => t._id === levelTable?._id);
+  const rowId = generateUniqueRowId();
+  const newRow = {
+    _participants: [],
+    _creator: collaborators[0].email,
+    _ctime: new Date().toISOString(),
+    _last_modifier: collaborators[0].email,
+    _mtime: new Date().toISOString(),
+    _id: rowId,
+    ...(noValue ? {} : { [levelTable?.columns[0].key]: givenValue || newItemName }),
+  };
+
+  // create new row in appropriate table
+  const lastRowId = levelTable?.rows[levelTable.rows.length - 1]._id;
+  console.log('XXXXXXXXXXXXXX');
+  console.log({ lastRowId });
+  console.log({ tableIndex });
+  console.log({ newRow });
+  window.dtableSDK.dtableStore.insertRow(tableIndex, lastRowId, 'insert_below', newRow);
+
+  // add link to newly created row
+  let linkID = item[levelRows]?.[0]?.columns.find((c) => c.data.table_id === currentTable?._id)
+    ?.data.link_id;
+
+  if (!linkID) {
+    linkID = item[levelRows]?.[0]?.columns.find((c) => c.data.other_table_id === currentTable?._id)
+      ?.data.link_id;
+  }
+  const levelTableId = tableIndex === 0 ? levelTable?._id : currentTable?._id;
+  const currentTableId = tableIndex === 0 ? currentTable?._id : levelTable?._id;
+  console.log({ linkID });
+  console.log({ levelTableId });
+  console.log({ currentTableId });
+  console.log({ rowId });
+  console.log({ itemId: item._id });
+  console.log('XXXXXXXXXXXXXX');
+  window.dtableSDK.addLink(linkID, levelTableId, currentTableId, rowId, item._id);
+};
+
 export const paddingAddBtn = (level: number) => {
   if (level === 0) {
     return { paddingLeft: 34, paddingBottom: 10, paddingTop: 5, height: 20 };
