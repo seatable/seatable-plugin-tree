@@ -154,7 +154,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
 
   const memoizedOutputLevelsInfo = useMemo(() => {
     if (firstRows && firstLevelTable) {
-      const firstTableId = levelSelections.first.selected?.value;
+      const firstTableId = levelSelections.first.selected?.value || allTables[0]._id;
       return outputLevelsInfo(
         levelSelections,
         firstTableId,
