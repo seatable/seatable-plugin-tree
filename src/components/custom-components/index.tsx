@@ -156,7 +156,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
   const memoizedOutputLevelsInfo = useMemo(() => {
     if (firstRows && firstLevelTable) {
       const firstTableId = levelSelections.first.selected?.value || allTables[0]._id;
-      
+
       // this fix is for the case when the plugin first loads and there's no levelSelections
       const defaultSecondLevel = findSecondLevelTables(allTables, {
         label: allTables[0].name,

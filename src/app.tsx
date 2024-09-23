@@ -133,11 +133,15 @@ const App: React.FC<IAppProps> = (props) => {
     const activeTableViews: TableViewArray = activeTable.views; // All the Views of the specific Active Table
     const pluginDataStore: IPluginDataStore = getPluginDataStore(activeTable, PLUGIN_NAME);
     const pluginPresets: PresetsArray = pluginDataStore.presets; // An array with all the Presets
+    const localActivePresetId = localStorage.getItem('localActivePresetId');
+    // || pluginPresets[0]._id
     const _columnsCount = allTables.reduce((total, table) => total + table.columns.length, 0);
     const _hasLinkColumn = allTables.reduce((found, table) => {
       return found || table.columns.some((column) => column.type === 'link');
     }, false);
     // Check if views have been added or removed or changed
+
+    console.log(localActivePresetId);
 
     setActiveComponents((prevState) => ({
       ...prevState,
@@ -152,15 +156,15 @@ const App: React.FC<IAppProps> = (props) => {
     setPluginPresets(pluginPresets);
     setIsShowState((prevState) => ({ ...prevState, isLoading: false }));
 
-    if (pluginDataStore.activePresetId) {
+    if (localActivePresetId) {
       const appActiveState = parsePluginDataToActiveState(
         pluginDataStore,
         pluginPresets,
         allTables
       );
-      onSelectPreset(pluginDataStore.activePresetId, appActiveState);
+      onSelectPreset(localActivePresetId, appActiveState);
       const activePresetLevelSelections = pluginPresets.find((p) => {
-        return p._id === pluginDataStore.activePresetId;
+        return p._id === localActivePresetId;
       })?.customSettings;
       if (activePresetLevelSelections) {
         setActiveLevelSelections(activePresetLevelSelections);
@@ -210,6 +214,8 @@ const App: React.FC<IAppProps> = (props) => {
    * Handles the selection of a preset, updating the active state and associated data accordingly.
    */
   const onSelectPreset = (presetId: string, newPresetActiveState?: AppActiveState) => {
+    localStorage.setItem('localActivePresetId', presetId);
+
     setAppActiveState((prevState) => ({
       ...prevState,
       activePresetId: presetId,
