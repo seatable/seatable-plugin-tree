@@ -141,8 +141,6 @@ const App: React.FC<IAppProps> = (props) => {
     }, false);
     // Check if views have been added or removed or changed
 
-    console.log(localActivePresetId);
-
     setActiveComponents((prevState) => ({
       ...prevState,
       settingsDropDowns: info.active_components.settings_dropdowns,

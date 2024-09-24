@@ -245,6 +245,11 @@ export const outputLevelsInfo = (
       ).cleanFinalResult;
     }
 
+    const expandedRow = findExpandedRow(expandedRowsInfo, r);
+    if (r._id === 'RYQjr5hxSqKM1UeFIzOuqA') {
+      console.log({ expandedRow });
+    }
+    
     finalResult.push({
       _name: table?.name || '',
       ...r,
@@ -255,12 +260,23 @@ export const outputLevelsInfo = (
       [keyName ? keyName : 'secondLevelRows']: secondLevelRows,
     } satisfies levelRowInfo);
   });
+
   const cleanExpandedRowsObj = cleanObjects(finalResult, undefined, 1, undefined);
   let cleanFinalResult;
   if (disablingLevels.second || disablingLevels.third) {
     cleanFinalResult = isLevelDisabled(finalResult, disablingLevels);
   } else cleanFinalResult = finalResult;
   return { cleanFinalResult, cleanExpandedRowsObj };
+};
+
+const findExpandedRow = (expandedRowsInfo: RowExpandedInfo[], r: TableRow): any => {
+  for (const row of expandedRowsInfo) {
+    if (row._id === r._id) {
+      return row;
+    } else {
+      return findExpandedRow(row.secondLevelRows || [], r);
+    }
+  }
 };
 
 export function getLevelSelectionAndTable(
