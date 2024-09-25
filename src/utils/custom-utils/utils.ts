@@ -197,7 +197,6 @@ export const outputLevelsInfo = (
     second: levelSelections.second.isDisabled,
     third: levelSelections.third ? levelSelections.third.isDisabled : true,
   };
-
   if (tableId === '00000') {
     tableId = allTables[0]._id;
   }
@@ -245,17 +244,15 @@ export const outputLevelsInfo = (
       ).cleanFinalResult;
     }
 
-    const expandedRow = findExpandedRow(expandedRowsInfo, r);
-    if (r._id === 'RYQjr5hxSqKM1UeFIzOuqA') {
-      console.log({ expandedRow });
-    }
-    
+
+    const expandedRow = findExpandedRow(expandedRowsInfo, r._id);
+
     finalResult.push({
       _name: table?.name || '',
       ...r,
       columns: linkedColumns,
       '0000': String(r['0000'] || ''),
-      expanded: expandedRowsInfo.find((obj) => obj._id === r._id)?.expanded || false,
+      expanded: expandedRow?.expanded || false,
       uniqueId: '',
       [keyName ? keyName : 'secondLevelRows']: secondLevelRows,
     } satisfies levelRowInfo);
@@ -269,14 +266,31 @@ export const outputLevelsInfo = (
   return { cleanFinalResult, cleanExpandedRowsObj };
 };
 
-const findExpandedRow = (expandedRowsInfo: RowExpandedInfo[], r: TableRow): any => {
-  for (const row of expandedRowsInfo) {
-    if (row._id === r._id) {
-      return row;
-    } else {
-      return findExpandedRow(row.secondLevelRows || [], r);
+const findExpandedRow = (expandedRowsInfo: RowExpandedInfo[], id: string): RowExpandedInfo | null => {
+  for (const item of expandedRowsInfo) {
+    // Check if the current item matches the id
+    if (item._id === id) {
+      return item;
+    }
+
+    // If it has secondLevelRows, search them recursively
+    if (item.secondLevelRows) {
+      const foundInSecondLevel = findExpandedRow(item.secondLevelRows, id);
+      if (foundInSecondLevel) {
+        return foundInSecondLevel;
+      }
+    }
+
+    // If it has thirdLevelRows, search them recursively
+    if (item.thirdLevelRows) {
+      const foundInThirdLevel = findExpandedRow(item.thirdLevelRows, id);
+      if (foundInThirdLevel) {
+        return foundInThirdLevel;
+      }
     }
   }
+
+  return null; // Return null if not found
 };
 
 export function getLevelSelectionAndTable(
