@@ -12,6 +12,7 @@ import {
   TableView,
 } from './interfaces/Table.interface';
 import {
+  ACTIVE_PRESET_ID,
   DEFAULT_PLUGIN_DATA,
   FILEEXT_ICON_MAP,
   PLUGIN_NAME,
@@ -452,7 +453,7 @@ export const parsePluginDataToActiveState = (
   allTables: TableArray
 ) => {
   // Extract relevant data from the pluginDataStore and allTables arrays
-  const id = localStorage.getItem('localActivePresetId') || pluginPresets[0]._id;
+  const id = localStorage.getItem(ACTIVE_PRESET_ID) || pluginPresets[0]._id;
   const idx =
     pluginPresets.findIndex((p) => p._id === id) === -1
       ? 0

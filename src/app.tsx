@@ -39,6 +39,7 @@ import {
   PLUGIN_ID,
   PLUGIN_NAME,
   DEFAULT_PLUGIN_DATA,
+  ACTIVE_PRESET_ID,
 } from 'utils/template-utils/constants';
 import 'locale';
 import {
@@ -133,7 +134,11 @@ const App: React.FC<IAppProps> = (props) => {
     const activeTableViews: TableViewArray = activeTable.views; // All the Views of the specific Active Table
     const pluginDataStore: IPluginDataStore = getPluginDataStore(activeTable, PLUGIN_NAME);
     const pluginPresets: PresetsArray = pluginDataStore.presets; // An array with all the Presets
-    const localActivePresetId = localStorage.getItem('localActivePresetId');
+    let localActivePresetId = localStorage.getItem(ACTIVE_PRESET_ID);
+    if (!localActivePresetId) {
+      localActivePresetId = pluginPresets[0]._id;
+      localStorage.setItem(ACTIVE_PRESET_ID, localActivePresetId);
+    }
     const _columnsCount = allTables.reduce((total, table) => total + table.columns.length, 0);
     const _hasLinkColumn = allTables.reduce((found, table) => {
       return found || table.columns.some((column) => column.type === 'link');
@@ -211,7 +216,7 @@ const App: React.FC<IAppProps> = (props) => {
    * Handles the selection of a preset, updating the active state and associated data accordingly.
    */
   const onSelectPreset = (presetId: string, newPresetActiveState?: AppActiveState) => {
-    localStorage.setItem('localActivePresetId', presetId);
+    localStorage.setItem(ACTIVE_PRESET_ID, presetId);
 
     setAppActiveState((prevState) => ({
       ...prevState,
