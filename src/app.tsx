@@ -134,7 +134,6 @@ const App: React.FC<IAppProps> = (props) => {
     const pluginDataStore: IPluginDataStore = getPluginDataStore(activeTable, PLUGIN_NAME);
     const pluginPresets: PresetsArray = pluginDataStore.presets; // An array with all the Presets
     const localActivePresetId = localStorage.getItem('localActivePresetId');
-    // || pluginPresets[0]._id
     const _columnsCount = allTables.reduce((total, table) => total + table.columns.length, 0);
     const _hasLinkColumn = allTables.reduce((found, table) => {
       return found || table.columns.some((column) => column.type === 'link');
