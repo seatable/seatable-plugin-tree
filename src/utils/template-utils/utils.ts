@@ -458,7 +458,6 @@ export const parsePluginDataToActiveState = (
       ? 0
       : pluginPresets.findIndex((p) => p._id === id);
 
-
   const table =
     allTables.find((t) => t._id === pluginPresets[idx].settings?.selectedTable?.value) ||
     allTables[0];

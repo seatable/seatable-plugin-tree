@@ -214,6 +214,7 @@ const PluginTL: React.FC<IPluginTLProps> = ({
         )
           ? prevExpandedRowsInfo
           : memoizedOutputLevelsInfo.cleanExpandedRowsObj;
+
         return prevExpandedRowsInfo !== newExpandedRows ? newExpandedRows : prevExpandedRowsInfo;
       });
     }
