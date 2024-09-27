@@ -244,7 +244,6 @@ export const outputLevelsInfo = (
       ).cleanFinalResult;
     }
 
-
     const expandedRow = findExpandedRow(expandedRowsInfo, r._id);
 
     finalResult.push({
@@ -266,7 +265,10 @@ export const outputLevelsInfo = (
   return { cleanFinalResult, cleanExpandedRowsObj };
 };
 
-const findExpandedRow = (expandedRowsInfo: RowExpandedInfo[], id: string): RowExpandedInfo | null => {
+const findExpandedRow = (
+  expandedRowsInfo: RowExpandedInfo[],
+  id: string
+): RowExpandedInfo | null => {
   for (const item of expandedRowsInfo) {
     // Check if the current item matches the id
     if (item._id === id) {

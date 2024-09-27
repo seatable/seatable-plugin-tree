@@ -163,8 +163,8 @@ const PluginTL: React.FC<IPluginTLProps> = ({
         value: allTables[0]._id,
       });
       const defaultThirdLevel = findSecondLevelTables(allTables, {
-        label: defaultSecondLevel[0].name,
-        value: defaultSecondLevel[0]._id,
+        label: defaultSecondLevel[0]?.name,
+        value: defaultSecondLevel[0]?._id,
       });
 
       return outputLevelsInfo(
@@ -172,9 +172,9 @@ const PluginTL: React.FC<IPluginTLProps> = ({
         firstTableId,
         firstRows,
         expandedRowsInfo,
-        levelSelections.second.selected?.value || defaultSecondLevel[0]._id,
+        levelSelections.second.selected?.value || defaultSecondLevel[0]?._id,
         allTables,
-        levelSelections?.third?.selected?.value || defaultThirdLevel[0]._id
+        levelSelections?.third?.selected?.value || defaultThirdLevel[0]?._id
       );
     }
     return null;
