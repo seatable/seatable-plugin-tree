@@ -48,6 +48,7 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   );
 
   useEffect(() => {
+    console.log({ _activeLevelSelections });
     if (_activeLevelSelections) {
       setFirstLevelSelectedOption(_activeLevelSelections.first.selected);
       setSecondLevelSelectedOption(_activeLevelSelections.second.selected);

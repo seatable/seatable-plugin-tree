@@ -194,8 +194,10 @@ export const outputLevelsInfo = (
   keyName?: string
 ) => {
   const disablingLevels = {
-    second: levelSelections.second.isDisabled,
-    third: levelSelections.third ? levelSelections.third.isDisabled : true,
+     // If the levelSelections values are empty then we set second and third level to be disabled
+    // Same has to be fixed in Plugin Settings
+    second: levelSelections.second.selected.value !== '' ? levelSelections.second.isDisabled : true,
+    third: levelSelections.third?.selected.value !== '' ? levelSelections.third?.isDisabled : true,
   };
   if (tableId === '00000') {
     tableId = allTables[0]._id;
