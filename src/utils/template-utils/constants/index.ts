@@ -10,7 +10,6 @@ import {
 
 import pluginContext from '../../../plugin-context';
 const DTABLE_UUID = pluginContext.getSetting('dtableUuid');
-console.log(DTABLE_UUID);
 
 // Constants
 const POSSIBLE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz0123456789';

@@ -48,7 +48,6 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
   );
 
   useEffect(() => {
-    console.log({ _activeLevelSelections });
     if (_activeLevelSelections) {
       setFirstLevelSelectedOption(_activeLevelSelections.first.selected);
       setSecondLevelSelectedOption(_activeLevelSelections.second.selected);
@@ -135,10 +134,14 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
 
   useEffect(() => {
     setFirstLevelSelectedOption(_activeLevelSelections?.first?.selected || firstLevelOptions[0]);
-    handleFirstLevelSelection(
-      _activeLevelSelections?.first?.selected || firstLevelOptions[0],
-      true
-    );
+    if (!_activeLevelSelections) {
+      handleLevelDisabled('second');
+    } else {
+      handleFirstLevelSelection(
+        _activeLevelSelections?.first?.selected || firstLevelOptions[0],
+        true
+      );
+    }
   }, [firstLevelOptions]);
 
   useEffect(() => {

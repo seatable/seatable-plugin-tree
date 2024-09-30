@@ -195,7 +195,8 @@ export const outputLevelsInfo = (
 ) => {
   const disablingLevels = {
     second: levelSelections.second.selected.value !== '' ? levelSelections.second.isDisabled : true,
-    third: levelSelections.third?.selected.value !== '' ? levelSelections.third?.isDisabled : true,
+    third:
+      levelSelections.third?.selected.value !== '' ? !!levelSelections.third?.isDisabled : true,
   };
   if (tableId === '00000') {
     tableId = allTables[0]._id;
