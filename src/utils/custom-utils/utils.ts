@@ -194,8 +194,6 @@ export const outputLevelsInfo = (
   keyName?: string
 ) => {
   const disablingLevels = {
-     // If the levelSelections values are empty then we set second and third level to be disabled
-    // Same has to be fixed in Plugin Settings
     second: levelSelections.second.selected.value !== '' ? levelSelections.second.isDisabled : true,
     third: levelSelections.third?.selected.value !== '' ? levelSelections.third?.isDisabled : true,
   };
