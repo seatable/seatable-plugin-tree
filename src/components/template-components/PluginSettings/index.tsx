@@ -47,6 +47,18 @@ const PluginSettings: React.FC<IPluginSettingsProps> = ({
     [pluginPresets, appActiveState.activePresetId]
   );
 
+  const _activeViewSelection = useMemo(
+    () =>
+      pluginPresets.find((p) => p._id === appActiveState.activePresetId)?.settings?.selectedView,
+    [pluginPresets, appActiveState.activePresetId]
+  );
+
+  useEffect(() => {
+    if (_activeViewSelection) {
+      setViewSelectedOption(_activeViewSelection);
+    }
+  }, [_activeViewSelection]);
+
   useEffect(() => {
     if (_activeLevelSelections) {
       setFirstLevelSelectedOption(_activeLevelSelections.first.selected);
