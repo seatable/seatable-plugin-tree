@@ -174,13 +174,13 @@ const PluginPresets: React.FC<IPresetsProps> = ({
     setPluginPresets(_pluginPresets || []);
     const _activePresetIdx = _pluginPresets?.length;
     const _id: string = generatorPresetId(pluginPresets) || '';
+    localStorage.setItem(ACTIVE_PRESET_ID, _id);
     const _presetCustomSettings =
       type === PresetHandleAction.new
         ? levelSelectionDefaultFallback(_pluginPresets, _id, allTables)
         : type === PresetHandleAction.duplicate && option?.pCustomSettings
           ? option.pCustomSettings
           : {};
-
     const newPreset = new Preset({ _id, name: presetName });
     const newPresetsArray = deepCopy(_pluginPresets);
     newPresetsArray.push(newPreset);
@@ -244,7 +244,8 @@ const PluginPresets: React.FC<IPresetsProps> = ({
       activePresetIdx = newPluginPresets.length - 1;
     }
     pluginDataStore.presets = newPluginPresets;
-    updatePresets(0, newPluginPresets, pluginDataStore, pluginDataStore.presets[0]._id);
+    localStorage.setItem(ACTIVE_PRESET_ID, newPluginPresets[0]._id);
+    updatePresets(0, newPluginPresets, pluginDataStore, newPluginPresets[0]._id);
     updateActiveData();
   };
 

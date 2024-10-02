@@ -70,10 +70,17 @@ export function levelSelectionDefaultFallback(
       label: fstLvlTbls[0]?.name || allTables[0]?.name,
     });
 
+    const thirdLvlTbls = findSecondLevelTables(allTables, {
+      value: scnLvlTbls[0]?._id,
+      label: scnLvlTbls[0]?.name
+    });
+
     const selectedScnLvlObj =
       scnLvlTbls.length === 0
         ? LEVEL_DATA_DEFAULT
         : { value: scnLvlTbls[0]._id, label: scnLvlTbls[0].name };
+
+    const selectedThirdLvlObj = thirdLvlTbls.length === 0 ? LEVEL_DATA_DEFAULT : { value: thirdLvlTbls[0]._id, label: thirdLvlTbls[0].name };
 
     if (fstLvlTbls.length === 0 || scnLvlTbls.length === 0) {
       console.error(
@@ -84,6 +91,7 @@ export function levelSelectionDefaultFallback(
     return {
       first: { selected: selectedFstLvlObj, isDisabled: false },
       second: { selected: selectedScnLvlObj, isDisabled: false },
+      third: { selected: selectedThirdLvlObj, isDisabled: false },
     } satisfies ILevelSelections;
   }
 
