@@ -18,12 +18,3 @@ In general, a Plugin needs to be installed by the system admin on the SeaTable s
 
 Please refer to the [SeaTable Plugin Template](https://github.com/seatable/seatable-plugin-template-base/tree/TB-staging) documentation on GitHub. This guide explains how to set up your local testing environment, create a `setting.local.js` file to connect to a SeaTable base, and more.
 
-## Changelog
-
-### Version 1.0.0
-
-- Initial release with SeaTable v5.1
-- Select up to three tables
-- View selection for level 1
-- Sorting option for level 2 and 3
-- Resizing column width for all three levels
