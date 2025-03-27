@@ -81,7 +81,7 @@
     "dayjs": "^1.11.11",
     "dotenv": "^10.0.0",
     "dotenv-expand": "^5.1.0",
-    "dtable-sdk": "^5.0.2",
+    "dtable-sdk": "^5.0.8",
     "eslint": "^8.3.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-config-react-app": "^7.0.1",
