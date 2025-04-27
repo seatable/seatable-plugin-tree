@@ -1,5 +1,9 @@
 ## Changelog
 
+### Version 1.1.4
+
+- remove css class btn-close
+
 ### Version 1.1.3
 
 - remove conflicting css styles
@@ -15,5 +19,3 @@
 - View selection for level 1
 - Sorting option for level 2 and 3
 - Resizing column width for all three levels
-
-
