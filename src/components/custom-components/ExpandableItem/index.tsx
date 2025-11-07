@@ -258,19 +258,15 @@ const ExpandableItem: React.FC<ExpandableItemProps> = ({
         {isClickable && (
           <button
             className={styles.custom_expandableItem_collapse_btn}
-            onClick={
-              isClickable
-                ? (e) => {
-                    e.stopPropagation();
-                    handleItemClick({
-                      '0000': item['0000'],
-                      _id: item._id,
-                      expanded: !isExpanded,
-                      uniqueId: item.uniqueId,
-                    });
-                  }
-                : undefined
-            }>
+            onClick={(e) => {
+              e.stopPropagation();
+              handleItemClick({
+                '0000': item['0000'],
+                _id: item._id,
+                expanded: !isExpanded,
+                uniqueId: item.uniqueId,
+              });
+            }}>
             {isExpanded ? <SlArrowDown size={10} /> : <SlArrowRight size={10} />}
           </button>
         )}
